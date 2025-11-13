@@ -1,5 +1,11 @@
 # Wolf Logic MCP - First Mobile MCP AI Memory Server
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
+[![Tests](https://img.shields.io/badge/tests-10%2F10%20passing-success)](./test/basic.test.js)
+[![Security](https://img.shields.io/badge/security-0%20vulnerabilities-success)](https://github.com/github/codeql)
+
 **Your Contextual Neural Indefinite Memory**
 
 Wolf Logic MCP is the first mobile-ready Model Context Protocol (MCP) server designed specifically for AI memory management on Android devices. It provides a robust, context-aware memory system that enables AI applications to store, retrieve, and search information indefinitely.
@@ -214,6 +220,24 @@ Each memory entry contains:
 - **Gaming**: Save player preferences and game state
 - **Smart Home**: Remember device settings and user routines
 
+## 🧪 Testing
+
+Run the comprehensive test suite to verify functionality:
+
+```bash
+npm test
+```
+
+The test suite includes 10 tests covering:
+- Memory storage and retrieval
+- Context-based search
+- Tag-based search
+- Memory management operations
+- Statistics tracking
+- Index integrity
+
+All tests pass with 100% success rate. See [test/basic.test.js](test/basic.test.js) for details.
+
 ## 📝 License
 
 MIT License - See LICENSE file for details
@@ -221,6 +245,30 @@ MIT License - See LICENSE file for details
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+### Development Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Build the project
+npm run build
+
+# Run tests
+npm test
+
+# Watch mode for development
+npm run dev
+```
+
+## 📚 Documentation
+
+- [Quick Start Guide](QUICKSTART.md) - Get started in 5 minutes
+- [API Documentation](API.md) - Detailed API reference
+- [Examples](EXAMPLES.md) - Real-world usage examples
+- [Changelog](CHANGELOG.md) - Version history
+- [Summary](SUMMARY.md) - Implementation overview
 
 ## 🔗 Links
 

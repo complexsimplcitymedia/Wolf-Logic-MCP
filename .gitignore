@@ -10,6 +10,7 @@ build/
 *.js
 *.js.map
 !jest.config.js
+!test/**/*.js
 
 # TypeScript
 *.tsbuildinfo
