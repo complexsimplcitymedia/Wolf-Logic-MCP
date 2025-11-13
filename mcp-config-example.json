@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "wolf-logic-mcp": {
+      "command": "node",
+      "args": ["/path/to/Wolf-Logic-MCP/dist/index.js"],
+      "description": "Wolf Logic MCP Memory Server - Your contextual neural indefinite memory",
+      "env": {}
+    }
+  }
+}
