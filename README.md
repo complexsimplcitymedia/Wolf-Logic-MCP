@@ -1,2 +1,2 @@
 # Wolf-Logic-MCP
-Ai MCP ANDROID app
+Contextual Functional Nueral Ai Memory Continuity Across Sessions or Models
