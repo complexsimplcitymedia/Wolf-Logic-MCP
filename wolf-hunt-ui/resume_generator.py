@@ -11,7 +11,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 DB_CONFIG = {
-    'host': 'localhost',
+    'host': '100.110.82.181',
     'port': 5433,
     'user': 'wolf',
     'password': 'wolflogic2024',

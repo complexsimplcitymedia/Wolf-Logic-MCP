@@ -1,0 +1,16 @@
+[Unit]
+Description=Wolf Logic REST API - FastAPI Server for Web Applications
+After=network.target postgresql@16-main.service
+
+[Service]
+Type=simple
+User=thewolfwalksalone
+Group=thewolfwalksalone
+WorkingDirectory=/mnt/Wolf-code/Wolf-Ai-Enterptises/api
+Environment="PATH=/home/thewolfwalksalone/anaconda3/envs/messiah/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/home/thewolfwalksalone/anaconda3/envs/messiah/bin/uvicorn fastapi_server:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
