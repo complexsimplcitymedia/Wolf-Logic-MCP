@@ -41,7 +41,7 @@ python ingest_agent_api.py /path/to/file.txt --json
 **Output:** JSON
 **Command:**
 ```bash
-PGPASSWORD=wolflogic2024 psql -h localhost -p 5433 -U wolf -d wolf_logic -t -A -c 'SELECT json_build_object('\''total_memories'\'', COUNT(*), '\''last_updated'\'', MAX(created_at)) FROM memories'
+PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -t -A -c 'SELECT json_build_object('\''total_memories'\'', COUNT(*), '\''last_updated'\'', MAX(created_at)) FROM memories'
 ```
 **Status:** ✓ Tested - Working
 

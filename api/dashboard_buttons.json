@@ -42,7 +42,7 @@
       "icon": "💾",
       "color": "#bb66ff",
       "endpoint": "/api/database/stats",
-      "command": "PGPASSWORD=wolflogic2024 psql -h localhost -p 5433 -U wolf -d wolf_logic -t -c 'SELECT COUNT(*) FROM memories'",
+      "command": "PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -t -c 'SELECT COUNT(*) FROM memories'",
       "category": "database"
     },
     {

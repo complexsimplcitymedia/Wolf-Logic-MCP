@@ -7,7 +7,7 @@ A full-featured job application tracking database and API system has been succes
 ## System Architecture
 
 ### Database Layer
-- **Database:** PostgreSQL (wolf_logic @ localhost:5433)
+- **Database:** PostgreSQL (wolf_logic @ 100.110.82.181:5433)
 - **Tables:**
   - `job_applications` - Main tracking table with 19 fields
   - `application_history` - Audit log with automatic history tracking
@@ -283,12 +283,12 @@ The system is built to easily extend:
 
 ### Database Backup
 ```bash
-PGPASSWORD='wolflogic2024' pg_dump -U wolf -h localhost -p 5433 wolf_logic > backup.sql
+PGPASSWORD='wolflogic2024' pg_dump -U wolf -h 100.110.82.181 -p 5433 wolf_logic > backup.sql
 ```
 
 ### Database Restore
 ```bash
-PGPASSWORD='wolflogic2024' psql -U wolf -h localhost -p 5433 wolf_logic < backup.sql
+PGPASSWORD='wolflogic2024' psql -U wolf -h 100.110.82.181 -p 5433 wolf_logic < backup.sql
 ```
 
 ## Troubleshooting
@@ -306,7 +306,7 @@ PGPASSWORD='wolflogic2024' psql -U wolf -h localhost -p 5433 wolf_logic < backup
 - **Quick Help:** `python job_cli.py help`
 - **Full Docs:** `/mnt/Wolf-code/Wolf-Ai-Enterptises/tracking/README.md`
 - **Quick Start:** `/mnt/Wolf-code/Wolf-Ai-Enterptises/tracking/QUICKSTART.md`
-- **Database:** `PGPASSWORD='wolflogic2024' psql -U wolf -h localhost -p 5433 -d wolf_logic`
+- **Database:** `PGPASSWORD='wolflogic2024' psql -U wolf -h 100.110.82.181 -p 5433 -d wolf_logic`
 
 ## Summary
 

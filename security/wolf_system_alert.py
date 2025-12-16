@@ -13,7 +13,7 @@ from typing import Dict, Any
 class WolfSystemAlert:
     def __init__(self):
         self.db_config = {
-            "host": "localhost",
+            "host": "100.110.82.181",
             "port": 5433,
             "database": "wolf_logic",
             "user": "wolf",

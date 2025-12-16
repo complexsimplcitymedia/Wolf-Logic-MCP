@@ -293,7 +293,7 @@ if __name__ == '__main__':
 ║              Job Tracking Backend v1.0                 ║
 ╠════════════════════════════════════════════════════════╣
 ║  API running on: http://localhost:5000                 ║
-║  Database: wolf_logic@localhost:5433                   ║
+║  Database: wolf_logic@100.110.82.181:5433                   ║
 ║  Candidates: David Adams, Brice Wilson                 ║
 ╚════════════════════════════════════════════════════════╝
 

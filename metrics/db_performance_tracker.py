@@ -16,7 +16,7 @@ from pathlib import Path
 
 # Database configs
 PG_CONFIG = {
-    "host": "localhost",
+    "host": "100.110.82.181",
     "port": 5433,
     "database": "wolf_logic",
     "user": "wolf",

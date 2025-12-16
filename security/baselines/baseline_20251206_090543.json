@@ -43,7 +43,7 @@
       "timestamp": "2025-12-06T09:05:42.573728"
     },
     "postgres_wolf_logic": {
-      "command": "PGPASSWORD=wolflogic2024 psql -h localhost -p 5433 -U wolf -d wolf_logic -c '\\dt' 2>&1",
+      "command": "PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c '\\dt' 2>&1",
       "description": "PostgreSQL wolf_logic tables",
       "stdout": "                 List of relations\n Schema |           Name           | Type  | Owner \n--------+--------------------------+-------+-------\n public | application_history      | table | wolf\n public | job_applications         | table | wolf\n public | memories                 | table | wolf\n public | memories_embedding_store | table | wolf\n public | memory_priorities        | table | wolf\n public | resume_applications      | table | wolf\n(6 rows)\n\n",
       "stderr": "",
@@ -51,7 +51,7 @@
       "timestamp": "2025-12-06T09:05:42.597963"
     },
     "postgres_memory_count": {
-      "command": "PGPASSWORD=wolflogic2024 psql -h localhost -p 5433 -U wolf -d wolf_logic -c 'SELECT COUNT(*) as total_memories FROM memories;' 2>&1",
+      "command": "PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c 'SELECT COUNT(*) as total_memories FROM memories;' 2>&1",
       "description": "Total memories in database",
       "stdout": " total_memories \n----------------\n          60486\n(1 row)\n\n",
       "stderr": "",

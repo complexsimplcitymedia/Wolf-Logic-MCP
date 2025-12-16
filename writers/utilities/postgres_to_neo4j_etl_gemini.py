@@ -17,7 +17,7 @@ from datetime import datetime
 
 # Database configs - GEMINI'S ISOLATED ENVIRONMENT
 PG_CONFIG = {
-    "host": "localhost",
+    "host": "100.110.82.181",
     "port": 5436,
     "database": "wolf_logic",
     "user": "wolf",

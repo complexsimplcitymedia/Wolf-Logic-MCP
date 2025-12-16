@@ -119,7 +119,7 @@ Namespaces:
 ## Deployment
 
 ### Services Running
-- PostgreSQL: `localhost:5433`
+- PostgreSQL: `100.110.82.181:5433`
 - Flask API: `localhost:5000`
 - Metrics Exporter: `localhost:9091`
 - Prometheus: `localhost:9090`

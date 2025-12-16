@@ -36,7 +36,7 @@ app.add_middleware(
 
 # Database config
 PG_CONFIG = {
-    "host": "localhost",
+    "host": "100.110.82.181",
     "port": 5433,
     "database": "wolf_logic",
     "user": "wolf",
@@ -55,7 +55,7 @@ NEO4J_SERVERS = [
     },
     {
         "name": "local_backup",
-        "host": "localhost",  # Local fallback
+        "host": "100.110.82.181",  # Local fallback
         "http_port": 7474,
         "user": "neo4j",
         "password": "wolflogic2024",

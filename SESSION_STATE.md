@@ -26,7 +26,7 @@
 
 ## Infrastructure Status
 **Postgres (NOT in Docker):**
-- Host: localhost:5433
+- Host: 100.110.82.181:5433
 - Database: wolf_logic
 - User: wolf / wolflogic2024
 - 35,749+ memories, fully vectorized
@@ -127,6 +127,6 @@ External → Caddy (100.110.82.245 - MacBook M2)
 1. Read this file
 2. Activate messiah environment: `source ~/anaconda3/bin/activate messiah`
 3. Check FastAPI running: `curl http://localhost:8000/api/memory-count`
-4. Check memory count: `PGPASSWORD=wolflogic2024 psql -h localhost -p 5433 -U wolf -d wolf_logic -c "SELECT COUNT(*) FROM memories;"`
+4. Check memory count: `PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c "SELECT COUNT(*) FROM memories;"`
 5. Verify Docker containers: `docker ps`
 6. Continue from "Next Steps" section above

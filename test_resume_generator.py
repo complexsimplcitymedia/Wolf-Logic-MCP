@@ -190,7 +190,7 @@ def test_database_connection():
     safe_print("="*70)
 
     db = PgaiDB({
-        "host": "localhost",
+        "host": "100.110.82.181",
         "port": 5433,
         "database": "wolf_logic",
         "user": "wolf",

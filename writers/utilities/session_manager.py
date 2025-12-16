@@ -22,7 +22,7 @@ DAILYS_DIR = "/mnt/Wolf-code/Wolf-Ai-Enterptises/camera/dailys"
 
 # Postgres
 PG_CONFIG = {
-    "host": "localhost",
+    "host": "100.110.82.181",
     "port": 5433,
     "database": "wolf_logic",
     "user": "wolf",

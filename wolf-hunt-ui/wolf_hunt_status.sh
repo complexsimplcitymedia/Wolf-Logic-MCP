@@ -28,15 +28,15 @@ fi
 # Check Database
 echo ""
 echo "Database (wolf_logic):"
-if PGPASSWORD=wolflogic2024 psql -h localhost -p 5433 -U wolf -d wolf_logic -c "SELECT 1" >/dev/null 2>&1; then
-    echo "  ✓ Connected to PostgreSQL (localhost:5433)"
+if PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c "SELECT 1" >/dev/null 2>&1; then
+    echo "  ✓ Connected to PostgreSQL (100.110.82.181:5433)"
 
     # Count candidates
-    CANDIDATES=$(PGPASSWORD=wolflogic2024 psql -h localhost -p 5433 -U wolf -d wolf_logic -tAc "SELECT COUNT(*) FROM candidates")
+    CANDIDATES=$(PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -tAc "SELECT COUNT(*) FROM candidates")
     echo "  ✓ Candidates: $CANDIDATES"
 
     # Count scraped jobs
-    JOBS=$(PGPASSWORD=wolflogic2024 psql -h localhost -p 5433 -U wolf -d wolf_logic -tAc "SELECT COUNT(*) FROM scraped_jobs")
+    JOBS=$(PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -tAc "SELECT COUNT(*) FROM scraped_jobs")
     echo "  ✓ Jobs catalogued: $JOBS"
 else
     echo "  ✗ Cannot connect to database"
@@ -45,7 +45,7 @@ fi
 # Show candidates
 echo ""
 echo "Active Candidates:"
-PGPASSWORD=wolflogic2024 psql -h localhost -p 5433 -U wolf -d wolf_logic -c "
+PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c "
 SELECT
     name,
     array_to_string(target_roles, ', ') as target_roles,
@@ -57,7 +57,7 @@ ORDER BY name
 # Show job breakdown
 echo ""
 echo "Jobs by Candidate:"
-PGPASSWORD=wolflogic2024 psql -h localhost -p 5433 -U wolf -d wolf_logic -c "
+PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c "
 SELECT
     candidate_match,
     COUNT(*) as jobs

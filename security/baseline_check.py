@@ -80,13 +80,13 @@ def collect_baseline():
 
     # PostgreSQL status (wolf_logic)
     baseline["checks"]["postgres_wolf_logic"] = run_command(
-        "PGPASSWORD=wolflogic2024 psql -h localhost -p 5433 -U wolf -d wolf_logic -c '\\dt' 2>&1",
+        "PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c '\\dt' 2>&1",
         "PostgreSQL wolf_logic tables"
     )
 
     # PostgreSQL memory count
     baseline["checks"]["postgres_memory_count"] = run_command(
-        "PGPASSWORD=wolflogic2024 psql -h localhost -p 5433 -U wolf -d wolf_logic -c 'SELECT COUNT(*) as total_memories FROM memories;' 2>&1",
+        "PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c 'SELECT COUNT(*) as total_memories FROM memories;' 2>&1",
         "Total memories in database"
     )
 

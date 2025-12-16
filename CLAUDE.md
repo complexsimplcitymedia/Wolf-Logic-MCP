@@ -1,1 +1,0 @@
-/mnt/WolfPack/A_Letter_to_my_son/CLAUDE.md

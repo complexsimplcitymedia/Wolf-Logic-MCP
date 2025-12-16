@@ -71,7 +71,7 @@ Do NOT use local IPs for SSH. Use Tailscale IPs.
 ---
 
 **Services on csmcloud-server (100.110.82.181):**
-- PostgreSQL (wolf_logic): `localhost:5433`
+- PostgreSQL (wolf_logic): `100.110.82.181:5433`
 - Ollama (embedding fleet): `localhost:11434`
 - Piper TTS: `localhost:5050`
 - Memory API: `localhost:5000`
@@ -136,7 +136,7 @@ The MCP server configuration uses SSH tunnel to MacBook's Docker:
 
 | Service | Device | Local Access | Tailscale Access | Public Domain |
 |---------|--------|-------------|------------------|---------------|
-| PostgreSQL (wolf_logic) | Debian | `localhost:5433` | N/A (local only) | N/A |
+| PostgreSQL (wolf_logic) | Debian | `100.110.82.181:5433` | N/A (local only) | N/A |
 | Ollama | Debian | `localhost:11434` | N/A (local only) | N/A |
 | Portainer (Mac) | MacBook | `localhost:9444` | `100.110.82.245:9444` | `mactainer.complexsimplicityai.com` |
 | Portainer (Server) | Server | `localhost:9443` | `100.110.82.181:9443` | `portainer.complexsimplicityai.com` |

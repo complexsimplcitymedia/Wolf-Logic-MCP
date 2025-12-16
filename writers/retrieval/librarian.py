@@ -31,7 +31,7 @@ EMBED_MODEL = "nomic-embed-text:v1.5"
 
 # Postgres config
 PG_CONFIG = {
-    "host": "localhost",
+    "host": "100.110.82.181",
     "port": 5434,
     "database": "wolf_logic",
     "user": "wolf",

@@ -176,7 +176,7 @@ Query the database directly if needed:
 ```bash
 source ~/anaconda3/bin/activate messiah
 
-PGPASSWORD='wolflogic2024' psql -U wolf -h localhost -p 5433 -d wolf_logic
+PGPASSWORD='wolflogic2024' psql -U wolf -h 100.110.82.181 -p 5433 -d wolf_logic
 
 # Example queries:
 SELECT id, company_name, position_title, date_applied FROM job_applications
@@ -225,7 +225,7 @@ pip install psycopg2-binary
 **Database connection fails**
 - Check PostgreSQL is running: `sudo systemctl status postgresql`
 - Verify credentials in `application_tracker.py`
-- Test connection: `PGPASSWORD='wolflogic2024' psql -U wolf -h localhost -p 5433 -d wolf_logic -c "SELECT 1"`
+- Test connection: `PGPASSWORD='wolflogic2024' psql -U wolf -h 100.110.82.181 -p 5433 -d wolf_logic -c "SELECT 1"`
 
 ## Getting Help
 

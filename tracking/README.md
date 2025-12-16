@@ -12,7 +12,7 @@ This system provides:
 
 ## Architecture
 
-### Database: PostgreSQL (wolf_logic @ localhost:5433)
+### Database: PostgreSQL (wolf_logic @ 100.110.82.181:5433)
 
 **Tables:**
 - `job_applications` - Main application records with all tracking fields
@@ -314,7 +314,7 @@ python job_cli.py dashboard
 
 ## Database Connection
 
-**Host:** localhost:5433
+**Host:** 100.110.82.181:5433
 **Database:** wolf_logic
 **User:** wolf
 **Password:** wolflogic2024
@@ -356,7 +356,7 @@ Connection details are embedded in `application_tracker.py`. Update the `Applica
 
 If you get "password supplied" errors, ensure:
 1. Environment is activated: `source ~/anaconda3/bin/activate messiah`
-2. PostgreSQL is running on localhost:5433
+2. PostgreSQL is running on 100.110.82.181:5433
 3. Credentials are correct in the code
 
 ### Import Errors
@@ -372,7 +372,7 @@ pip install tabulate
 Check database status:
 ```bash
 source ~/anaconda3/bin/activate messiah
-PGPASSWORD='wolflogic2024' psql -U wolf -h localhost -p 5433 -d wolf_logic -c "\dt"
+PGPASSWORD='wolflogic2024' psql -U wolf -h 100.110.82.181 -p 5433 -d wolf_logic -c "\dt"
 ```
 
 ## License

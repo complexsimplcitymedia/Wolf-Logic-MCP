@@ -18,7 +18,7 @@ def run():
             "vector_store": {
                 "provider": "qdrant",
                 "config": {
-                    "host": "localhost",
+                    "host": "100.110.82.181",
                     "port": 6333,
                 }
             },

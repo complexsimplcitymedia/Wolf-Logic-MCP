@@ -8,7 +8,7 @@ config = {
         "provider": "qdrant",
         "config": {
             "collection_name": "openmemory",
-            "host": "localhost",
+            "host": "100.110.82.181",
             "port": 6333,
         }
     }

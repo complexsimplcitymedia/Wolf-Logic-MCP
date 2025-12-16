@@ -40,7 +40,7 @@ SERVICES = {
         {
             "name": "PostgreSQL",
             "type": "tcp",
-            "host": "localhost",
+            "host": "100.110.82.181",
             "port": 5433,
             "timeout": 3
         },

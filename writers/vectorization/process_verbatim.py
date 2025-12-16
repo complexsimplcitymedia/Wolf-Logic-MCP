@@ -17,7 +17,7 @@ OLLAMA_URL = "http://localhost:11434"
 PROCESSING_MODEL = "llama3.1:latest"  # or mistral:latest
 
 PG_CONFIG = {
-    "host": "localhost",
+    "host": "100.110.82.181",
     "port": 5433,
     "database": "wolf_logic",
     "user": "wolf",
