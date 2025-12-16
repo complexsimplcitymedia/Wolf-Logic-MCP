@@ -81,3 +81,13 @@ swagger-ui/
 
 # Postgres data
 data/postgres-backup/
+
+# Large model files
+production/voice/models/*.onnx
+voice/models/*.onnx
+
+
+# VRP and incident reports with potential secrets
+data/vrp-reports/
+data/incident-reports/
+
