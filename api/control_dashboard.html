@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wolf AI Control Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+        }
+
+        h1 {
+            color: #ff0000;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px #ff0000;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #00ff88;
+            font-size: 1.1em;
+        }
+
+        /* Memory Counter */
+        .memory-counter {
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            border: 2px solid #ff0000;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 0 auto 30px;
+            max-width: 1200px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+        }
+
+        .counter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .counter-stat {
+            text-align: center;
+            padding: 15px;
+            background: #0a0a0a;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+
+        .counter-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88;
+        }
+
+        .counter-label {
+            color: #888;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        /* Button Grid */
+        .button-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .button-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #00ff88;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #333;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .control-btn {
+            background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+            border: 2px solid;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-size: 1em;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .control-btn.start { border-color: #00ff88; }
+        .control-btn.stop { border-color: #ff4444; }
+        .control-btn.refresh { border-color: #66bbff; }
+        .control-btn.status { border-color: #ffaa33; }
+        .control-btn.utility { border-color: #bb66ff; }
+
+        .btn-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .btn-label {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .btn-loading::after {
+            content: "⏳";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2em;
+        }
+
+        /* Output Display */
+        .output-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            background: #0f0f0f;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            display: none;
+        }
+
+        .output-header {
+            color: #00ff88;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+
+        .output-content {
+            font-family: 'Courier New', monospace;
+            color: #00ff88;
+            white-space: pre-wrap;
+            font-size: 0.9em;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .error {
+            color: #ff4444;
+        }
+
+        .success {
+            color: #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>WOLF AI CONTROL DASHBOARD</h1>
+        <div class="subtitle">Production Memory System Command Center</div>
+    </div>
+
+    <!-- Live Memory Counter -->
+    <div class="memory-counter">
+        <div class="counter-grid">
+            <div class="counter-stat">
+                <div class="counter-value" id="totalMemories">--</div>
+                <div class="counter-label">Total Memories</div>
+            </div>
+            <div class="counter-stat">
+                <div class="counter-value" id="todayCount">--</div>
+                <div class="counter-label">Today</div>
+            </div>
+            <div class="counter-stat">
+                <div class="counter-value" id="lastHour">--</div>
+                <div class="counter-label">Last Hour</div>
+            </div>
+            <div class="counter-stat">
+                <div class="counter-value" id="avgPerDay">--</div>
+                <div class="counter-label">Avg/Day (7d)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <!-- Primary Control -->
+        <div class="button-section">
+            <div class="section-title">▶ PRIMARY CONTROL</div>
+            <div class="button-grid">
+                <button class="control-btn start" onclick="executeCommand('memory_counter')">
+                    <div class="btn-icon">🔄</div>
+                    <div class="btn-label">Refresh Counter</div>
+                </button>
+                <button class="control-btn refresh" onclick="executeCommand('refresh_dashboard')">
+                    <div class="btn-icon">📊</div>
+                    <div class="btn-label">Refresh Charts</div>
+                </button>
+                <button class="control-btn status" onclick="executeCommand('db_stats')">
+                    <div class="btn-icon">💾</div>
+                    <div class="btn-label">DB Stats</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Scripty Control -->
+        <div class="button-section">
+            <div class="section-title">🎬 SCRIPTY CONTROL</div>
+            <div class="button-grid">
+                <button class="control-btn start" onclick="executeCommand('scripty_start')">
+                    <div class="btn-icon">▶️</div>
+                    <div class="btn-label">Start Scripty</div>
+                </button>
+                <button class="control-btn stop" onclick="executeCommand('scripty_stop')">
+                    <div class="btn-icon">⏹️</div>
+                    <div class="btn-label">Stop Scripty</div>
+                </button>
+                <button class="control-btn status" onclick="executeCommand('scripty_status')">
+                    <div class="btn-icon">📡</div>
+                    <div class="btn-label">Scripty Status</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Session Logger Control -->
+        <div class="button-section">
+            <div class="section-title">📹 SESSION LOGGER (DAILIES)</div>
+            <div class="button-grid">
+                <button class="control-btn start" onclick="executeCommand('logger_start')">
+                    <div class="btn-icon">▶️</div>
+                    <div class="btn-label">Start Logger</div>
+                </button>
+                <button class="control-btn stop" onclick="executeCommand('logger_stop')">
+                    <div class="btn-icon">⏹️</div>
+                    <div class="btn-label">Stop Logger</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Utilities -->
+        <div class="button-section">
+            <div class="section-title">🔧 UTILITIES</div>
+            <div class="button-grid">
+                <button class="control-btn utility" onclick="promptIngest()">
+                    <div class="btn-icon">📥</div>
+                    <div class="btn-label">Ingest File</div>
+                </button>
+                <button class="control-btn utility" onclick="executeCommand('rank_memories')">
+                    <div class="btn-icon">🏆</div>
+                    <div class="btn-label">Rank Memories</div>
+                </button>
+                <button class="control-btn utility" onclick="promptYoutube()">
+                    <div class="btn-icon">📺</div>
+                    <div class="btn-label">Analyze YouTube</div>
+                </button>
+                <button class="control-btn status" onclick="executeCommand('view_logs')">
+                    <div class="btn-icon">📜</div>
+                    <div class="btn-label">View Logs</div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Output Display -->
+    <div class="output-container" id="outputContainer">
+        <div class="output-header" id="outputHeader">Command Output</div>
+        <div class="output-content" id="outputContent"></div>
+    </div>
+
+    <!-- WOLF TV SECTION -->
+    <div id="wolftv" class="section" style="display: none; background: #000; border: 2px solid #ff00ff; padding: 20px; border-radius: 10px; margin-top: 30px;">
+        <h1 style="margin-bottom: 20px; color: #ff00ff; text-shadow: 0 0 10px #ff00ff;">📺 WOLF TV</h1>
+        <div class="log-console" id="wolfTvConsole" style="height: 500px; border: 1px solid #ff00ff; color: #fff; font-size: 0.9rem;">
+            Waiting for pipeline...
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+
+        // Command definitions
+        const commands = {
+            memory_counter: {
+                name: 'Memory Counter',
+                endpoint: '/memory-stats',
+                method: 'GET'
+            },
+            refresh_dashboard: {
+                name: 'Refresh Dashboard',
+                cmd: 'source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/metrics/visual_dashboard_api.py --json'
+            },
+            db_stats: {
+                name: 'Database Stats',
+                cmd: 'source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/api/memory_counter.py'
+            },
+            scripty_start: {
+                name: 'Start Scripty',
+                cmd: 'source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/scripty/scripty_control.py start'
+            },
+            scripty_stop: {
+                name: 'Stop Scripty',
+                cmd: 'source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/scripty/scripty_control.py stop'
+            },
+            scripty_status: {
+                name: 'Scripty Status',
+                cmd: 'source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/scripty/scripty_control.py status'
+            },
+            logger_start: {
+                name: 'Start Session Logger',
+                cmd: 'source ~/anaconda3/bin/activate messiah && nohup python /mnt/Wolf-code/Wolf-Ai-Enterptises/camera/session_logger.py > /tmp/session_logger.log 2>&1 & echo "Session Logger started"'
+            },
+            logger_stop: {
+                name: 'Stop Session Logger',
+                cmd: 'pkill -f session_logger.py && echo "Session Logger stopped"'
+            },
+            rank_memories: {
+                name: 'Rank Memories',
+                cmd: 'source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/writers/rank_memories.py'
+            },
+            view_logs: {
+                name: 'View Logs',
+                cmd: 'tail -n 100 /tmp/scripty.log /tmp/session_logger.log 2>/dev/null || echo "No logs available"'
+            }
+        };
+
+        // Execute command (Real API)
+        async function executeCommand(cmdKey, params = {}) {
+            const btn = event.currentTarget || document.querySelector(`.control-btn[onclick*="${cmdKey}"]`);
+            if(btn) btn.classList.add('btn-loading');
+
+            showOutput(`Executing: ${cmdKey}...`, false);
+
+            try {
+                const response = await fetch('/api/execute', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ command: cmdKey, params: params })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showOutput(result.stdout || "Command executed successfully (no output)", true);
+                } else {
+                    showOutput(result.stderr || result.error || "Command failed", false, true);
+                }
+                
+                return result;
+            } catch (error) {
+                showOutput(`Error: ${error.message}`, false, true);
+            } finally {
+                if(btn) btn.classList.remove('btn-loading');
+            }
+        }
+
+        // Show output
+        function showOutput(content, isSuccess, isError = false) {
+            const container = document.getElementById('outputContainer');
+            const output = document.getElementById('outputContent');
+
+            container.style.display = 'block';
+            output.textContent = content;
+            output.className = 'output-content ' + (isError ? 'error' : isSuccess ? 'success' : '');
+        }
+
+        // Prompt for file ingest
+        function promptIngest() {
+            const filepath = prompt('Enter file path to ingest:');
+            if (filepath) {
+                executeCommand('ingest_file', {filepath});
+            }
+        }
+
+        // Prompt for YouTube URL
+        async function promptYoutube() {
+            const url = prompt('Enter YouTube URL:');
+            if (url) {
+                // Show Wolf TV Section
+                document.getElementById('wolftv').style.display = 'block';
+                document.getElementById('wolftv').scrollIntoView({ behavior: 'smooth' });
+                
+                startWolfTvStream();
+                
+                // Execute command
+                await executeCommand('analyze_youtube', { url: url });
+            }
+        }
+        
+        let ws = null;
+        
+        // Start Wolf TV Stream
+        function startWolfTvStream() {
+            const consoleDiv = document.getElementById('wolfTvConsole');
+            consoleDiv.innerHTML = '<div style="color: #00ff00;">Connecting to Wolf TV Feed...</div>';
+            
+            if (ws) ws.close();
+            
+            const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+            const wsUrl = protocol + window.location.host + '/ws/wolftv';
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onmessage = function(event) {
+                const line = event.data;
+                const div = document.createElement('div');
+                div.textContent = line;
+                
+                if (line.includes('[GRIP]')) div.style.color = 'cyan';
+                else if (line.includes('[CAMERA]')) div.style.color = 'magenta';
+                else if (line.includes('[SOUND]')) div.style.color = 'yellow';
+                else if (line.includes('[LIGHTING]')) div.style.color = '#8888ff';
+                else if (line.includes('[ARCHIVE]')) div.style.color = 'lime';
+                else div.style.color = '#ccc';
+                
+                consoleDiv.appendChild(div);
+                consoleDiv.scrollTop = consoleDiv.scrollHeight;
+            };
+            
+            ws.onerror = function(error) {
+                consoleDiv.innerHTML += `<div style="color: red;">Stream Error.</div>`;
+            };
+            
+            ws.onclose = function() {
+                consoleDiv.innerHTML += `<div style="color: #555;">Connection closed.</div>`;
+            };
+        }
+
+        // Update memory counter
+        async function updateMemoryCounter() {
+            try {
+                // In production, call actual API
+                // For now, simulate
+                const stats = {
+                    total_memories: 30469,
+                    today_count: 1247,
+                    last_hour_count: 89,
+                    avg_per_day_7d: 2156
+                };
+
+                document.getElementById('totalMemories').textContent = stats.total_memories.toLocaleString();
+                document.getElementById('todayCount').textContent = stats.today_count.toLocaleString();
+                document.getElementById('lastHour').textContent = stats.last_hour_count;
+                document.getElementById('avgPerDay').textContent = stats.avg_per_day_7d.toLocaleString();
+            } catch (error) {
+                console.error('Failed to update counter:', error);
+            }
+        }
+
+        // Initialize
+        updateMemoryCounter();
+        setInterval(updateMemoryCounter, 10000); // Update every 10 seconds
+    </script>
+</body>
+</html>

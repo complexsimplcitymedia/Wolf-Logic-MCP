@@ -1,0 +1,83 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+*.out
+
+# Temp files
+*.tmp
+.DS_Store
+*.bak
+
+# Credentials & Secrets
+.env
+.env.*
+.envrc
+credentials.json
+*_credentials.json
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+
+# Database
+*.db
+*.sqlite
+*.dump
+*.sql.gz
+
+# Data dumps
+data/memory-dumps/*
+camera/dailys/*
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Docker
+docker-compose.override.yml
+
+# System
+.cache/
+*.pid
+nohup.out
+# Bitwarden exports
+bitwarden*.json
+
+# Large video frame directories  
+camera/dit/yt_*/
+
+
+# External cloned repositories
+data/bounty-repos/
+data/bounty-repos-verification-*/
+WebDevAuthn/
+fastapi/
+jspybridge/
+mcp-servers/
+omdb-mcp-server/
+swagger-ui/
+
+# Postgres data
+data/postgres-backup/

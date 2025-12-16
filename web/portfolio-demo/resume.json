@@ -1,0 +1,119 @@
+{
+  "name": "The Wolf (Cadillac)",
+  "title": "AI Contextual Memory Architect & Production Infrastructure Engineer",
+  "contact": {
+    "website": "https://complexsimplicityai.com",
+    "portfolio": "https://portfolio.complexsimplicityai.com",
+    "youtube": "https://www.youtube.com/@complexs1mplicity"
+  },
+  "summary": "Built production-grade AI contextual memory system with 46,528+ vectorized memories. 10,000+ hours developing persistent memory architecture for LLM applications. Expertise in PostgreSQL, vector databases, Docker orchestration, and full-stack infrastructure.",
+  "skills": {
+    "languages": [
+      "Python 3.12",
+      "SQL",
+      "Bash",
+      "JavaScript"
+    ],
+    "databases": [
+      "PostgreSQL 17",
+      "pgvector",
+      "Neo4j",
+      "Qdrant"
+    ],
+    "infrastructure": [
+      "Docker/Compose",
+      "Debian Linux",
+      "Caddy Server",
+      "Tailscale VPN",
+      "systemd"
+    ],
+    "ai_ml": [
+      "Ollama",
+      "Embedding Models",
+      "Vector Search",
+      "Semantic Similarity",
+      "AMD ROCm"
+    ],
+    "frameworks": [
+      "Flask",
+      "FastAPI",
+      "psycopg2",
+      "FIDO2/WebAuthn"
+    ],
+    "tools": [
+      "Git",
+      "Prometheus",
+      "Portainer",
+      "PAM",
+      "cron"
+    ]
+  },
+  "projects": [
+    {
+      "name": "pgai Contextual Memory System",
+      "status": "PRODUCTION",
+      "description": "Built PostgreSQL-backed persistent memory system for Claude AI with 46,528+ vectorized memories across 18 namespaces",
+      "achievements": [
+        "768-dimension embeddings using nomic-embed-text:v1.5",
+        "Semantic search with pgvector and multiple embedding models",
+        "Namespace isolation for multi-tenant scenarios",
+        "Circuit breaker ingestion patterns for token efficiency",
+        "Automated vectorization triggers and deduplication"
+      ],
+      "tech": [
+        "PostgreSQL",
+        "pgvector",
+        "Ollama",
+        "Python",
+        "psycopg2"
+      ]
+    },
+    {
+      "name": "Wolf Hunt - Automated Job Application System",
+      "status": "OPERATIONAL",
+      "description": "Automated job search and application platform with multi-board aggregation and intelligent filtering",
+      "achievements": [
+        "1,836+ job-related memories in dedicated namespace",
+        "Multi-board job aggregation (LinkedIn, Indeed, etc.)",
+        "Persistent state management across sessions",
+        "Real-time application tracking"
+      ],
+      "tech": [
+        "Flask",
+        "Docker",
+        "PostgreSQL",
+        "Tailscale",
+        "Caddy"
+      ]
+    },
+    {
+      "name": "Production Infrastructure",
+      "status": "RUNNING",
+      "description": "Full-stack production environment on Debian 13 with AMD RX 7900 XT (21.4GB VRAM)",
+      "achievements": [
+        "FIDO2 tap-only authentication (PAM integration)",
+        "Caddy reverse proxy with 21+ routes",
+        "Prometheus metrics and real-time dashboards",
+        "Docker orchestration via Portainer",
+        "Tailscale VPN mesh network"
+      ],
+      "tech": [
+        "Docker",
+        "Caddy",
+        "FIDO2",
+        "Prometheus",
+        "systemd",
+        "ROCm"
+      ]
+    }
+  ],
+  "philosophy": {
+    "union_way": "Never rush. Everybody has a job. Stay in your lane.",
+    "magic_over_kobe": "Efficiency over showboating (half-court 3 > 360 dunk for 2)",
+    "token_economy": "Every token is a heartbeat. Don't waste them.",
+    "deaths_ground": "When there is no escape, soldiers are firm. When desperate, they fight."
+  },
+  "generated": "2025-12-05T03:26:02.993962",
+  "memory_count": 46528,
+  "hours_invested": "10,000+"
+}

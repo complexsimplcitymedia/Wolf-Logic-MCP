@@ -1,0 +1,18 @@
+.App {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  color: #ffffff;
+}
+
+main {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0 20px 20px 20px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  main {
+    padding: 0 10px 10px 10px;
+  }
+}

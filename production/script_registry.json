@@ -1,0 +1,161 @@
+{
+  "base_path": "/mnt/Wolfpack/Github/memory_layer/mem0",
+  "scripts": {
+    "init_ollama": {
+      "name": "🔥 Init Ollama",
+      "path": "scripts/init_ollama.py",
+      "category": "system",
+      "description": "Initialize Ollama connection"
+    },
+    "start_mistral": {
+      "name": "🧠 Start Mistral",
+      "path": "wolf_scripts/StartMistral.py",
+      "category": "services",
+      "description": "Start Mistral model"
+    },
+    "embedder_begin": {
+      "name": "🚀 Embedder Begin",
+      "path": "wolf_scripts/EmbedderBegin.py",
+      "category": "processing",
+      "description": "Initialize Embedder Agent"
+    },
+    "retriever_begin": {
+      "name": "🔍 Retriever Begin",
+      "path": "wolf_scripts/RetrieverBegin.py",
+      "category": "processing",
+      "description": "Initialize Retriever Agent"
+    },
+    "memory_init": {
+      "name": "💾 Memory Init",
+      "path": "wolf_scripts/MemoryInit.py",
+      "category": "memory",
+      "description": "Initialize Memory System"
+    },
+    "add_memory": {
+      "name": "➕ Add Memory",
+      "path": "wolf_scripts/AddMemory.py",
+      "category": "memory",
+      "description": "Add new memory"
+    },
+    "memory_search": {
+      "name": "🔎 Memory Search",
+      "path": "wolf_scripts/MemorySearch.py",
+      "category": "memory",
+      "description": "Search memories"
+    },
+    "chat_begin": {
+      "name": "💬 Chat Begin",
+      "path": "wolf_scripts/ChatBegin.py",
+      "category": "interaction",
+      "description": "Start chat session"
+    },
+    "context_load": {
+      "name": "📚 Context Load",
+      "path": "wolf_scripts/ContextLoad.py",
+      "category": "memory",
+      "description": "Load context"
+    },
+    "agent_status": {
+      "name": "📊 Agent Status",
+      "path": "wolf_scripts/AgentStatus.py",
+      "category": "monitoring",
+      "description": "Check agent status"
+    },
+    "clear_memory": {
+      "name": "🗑️ Clear Memory",
+      "path": "wolf_scripts/ClearMemory.py",
+      "category": "memory",
+      "description": "Clear memory cache"
+    },
+    "export_memory": {
+      "name": "📤 Export Memory",
+      "path": "wolf_scripts/ExportMemory.py",
+      "category": "memory",
+      "description": "Export memory data"
+    },
+    "import_memory": {
+      "name": "📥 Import Memory",
+      "path": "wolf_scripts/ImportMemory.py",
+      "category": "memory",
+      "description": "Import memory data"
+    },
+    "model_switch": {
+      "name": "🔄 Model Switch",
+      "path": "wolf_scripts/ModelSwitch.py",
+      "category": "system",
+      "description": "Switch Mistral model"
+    },
+    "tune_params": {
+      "name": "⚙️ Tune Params",
+      "path": "wolf_scripts/TuneParams.py",
+      "category": "system",
+      "description": "Tune model parameters"
+    },
+    "benchmark_run": {
+      "name": "⏱️ Benchmark Run",
+      "path": "wolf_scripts/BenchmarkRun.py",
+      "category": "testing",
+      "description": "Run performance benchmark"
+    },
+    "openai_mcp": {
+      "name": "🤖 OpenAI MCP",
+      "path": "scripts/run_openai_mcp.py",
+      "category": "services",
+      "description": "Run OpenAI MCP server"
+    },
+    "vector_categorize": {
+      "name": "🧠 Categorize Memories",
+      "path": "scripts/run_vector_categorization.py",
+      "category": "processing",
+      "description": "Categorize all memories using embeddings"
+    },
+    "find_by_category": {
+      "name": "🔍 Find by Category",
+      "path": "scripts/get_memory_by_category.py",
+      "category": "memory",
+      "description": "Retrieve memories by category"
+    },
+    "find_similar": {
+      "name": "🔎 Find Similar",
+      "path": "scripts/find_similar_memories.py",
+      "category": "memory",
+      "description": "Find similar memories by vector search"
+    },
+    "neo4j_stats": {
+      "name": "📊 Neo4j Stats",
+      "path": "scripts/neo4j_stats.py",
+      "category": "monitoring",
+      "description": "Get comprehensive Neo4j memory statistics"
+    },
+    "export_graph": {
+      "name": "📤 Export Graph",
+      "path": "scripts/export_graph_snapshot.py",
+      "category": "memory",
+      "description": "Export Neo4j graph snapshot"
+    },
+    "vector_agent": {
+      "name": "🤖 Vector Agent",
+      "path": "vector_memory_agent.py",
+      "category": "agents",
+      "description": "Vector Memory Agent - Categorization and embeddings"
+    },
+    "neo4j_app": {
+      "name": "📊 Neo4j App",
+      "path": "neo4j_app.py",
+      "category": "services",
+      "description": "Neo4j application"
+    },
+    "import_memories": {
+      "name": "📥 Bulk Import",
+      "path": "import_memories.py",
+      "category": "memory",
+      "description": "Import memories from JSON files"
+    },
+    "update_llm": {
+      "name": "⚙️ Update LLM Config",
+      "path": "update_llm_config.py",
+      "category": "system",
+      "description": "Update LLM configuration"
+    }
+  }
+}

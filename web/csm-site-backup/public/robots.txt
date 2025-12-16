@@ -1,0 +1,19 @@
+# https://complexsimplicityai.com/robots.txt
+User-agent: *
+Allow: /
+
+# Main pages
+Allow: /portfolio
+Allow: /services
+Allow: /contact
+Allow: /ai
+
+# Legal pages - no indexing needed
+Disallow: /privacy
+Disallow: /terms
+
+# Crawl-delay for better server performance
+Crawl-delay: 10
+
+# Sitemap location
+Sitemap: https://complexsimplicityai.com/sitemap.xml

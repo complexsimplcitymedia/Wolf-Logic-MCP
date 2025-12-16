@@ -1,0 +1,7 @@
+demo.complexsimplicityai.com {
+	reverse_proxy 10.0.0.209:5000
+	encode gzip
+	log {
+		output file /var/log/caddy/demo.log
+	}
+}

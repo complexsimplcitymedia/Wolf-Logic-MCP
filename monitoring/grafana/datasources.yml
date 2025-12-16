@@ -1,0 +1,34 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+
+  - name: PostgreSQL
+    type: postgres
+    access: proxy
+    url: 100.110.82.181:5433
+    database: wolf_logic
+    user: wolf
+    secureJsonData:
+      password: wolflogic2024
+    jsonData:
+      sslmode: disable
+      maxOpenConns: 10
+      maxIdleConns: 5
+    editable: true
+
+  - name: Neo4j
+    type: kniepdennis-neo4j-datasource
+    access: proxy
+    url: 100.110.82.181:8687
+    jsonData:
+      url: bolt://100.110.82.181:8687
+      username: neo4j
+    secureJsonData:
+      password: wolflogic2024
+    editable: true

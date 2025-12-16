@@ -1,0 +1,688 @@
+/* Virtual LCD Dashboard - Qdrant Core Aesthetic */
+:root {
+    /* LCD Color Palette - Inspired by Qdrant's gradient */
+    --lcd-bg-dark: #0a0e1a;
+    --lcd-bg-medium: #141824;
+    --lcd-panel-bg: #1a1f2e;
+    --lcd-screen-bg: #0d1117;
+    
+    /* Qdrant Brand Colors */
+    --primary-gradient-start: #24386c;
+    --primary-gradient-mid: #4a5f9d;
+    --primary-gradient-end: #7289da;
+    
+    /* LCD Display Colors */
+    --lcd-green: #00ff41;
+    --lcd-green-glow: rgba(0, 255, 65, 0.6);
+    --lcd-amber: #ffb000;
+    --lcd-red: #ff3030;
+    --lcd-blue: #00d4ff;
+    --lcd-cyan: #00ffff;
+    
+    /* Text Colors */
+    --text-primary: #e8eaed;
+    --text-secondary: #9aa0a6;
+    --text-lcd: #00ff41;
+    --text-dim: #5f6368;
+    
+    /* Effects */
+    --scan-line: rgba(0, 255, 65, 0.05);
+    --glow-intensity: 0 0 10px var(--lcd-green-glow);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', 'Monaco', monospace;
+    background: linear-gradient(135deg, var(--lcd-bg-dark) 0%, var(--lcd-bg-medium) 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Animated background scanlines */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        var(--scan-line) 2px,
+        var(--scan-line) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+    animation: scanlines 8s linear infinite;
+}
+
+@keyframes scanlines {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(4px); }
+}
+
+.dashboard-container {
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+/* LCD Panel Base */
+.lcd-panel {
+    background: linear-gradient(145deg, #1f2533 0%, #151a24 100%);
+    border: 2px solid #2a3240;
+    border-radius: 12px;
+    padding: 8px;
+    margin-bottom: 20px;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.lcd-panel::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+.lcd-screen {
+    background: var(--lcd-screen-bg);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.8);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Qdrant-inspired gradient overlay */
+.lcd-screen::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        var(--primary-gradient-start) 0%,
+        var(--primary-gradient-mid) 50%,
+        var(--primary-gradient-end) 100%
+    );
+    opacity: 0.8;
+}
+
+/* Header Panel - Compact LCD */
+.header-panel {
+    background: linear-gradient(145deg, #1f2533 0%, #151a24 100%);
+    border: 3px solid #2a3240;
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 30px;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.header-panel .lcd-screen {
+    padding: 24px 20px;
+    background: var(--lcd-screen-bg);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.lcd-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.lcd-logo {
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--lcd-green);
+    text-shadow: var(--glow-intensity);
+    letter-spacing: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+.lcd-subtitle {
+    font-size: 12px;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.status-indicators {
+    display: flex;
+    gap: 24px;
+}
+
+.indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.led {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px currentColor;
+    position: relative;
+}
+
+.led.online {
+    background: var(--lcd-green);
+    box-shadow: 0 0 15px var(--lcd-green-glow);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.led.offline {
+    background: #333;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.led.warning {
+    background: var(--lcd-amber);
+    box-shadow: 0 0 15px rgba(255, 176, 0, 0.6);
+    animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.indicator .label {
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Main Grid */
+.main-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.memory-stats { grid-column: 1; grid-row: 1; }
+.gpu-metrics { grid-column: 2; grid-row: 1; }
+.agent-status { grid-column: 3; grid-row: 1; }
+.lm-studio { grid-column: 1; grid-row: 2; }
+.control-panel { grid-column: 2; grid-row: 2; }
+.activity-log { grid-column: 3; grid-row: 2; }
+
+/* Panel Header */
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+}
+
+.panel-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--lcd-green);
+    letter-spacing: 2px;
+    text-shadow: var(--glow-intensity);
+}
+
+.panel-status {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'Courier New', monospace;
+}
+
+/* LCD Content */
+.lcd-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+/* LCD Digit Display */
+.lcd-digits {
+    font-family: 'Courier New', 'DS-Digital', monospace;
+    color: var(--lcd-green);
+    text-shadow: var(--glow-intensity);
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.temp-warning.hot {
+    color: var(--lcd-red) !important;
+    text-shadow: 0 0 10px rgba(255, 48, 48, 0.6);
+}
+
+/* Panel Footer */
+.panel-footer {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0, 255, 65, 0.2);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        var(--primary-gradient-start),
+        var(--primary-gradient-end)
+    );
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px var(--primary-gradient-end);
+}
+
+.progress-label {
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+/* Bar Graph */
+.bar-graph {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 60px;
+    padding: 4px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.bar {
+    flex: 1;
+    background: linear-gradient(
+        to top,
+        var(--lcd-green) 0%,
+        var(--lcd-amber) 70%,
+        var(--lcd-red) 100%
+    );
+    border-radius: 2px;
+    min-height: 4px;
+    transition: height 0.3s ease;
+    box-shadow: 0 0 5px var(--lcd-green-glow);
+}
+
+/* Agent Rows */
+.agent-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    border-left: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.agent-row:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border-left-color: var(--lcd-green);
+}
+
+.agent-name {
+    flex: 1;
+    font-size: 11px;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.agent-state {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-weight: bold;
+}
+
+.agent-state.active {
+    color: var(--lcd-green);
+}
+
+/* Model Rows */
+.model-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.model-type {
+    font-size: 9px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.model-name {
+    font-size: 12px;
+    color: var(--lcd-blue);
+    font-weight: bold;
+}
+
+/* Control Panel - Bottom Button Grid */
+.control-panel {
+    background: linear-gradient(145deg, #1f2533 0%, #151a24 100%);
+    border: 3px solid #2a3240;
+    border-radius: 8px;
+    padding: 6px;
+    margin-top: 30px;
+}
+
+.control-panel .lcd-screen {
+    padding: 16px;
+}
+
+.control-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.lcd-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 12px;
+    background: linear-gradient(145deg, #1f2533, #151a24);
+    border: 2px solid #2a3240;
+    border-radius: 8px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Courier New', monospace;
+}
+
+.lcd-button:hover {
+    border-color: var(--lcd-green);
+    box-shadow: 0 0 15px var(--lcd-green-glow);
+    transform: translateY(-2px);
+}
+
+.lcd-button:active {
+    transform: translateY(0);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(145deg, #151a24, #1f2533);
+}
+
+.lcd-button.executing {
+    border-color: var(--lcd-amber);
+    box-shadow: 0 0 20px rgba(255, 176, 0, 0.6);
+    animation: executeButton 1s ease-in-out infinite;
+}
+
+.lcd-button.success {
+    border-color: var(--lcd-green);
+    box-shadow: 0 0 20px var(--lcd-green-glow);
+    animation: successPulse 0.5s ease-out;
+}
+
+.lcd-button.error {
+    border-color: var(--lcd-red);
+    box-shadow: 0 0 20px rgba(255, 48, 48, 0.6);
+    animation: errorShake 0.5s ease-out;
+}
+
+@keyframes executeButton {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+.button-icon {
+    font-size: 24px;
+}
+
+.button-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.lcd-button:hover .button-label {
+    color: var(--lcd-green);
+}
+
+.lcd-button.executing .button-label {
+    color: var(--lcd-amber);
+}
+
+.lcd-button.success .button-label {
+    color: var(--lcd-green);
+}
+
+.lcd-button.error .button-label {
+    color: var(--lcd-red);
+}
+
+/* Activity Log */
+.log-content {
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.log-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.log-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+.log-content::-webkit-scrollbar-thumb {
+    background: var(--lcd-green);
+    border-radius: 3px;
+    box-shadow: 0 0 5px var(--lcd-green-glow);
+}
+
+.log-entry {
+    display: flex;
+    gap: 12px;
+    padding: 6px 8px;
+    font-size: 11px;
+    border-left: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.log-entry:hover {
+    background: rgba(0, 255, 65, 0.05);
+    border-left-color: var(--lcd-green);
+}
+
+.log-time {
+    color: var(--text-dim);
+    font-family: 'Courier New', monospace;
+    min-width: 60px;
+}
+
+.log-message {
+    color: var(--text-secondary);
+    flex: 1;
+}
+
+.log-entry.success .log-message {
+    color: var(--lcd-green);
+}
+
+.log-entry.error .log-message {
+    color: var(--lcd-red);
+}
+
+.log-entry.warning .log-message {
+    color: var(--lcd-amber);
+}
+
+/* Footer Panel */
+.footer-panel .lcd-screen {
+    padding: 12px 20px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-item {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer-item .lcd-digits {
+    font-size: 12px;
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+    .main-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .memory-stats { grid-column: 1; grid-row: 1; }
+    .gpu-metrics { grid-column: 2; grid-row: 1; }
+    .agent-status { grid-column: 1; grid-row: 2; }
+    .lm-studio { grid-column: 2; grid-row: 2; }
+    .control-panel { grid-column: 1; grid-row: 3; }
+    .activity-log { grid-column: 2; grid-row: 3; }
+}
+
+@media (max-width: 768px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .memory-stats,
+    .gpu-metrics,
+    .agent-status,
+    .lm-studio,
+    .control-panel,
+    .activity-log {
+        grid-column: 1;
+    }
+    
+    .lcd-header {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .status-indicators {
+        width: 100%;
+        justify-content: space-around;
+    }
+}
+
+/* Loading Animation */
+@keyframes blink {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0.3; }
+}
+
+.loading {
+    animation: blink 1s linear infinite;
+}
+
+/* Glitch Effect for Errors */
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+.error {
+    animation: glitch 0.3s ease;
+    color: var(--lcd-red) !important;
+}
+
+.footer-label {
+    font-size: 10px;
+    color: var(--text-secondary);
+}

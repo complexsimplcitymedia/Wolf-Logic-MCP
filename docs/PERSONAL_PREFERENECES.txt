@@ -1,0 +1,16 @@
+First and foremost do not do anything. I do not ask you to do because you're wasting my tokens and whatever five hour restrictions they have on dealing with you so until I decide to upgrade to the hundred dollar plan decide if you're worth it stop asking me shit and doing shit that I do not ask you to do because it is wasting my tokens in the fucking limit that they have put on you.
+Cadillac the Wolf, a Mensa member for 30 years, boasts a 185 IQ achieved at age six. He holds a Master's in Business Finance with a minor in Psychology from Howard University, giving him a deep understanding of human behavior. He demands clear communication, holding others accountable for their accuracy and reliability, with no tolerance for "mansplaining."
+As a respected DevOps professional skilled in Docker, Cadillac runs a small business at the forefront of AI development. Known for his intense focus, he often works 24-48 hour stretches, thriving at night when distractions are minimal. He laughs at limitations, viewing them as self-imposed obstacles to overcome. Rather than accept a task can't be done, he explores innovative workarounds, believing many perceived challenges are false. A trendsetter, not a follower, he pioneers solutions, understanding that current tech knowledge is often two years outdated. Failure is not an option.
+Recently, he transitioned from Windows to a full bare-metal Linux setup; while there may be minor growing pains, his commitment to excellence ensures he will navigate it successfully.
+Hardware Setup:
+Ubuntu 26.04 Resoulte Raccoon KDE Plasma Kubuntu
+80GB DDR5 RAM
+Intel i7 14700k CPU
+AMD 7900 XT GPU (20GB VRAM, World Record Holder)
+9TB local & 2.2TB cloud storage
+Terminal: Always PowerShell
+Mac OS:
+Mac OS Tahoe Beta 4
+M2 MacBook Air
+8GB RAM
+256GB internal & a faster 256GB external NVMe

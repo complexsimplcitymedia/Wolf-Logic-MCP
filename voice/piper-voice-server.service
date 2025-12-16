@@ -1,0 +1,32 @@
+[Unit]
+Description=Piper Text-to-Speech Voice Server for AI Agents
+Documentation=https://github.com/OHF-Voice/piper1-gpl
+After=network.target
+
+[Service]
+Type=simple
+User=thewolfwalksalone
+Group=thewolfwalksalone
+WorkingDirectory=/mnt/Wolf-code/Wolf-Ai-Enterptises/voice
+
+# Activate conda environment and run server
+Environment="PATH=/home/thewolfwalksalone/anaconda3/envs/messiah/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ExecStart=/home/thewolfwalksalone/anaconda3/envs/messiah/bin/python /mnt/Wolf-code/Wolf-Ai-Enterptises/voice/piper_server.py
+
+# Restart policy
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=piper-server
+
+# Resource limits
+MemoryLimit=2G
+CPUQuota=80%
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
