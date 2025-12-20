@@ -4,7 +4,7 @@ Wolf AI FastAPI Server - Control Dashboard Backend
 Endpoints for all dashboard buttons with proper schemas
 """
 
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, BackgroundTasks, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
@@ -33,6 +33,60 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# WebSocket Connection Manager
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
+
+    async def broadcast(self, message: str):
+        for connection in self.active_connections:
+            try:
+                await connection.send_text(message)
+            except:
+                pass
+
+manager = ConnectionManager()
+
+# Background Log Streamer for WebSocket
+async def log_streamer():
+    """Stream logs to connected WebSocket clients"""
+    try:
+        process = subprocess.Popen(
+            ["tail", "-f", "/tmp/scripty.log", "/tmp/session_logger.log"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        
+        while True:
+            line = process.stdout.readline()
+            if line:
+                await manager.broadcast(line.strip())
+            else:
+                await asyncio.sleep(0.1)
+    except Exception:
+        pass
+
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(log_streamer())
+
+@app.websocket("/ws/wolftv")
+async def websocket_endpoint(websocket: WebSocket):
+    await manager.connect(websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
 
 # Database config
 PG_CONFIG = {
@@ -148,6 +202,12 @@ class ProcessStatusResponse(BaseModel):
     running: bool
     count: int
     pids: List[int] = []
+
+
+class ExecuteRequest(BaseModel):
+    """Generic command execution request"""
+    command: str
+    params: Optional[Dict[str, Any]] = {}
 
 
 # ============================================================================
@@ -1070,6 +1130,68 @@ async def run_ollama_model(model: str, background_tasks: BackgroundTasks):
 # ============================================================================
 # WOLF UI COMPATIBILITY ENDPOINTS
 # ============================================================================
+
+@app.post("/api/execute", response_model=CommandResponse)
+async def execute_command_generic(request: ExecuteRequest, background_tasks: BackgroundTasks):
+    """Generic command execution for dashboard compatibility"""
+    cmd = request.command
+    params = request.params or {}
+    
+    try:
+        if cmd == "memory_counter":
+            stats = await get_memory_stats()
+            return CommandResponse(success=True, message="Stats retrieved", data=stats.dict())
+            
+        elif cmd == "refresh_dashboard":
+            res = await refresh_dashboard(days=params.get("days", 30))
+            return CommandResponse(success=res.success, message=res.message, data=res.dict())
+            
+        elif cmd == "db_stats":
+            count = await get_memory_count()
+            return CommandResponse(success=True, message="DB Stats", data=count)
+            
+        elif cmd == "scripty_start":
+            res = await start_scripty()
+            return CommandResponse(success=res.running, message=res.message, data=res.dict())
+            
+        elif cmd == "scripty_stop":
+            res = await stop_scripty()
+            return CommandResponse(success=not res.running, message=res.message, data=res.dict())
+            
+        elif cmd == "scripty_status":
+            res = await get_scripty_status()
+            return CommandResponse(success=True, message=res.status, data=res.dict())
+            
+        elif cmd == "logger_start":
+            return await start_session_logger(background_tasks)
+            
+        elif cmd == "logger_stop":
+            return await stop_session_logger()
+            
+        elif cmd == "rank_memories":
+            return await rank_memories()
+            
+        elif cmd == "view_logs":
+            logs = await get_logs(lines=params.get("lines", 100))
+            return CommandResponse(success=True, message="Logs retrieved", data=logs)
+            
+        elif cmd == "ingest_file":
+            if "filepath" not in params:
+                return CommandResponse(success=False, message="Missing filepath param")
+            res = await ingest_file(IngestRequest(filepath=params["filepath"]))
+            return CommandResponse(success=res.success, message=res.message, data=res.dict())
+            
+        elif cmd == "analyze_youtube":
+            if "url" not in params:
+                return CommandResponse(success=False, message="Missing url param")
+            return await run_youtube_analyst(params["url"], background_tasks)
+            
+        else:
+            return CommandResponse(success=False, message=f"Unknown command: {cmd}")
+            
+    except Exception as e:
+        return CommandResponse(success=False, message=str(e), data={"error": str(e)})
+
 
 @app.get("/api/scripts", response_model=Dict[str, Any])
 async def get_scripts_list():

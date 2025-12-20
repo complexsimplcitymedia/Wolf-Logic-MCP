@@ -25,7 +25,7 @@ import ollama
 
 # Config
 PG_CONFIG = {
-    "host": "100.110.82.181",
+    "host": "localhost",
     "port": 5433,
     "database": "wolf_logic",
     "user": "wolf",
