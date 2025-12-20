@@ -1,5 +1,5 @@
 """
-Wolf Logic Memory Control Center - Enhanced Backend
+Complex Logic Memory Control Center - Enhanced Backend
 Support for fully programmable script execution with absolute paths
 """
 
@@ -378,13 +378,13 @@ manager = ConnectionManager()
 # FastAPI Application
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("🐺 Wolf Logic Memory Control Center starting...")
+    logger.info("🧠 Complex Logic Memory Control Center starting...")
     logger.info(f"Listening on http://{config.HOST}:{config.PORT}")
     yield
     logger.info("Shutting down...")
 
 app = FastAPI(
-    title="Wolf Logic Memory Control Center",
+    title="Complex Logic Memory Control Center",
     description="Fully programmable Python execution dashboard",
     version="4.0.0",
     lifespan=lifespan

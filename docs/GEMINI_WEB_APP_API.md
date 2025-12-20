@@ -1,4 +1,4 @@
-# Wolf Logic API Documentation - For Gemini's Web App
+# Complex Logic API Documentation - For Gemini's Web App
 
 ## Base URL
 ```

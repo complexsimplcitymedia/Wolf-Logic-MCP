@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Navigation.css';
 
-const API_BASE = 'http://localhost:8084';
+const API_BASE = 'http://100.110.82.181:3030';
 
 const Navigation: React.FC = () => {
   const location = useLocation();
@@ -35,9 +35,9 @@ const Navigation: React.FC = () => {
   return (
     <nav className="main-navigation">
       <div className="nav-brand">
-        <img src="/logo.png" alt="Wolf Logic AI" className="nav-logo-img" />
+        <img src="/logo.png" alt="Complex Logic AI" className="nav-logo-img" />
         <div className="nav-brand-text">
-          <span className="nav-title">Wolf Logic AI</span>
+          <span className="nav-title">Complex Logic AI</span>
           <span className="nav-subtitle">Because the wolf never forgets</span>
         </div>
       </div>

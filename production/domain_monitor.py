@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Domain & Subdomain Monitor
-Checks all Wolf Logic services and alerts on failures
+Checks all Complex Logic services and alerts on failures
 """
 
 import requests
@@ -26,7 +26,7 @@ SERVICES = {
             "timeout": 5
         },
         {
-            "name": "Wolf Logic Container",
+            "name": "Complex Logic Container",
             "url": "http://localhost:4500/health",
             "timeout": 5
         },
@@ -264,7 +264,7 @@ def main():
     monitor = ServiceMonitor()
 
     logger.info("🔍 Starting Domain Monitor")
-    logger.info("Monitoring Wolf Logic infrastructure")
+    logger.info("Monitoring Complex Logic infrastructure")
 
     check_interval = 60  # Check every 60 seconds
 

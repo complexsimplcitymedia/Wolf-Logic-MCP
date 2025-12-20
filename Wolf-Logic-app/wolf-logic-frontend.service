@@ -1,5 +1,5 @@
 [Unit]
-Description=Wolf Logic App Frontend
+Description=Complex Logic App Frontend
 After=network.target wolf-logic-backend.service
 Wants=wolf-logic-backend.service
 

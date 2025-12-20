@@ -5,7 +5,7 @@ const SettingsPage: React.FC = () => {
   return (
     <div className="settings-page">
       <h1>⚙️ Settings</h1>
-      <p className="page-description">Configure your Wolf Logic AI system</p>
+      <p className="page-description">Configure your Complex Logic AI system</p>
 
       <div className="settings-sections">
         <div className="settings-section">

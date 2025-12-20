@@ -1,5 +1,5 @@
 """
-Wolf Logic AI - Flask Backend
+Complex Logic AI - Flask Backend
 Control surface + script runner with MemZero environment integration
 
 Runs on port 4500
@@ -425,7 +425,7 @@ def health():
     """Health check endpoint"""
     return jsonify({
         "status": "ok",
-        "service": "Wolf Logic API",
+        "service": "Complex Logic API",
         "scripts_dir": str(SCRIPTS_DIR),
         "active_slots": len(slots_map)
     })
@@ -508,7 +508,7 @@ def index():
 
 @app.route("/wolf_logo.png")
 def serve_logo():
-    """Serve Wolf Logic logo"""
+    """Serve Complex Logic logo"""
     return send_from_directory('control_center', 'wolf_logo.png')
 
 
@@ -520,7 +520,7 @@ def serve_static(path):
 
 if __name__ == "__main__":
     port = int(os.environ.get('WOLF_LOGIC_PORT', 4500))
-    print(f"Wolf Logic Control Center starting on http://0.0.0.0:{port}")
+    print(f"Complex Logic Control Center starting on http://0.0.0.0:{port}")
     print(f"Scripts directory: {SCRIPTS_DIR}")
     print(f"MemZero environment will be auto-activated for all scripts")
     print(f"Serving control center UI from: control_center/")

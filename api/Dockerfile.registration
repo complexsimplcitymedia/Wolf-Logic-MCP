@@ -1,0 +1,25 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install dependencies
+RUN pip install --no-cache-dir \
+    fastapi \
+    uvicorn[standard] \
+    psycopg2-binary \
+    pydantic[email] \
+    requests \
+    authentik-client
+
+# Copy application files
+COPY api/registration_api.py .
+COPY api/authentik_client.py .
+
+# Copy messaging module (RCS client)
+COPY messaging /app/messaging
+
+# Expose port
+EXPOSE 8765
+
+# Run application
+CMD ["python", "registration_api.py"]

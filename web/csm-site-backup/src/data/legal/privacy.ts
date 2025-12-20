@@ -26,7 +26,7 @@ export const privacyContent = [
     content: [
       "You have the right to access, correct, or delete your personal information.",
       "You can opt out of receiving promotional communications from us at any time.",
-      "Contact us at complexsimplicitymedia@gmail.com to exercise these rights."
+      "Contact us at ai-memory@complexsimplicityai.com to exercise these rights."
     ]
   }
 ];

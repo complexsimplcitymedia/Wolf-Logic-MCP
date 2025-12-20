@@ -1,5 +1,5 @@
 """
-Wolf Logic Control Center - GPU Metrics + Live Memory Dashboard
+Complex Logic Control Center - GPU Metrics + Live Memory Dashboard
 Backend: Port 4500
 """
 
@@ -269,7 +269,7 @@ def health():
     mem_count = get_memory_count()
     return jsonify({
         "status": "healthy",
-        "service": "Wolf Logic Control Center",
+        "service": "Complex Logic Control Center",
         "lact_available": LACT_AVAILABLE,
         "pg_connected": mem_count is not None,
         "memory_count": mem_count,
@@ -462,7 +462,7 @@ def serve_static(path):
 # ============= STARTUP =============
 
 def startup():
-    logger.info("Wolf Logic Control Center Starting...")
+    logger.info("Complex Logic Control Center Starting...")
     logger.info(f"PostgreSQL: {PG_CONFIG['host']}:{PG_CONFIG['port']}/{PG_CONFIG['dbname']}")
     logger.info(f"LACT Available: {LACT_AVAILABLE}")
 

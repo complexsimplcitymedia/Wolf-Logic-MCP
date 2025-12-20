@@ -1,6 +1,6 @@
 version: '3.8'
 
-# Wolf Logic Production Stack - Traefik Reverse Proxy
+# Complex Logic Production Stack - Traefik Reverse Proxy
 # Handles SSL, load balancing, and routing for all services
 # Ready for 100K+ scale
 
@@ -10,10 +10,16 @@ networks:
     name: wolf_network
   traefik_public:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.1.0/24
 
 volumes:
   traefik_letsencrypt:
     name: traefik_letsencrypt
+  portainer_data:
+  grafana_data:
+  authentik_database:
 
 services:
   # Traefik - Edge Router
@@ -29,7 +35,7 @@ services:
     ports:
       - "80:80"     # HTTP
       - "443:443"   # HTTPS
-      - "8080:8080" # Dashboard (secure this!)
+      - "9091:8080" # Dashboard (secure this!)
     environment:
       - CF_DNS_API_TOKEN=${CLOUDFLARE_API_TOKEN}
       - TZ=America/New_York
@@ -39,6 +45,8 @@ services:
       - ./traefik.yml:/traefik.yml:ro
       - ./config:/config:ro
       - traefik_letsencrypt:/letsencrypt
+      - /etc/caddy/certs:/certs:ro
+      - ../web/csm-site-backup/dist:/www:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.entrypoints=http"
@@ -56,7 +64,7 @@ services:
       - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.complexsimplicityai.com"
       - "traefik.http.routers.traefik-secure.service=api@internal"
 
-  # Wolf Logic FastAPI - Main REST API
+  # Complex Logic FastAPI - Main REST API
   wolf-api:
     image: wolf-api:latest
     build:
@@ -229,6 +237,20 @@ services:
       - "traefik.http.routers.authentik.tls.certresolver=cloudflare"
       - "traefik.http.services.authentik.loadbalancer.server.port=9000"
 
+  beta-memory-site:
+    build:
+      context: ../web/beta-memory-site
+    container_name: beta-memory-site
+    restart: unless-stopped
+    networks:
+      - traefik_public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.beta-memory.entrypoints=https"
+      - "traefik.http.routers.beta-memory.rule=Host(`beta-memory.complexsimplicityai.com`)"
+      - "traefik.http.routers.beta-memory.tls=true"
+      - "traefik.http.services.beta-memory.loadbalancer.server.port=5000"
+
   authentik-worker:
     image: ghcr.io/goauthentik/server:latest
     container_name: authentik-worker
@@ -269,10 +291,5 @@ services:
       - wolf_network
     command: --save 60 1 --loglevel warning
 
-volumes:
-  portainer_data:
-  grafana_data:
-  authentik_database:
-
-# Wolf Logic - Production Ready
+# Complex Logic - Production Ready
 # "Today we go scale" - Wolf, 2025-12-16

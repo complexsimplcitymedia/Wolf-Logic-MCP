@@ -1,11 +1,11 @@
 #!/bin/bash
 # ===========================================
-# WOLF Logic - Complete Stack Startup Script
+# COMPLEX Logic - Complete Stack Startup Script
 # ===========================================
 # Spins up the entire WOLF memory system:
 # - Docker Swarm stack (Qdrant, PostgreSQL, Neo4j, OpenMemory API/UI)
 # - MariaDB (standalone)
-# - Wolf Logic Dashboard
+# - Complex Logic Dashboard
 # - Wolf Backend API
 #
 # Usage: ./start-wolf.sh [options]
@@ -79,7 +79,7 @@ wait_for_service() {
 # Stop Services
 # ===========================================
 stop_services() {
-    log_header "Stopping WOLF Logic Services"
+    log_header "Stopping COMPLEX Logic Services"
 
     cd "$WOLF_LOGIC_DIR"
     log_info "Stopping Docker Compose stack"
@@ -92,7 +92,7 @@ stop_services() {
 # Show Status
 # ===========================================
 show_status() {
-    log_header "WOLF Logic Service Status"
+    log_header "COMPLEX Logic Service Status"
 
     echo -e "${CYAN}Docker Compose Services:${NC}"
     cd "$WOLF_LOGIC_DIR"
@@ -121,10 +121,10 @@ show_status() {
 }
 
 # ===========================================
-# Start Wolf Logic Stack
+# Start Complex Logic Stack
 # ===========================================
 start_stack() {
-    log_header "Starting Wolf Logic Docker Compose Stack"
+    log_header "Starting Complex Logic Docker Compose Stack"
 
     cd "$WOLF_LOGIC_DIR"
 
@@ -170,7 +170,7 @@ main() {
     echo "    ╚███╔███╔╝╚██████╔╝███████╗██║     "
     echo "     ╚══╝╚══╝  ╚═════╝ ╚══════╝╚═╝     "
     echo -e "${NC}"
-    echo "    Wolf Logic Application Startup"
+    echo "    Complex Logic Application Startup"
     echo ""
 
     # Check prerequisites
@@ -187,7 +187,7 @@ main() {
     show_status
 
     echo ""
-    echo -e "${GREEN}WOLF Logic Application is running!${NC}"
+    echo -e "${GREEN}COMPLEX Logic Application is running!${NC}"
     echo ""
     echo "Access points:"
     echo "  Wolf Frontend:    http://localhost:$WOLF_FRONTEND_PORT"

@@ -1,8 +1,8 @@
 #!/bin/bash
-# Start Wolf Logic Production Stack
+# Start Complex Logic Production Stack
 # MCP Server + REST API for web app access
 
-echo "🐺 Starting Wolf Logic Production Stack..."
+echo "🐺 Starting Complex Logic Production Stack..."
 echo ""
 
 # Check if messiah environment exists
@@ -64,7 +64,7 @@ else
 fi
 
 echo ""
-echo "🐺 Wolf Logic Stack Status:"
+echo "🐺 Complex Logic Stack Status:"
 echo "   - Database: 100.110.82.181:5433"
 echo "   - REST API: http://100.110.82.181:8000"
 echo "   - Wolf Hunt: http://100.110.82.181:8033"

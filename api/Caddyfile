@@ -5,3 +5,69 @@ demo.complexsimplicityai.com {
 		output file /var/log/caddy/demo.log
 	}
 }
+
+# Wolf Memory API - High Availability with resource-based load balancing
+api.complexsimplicityai.com {
+	reverse_proxy {
+		# Load balancing policy - route to least loaded backend
+		lb_policy least_conn
+
+		# Three gateway replicas
+		to localhost:8001
+		to localhost:8002
+		to localhost:8003
+
+		# Active health checks every 10s
+		health_uri /health
+		health_interval 10s
+		health_timeout 5s
+		health_status 200
+
+		# Passive health checks - mark backend unhealthy after 3 failures
+		fail_duration 30s
+		max_fails 3
+		unhealthy_status 5xx
+
+		# Enable connection reuse
+		lb_try_duration 5s
+		lb_try_interval 250ms
+	}
+
+	# Compression
+	encode gzip zstd
+
+	# CORS for Android app
+	header {
+		Access-Control-Allow-Origin *
+		Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+		Access-Control-Allow-Headers "Content-Type, Authorization"
+	}
+
+	# Logging
+	log {
+		output file /var/log/caddy/wolf-api.log
+		format json
+		level INFO
+	}
+}
+
+# Local development endpoint (no domain)
+:8000 {
+	reverse_proxy {
+		lb_policy least_conn
+
+		to localhost:8001
+		to localhost:8002
+		to localhost:8003
+
+		health_uri /health
+		health_interval 10s
+		health_timeout 5s
+		health_status 200
+
+		fail_duration 30s
+		max_fails 3
+	}
+
+	encode gzip
+}

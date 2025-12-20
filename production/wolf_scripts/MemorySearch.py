@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Button 3: Memory Search
-Auto-populated Wolf Logic script - quick memory search
+Auto-populated Complex Logic script - quick memory search
 """
 
 import asyncio

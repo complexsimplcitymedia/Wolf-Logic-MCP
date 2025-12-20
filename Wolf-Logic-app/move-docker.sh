@@ -107,7 +107,7 @@ log_info "Setting up Caddy container..."
 # Create default Caddyfile if none exists
 if [ ! -f "$CADDY_DATA/Caddyfile" ]; then
     cat > "$CADDY_DATA/Caddyfile" << 'EOF'
-# WOLF Logic Caddy Configuration
+# COMPLEX Logic Caddy Configuration
 # Reverse proxy for all WOLF services
 
 {

@@ -1,6 +1,6 @@
 #!/bin/bash
 # ===========================================
-# WOLF Logic - System Settings & Apps Backup
+# COMPLEX Logic - System Settings & Apps Backup
 # ===========================================
 # Saves system settings, custom binaries, and configs
 # for restoration after OS reinstall
@@ -59,7 +59,7 @@ USER_CONFIGS=(
 
 echo -e "${BLUE}"
 echo "╔═══════════════════════════════════════════════════════════╗"
-echo "║        WOLF Logic - System Backup Utility                 ║"
+echo "║        COMPLEX Logic - System Backup Utility                 ║"
 echo "╚═══════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 

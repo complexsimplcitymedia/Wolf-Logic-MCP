@@ -1,9 +1,24 @@
 # Traefik v2.11 Configuration
-# Wolf Logic Production - Ready for 100K+ Scale
+# Complex Logic Production - Ready for 100K+ Scale
 
 global:
   checkNewVersion: true
   sendAnonymousUsage: false
+
+experimental:
+  plugins:
+    static-server:
+      moduleName: "github.com/traefik/plugin-static-server"
+      version: "v0.1.0"
+    subdomainPathRewrite:
+      moduleName: "github.com/lukas-r/traefik-subdomain-path-rewrite-plugin"
+      version: "v0.3.1"
+    sablier:
+      moduleName: "github.com/acouvreur/sablier"
+      version: "v1.8.0"
+    jwt:
+      moduleName: "github.com/traefik-plugins/traefik-jwt-plugin"
+      version: "v0.10.0"
 
 api:
   dashboard: true
@@ -109,5 +124,5 @@ serversTransport:
   insecureSkipVerify: false
   maxIdleConnsPerHost: 200
 
-# Wolf Logic - Traefik Edge Router
+# Complex Logic - Traefik Edge Router
 # Pressure test ready - Friday we launch

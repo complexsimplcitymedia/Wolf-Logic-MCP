@@ -1,5 +1,5 @@
 """
-Wolf Logic Control Center - Backend
+Complex Logic Control Center - Backend
 Functional script execution interface
 Port 2500
 """

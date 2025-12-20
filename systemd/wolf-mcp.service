@@ -1,5 +1,5 @@
 [Unit]
-Description=Wolf Logic MCP Server - PostgreSQL Access for AI Agents
+Description=Complex Logic MCP Server - PostgreSQL Access for AI Agents
 After=network.target postgresql@16-main.service
 
 [Service]

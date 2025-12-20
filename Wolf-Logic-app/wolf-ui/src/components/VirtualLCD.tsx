@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Navigation from './Navigation';
+import SetupWizard from './SetupWizard';
 import './VirtualLCD.css';
 
 interface GPUData {
@@ -58,6 +60,9 @@ const VirtualLCD: React.FC = () => {
   const [booting, setBooting] = useState<boolean>(() => {
     return !sessionStorage.getItem('wolf-booted');
   });
+  const [showWizard, setShowWizard] = useState<boolean>(() => {
+    return !localStorage.getItem('wolf-node-initialized');
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,6 +86,11 @@ const VirtualLCD: React.FC = () => {
   const getStatusColor = (status: string) => status === 'online' ? '#00ff00' : '#ff4444';
   const getLoadColor = (load: number) => load > 80 ? '#ff4444' : load > 50 ? '#ffaa00' : '#00ff00';
 
+  const handleSetupComplete = () => {
+    localStorage.setItem('wolf-node-initialized', 'true');
+    setShowWizard(false);
+  };
+
   // Boot animation - plays once per session
   if (booting) {
     return (
@@ -98,6 +108,11 @@ const VirtualLCD: React.FC = () => {
         </video>
       </div>
     );
+  }
+
+  // Setup Wizard - shown if infrastructure not yet initialized
+  if (showWizard) {
+    return <SetupWizard onComplete={handleSetupComplete} />;
   }
 
   return (

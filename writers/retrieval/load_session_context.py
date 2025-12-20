@@ -19,7 +19,7 @@ PG_CONFIG = {
 PRIORITY_NAMESPACES = [
     ('core_identity', 10, 'Constitution & Identity'),           # 1 memory, critical
     ('ingested', 50, 'Operational Frameworks'),                 # ACTIVATEMENTOR, Defensive Mode, LOHN, AOS
-    ('logical-wolf', 20, 'Wolf Logic Context'),                 # System notes
+    ('logical-wolf', 20, 'Complex Logic Context'),                 # System notes
     ('session_recovery', 200, 'Recent Conversations'),          # Recent interactions
     ('imported', 100, 'Knowledge & Preferences'),               # General knowledge
 ]

@@ -1,5 +1,5 @@
 [Unit]
-Description=Wolf Logic REST API - FastAPI Server for Web Applications
+Description=Complex Logic REST API - FastAPI Server for Web Applications
 After=network.target postgresql@16-main.service
 
 [Service]

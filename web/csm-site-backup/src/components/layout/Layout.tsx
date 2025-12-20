@@ -29,6 +29,12 @@ export function Layout({
     <>
       <SEOHead {...seo} />
       <div className="min-h-screen bg-black text-white relative">
+        <a 
+          href="https://beta-memory.complexsimplicityai.tech" 
+          className="block w-full bg-red-900/80 text-white text-center py-2 text-sm font-bold hover:bg-red-800 transition-colors relative z-50 shadow-[0_0_15px_rgba(153,27,27,0.5)]"
+        >
+          BETA MEMORY ACCESS: CLICK HERE TO JOIN THE PILOT
+        </a>
         <SpaceBackground />
         <StarField />
         <Navigation />

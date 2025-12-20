@@ -1,7 +1,7 @@
 {
   "name": "wolf-logic-ui",
   "version": "1.0.0",
-  "description": "Wolf Logic AI Control Surface",
+  "description": "Complex Logic AI Control Surface",
   "private": true,
   "scripts": {
     "start": "PORT=3333 DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts start",

@@ -1,5 +1,5 @@
 [Unit]
-Description=Wolf Logic UI Dashboard
+Description=Complex Logic UI Dashboard
 After=network.target wolf-backend.service
 Wants=wolf-backend.service
 

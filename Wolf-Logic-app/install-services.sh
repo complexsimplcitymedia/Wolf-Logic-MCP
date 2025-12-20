@@ -1,6 +1,6 @@
 #!/bin/bash
 # ===========================================
-# Install Wolf Logic Systemd Services
+# Install Complex Logic Systemd Services
 # ===========================================
 # Run with sudo: sudo ./install-services.sh
 
@@ -22,7 +22,7 @@ SYSTEMD_DIR="/etc/systemd/system"
 
 echo -e "${BLUE}"
 echo "╔═══════════════════════════════════════════════════════════╗"
-echo "║      Install Wolf Logic Systemd Services                  ║"
+echo "║      Install Complex Logic Systemd Services                  ║"
 echo "╚═══════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 

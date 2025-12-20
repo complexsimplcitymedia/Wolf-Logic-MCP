@@ -38,14 +38,14 @@ export function ContactInfo() {
       <ContactItem
         icon={<Phone className="w-5 h-5 text-white/70" />}
         label="Phone"
-        value="(858) 776-1198"
-        href="tel:+18587761198"
+        value="(424) 333-0799"
+        href="tel:+14243330799"
       />
       <ContactItem
         icon={<Mail className="w-5 h-5 text-white/70" />}
         label="Email"
-        value="complexsimplicitymedia@gmail.com"
-        href="mailto:complexsimplicitymedia@gmail.com"
+        value="ai-memory@complexsimplicityai.com"
+        href="mailto:ai-memory@complexsimplicityai.com"
       />
       <ContactItem
         icon={<MapPin className="w-5 h-5 text-white/70" />}

@@ -1,6 +1,6 @@
 #!/bin/bash
 # ===========================================
-# WOLF Logic - Full Environment Bootstrap
+# COMPLEX Logic - Full Environment Bootstrap
 # ===========================================
 # Rebuilds entire WOLF environment from scratch on Kubuntu 25.10
 #
@@ -317,7 +317,7 @@ configure_environment() {
 
     # Create .env file
     cat > "$WOLF_APP/.env" << 'EOF'
-# WOLF Logic Environment Configuration
+# COMPLEX Logic Environment Configuration
 LMSTUDIO_BASE_URL=https://ai-studio.complexsimplicityai.com/v1
 LLM_MODEL=amethyst-13b-mistral
 EMBEDDER_MODEL=text-embedding-qwen3-embedding-4b
@@ -355,7 +355,7 @@ EOF
     if ! grep -q "WOLF_APP" "$HOME/.bashrc"; then
         cat >> "$HOME/.bashrc" << EOF
 
-# WOLF Logic Environment
+# COMPLEX Logic Environment
 export WOLF_APP="$WOLF_APP"
 export PATH="\$HOME/.local/bin:\$PATH"
 source "$WOLF_APP/.env" 2>/dev/null || true
@@ -507,7 +507,7 @@ print_summary() {
 main() {
     echo -e "${CYAN}"
     echo "╔═══════════════════════════════════════════════════════════╗"
-    echo "║        WOLF Logic Environment Bootstrap                   ║"
+    echo "║        COMPLEX Logic Environment Bootstrap                   ║"
     echo "║        Target: Kubuntu 25.10                              ║"
     echo "╚═══════════════════════════════════════════════════════════╝"
     echo -e "${NC}"

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './WolfLogicGrid.css';
 
-const API_BASE = 'http://localhost:8084';
+const API_BASE = 'http://100.110.82.181:3030';
 
 interface ButtonSlot {
   name: string | null;
@@ -160,7 +160,7 @@ const WolfLogicGrid: React.FC = () => {
   return (
     <div className="wolf-logic-container">
       <div className="control-panel">
-        <h2>🐺 Wolf Logic Control Surface</h2>
+        <h2>🧠 Complex Logic Control Surface</h2>
         <div className="status-bar">
           <span>Active Scripts: {slots.filter(s => s.name).length}/32</span>
           <span>Backend: {API_BASE}</span>

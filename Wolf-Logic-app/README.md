@@ -1,4 +1,4 @@
-# WOLF Logic Application
+# Complex Logic Application
 
 ## Current State (2025-11-27)
 

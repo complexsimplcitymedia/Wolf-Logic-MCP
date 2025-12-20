@@ -1,4 +1,4 @@
-# WOLF Logic - fstab backup (2025-11-27)
+# COMPLEX Logic - fstab backup (2025-11-27)
 # Copy these entries to /etc/fstab after OS reinstall
 
 # Root filesystem (will change with new install)

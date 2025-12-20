@@ -1,5 +1,5 @@
 [Unit]
-Description=Wolf Logic Full Stack (Docker Swarm + MariaDB + Dashboard)
+Description=Complex Logic Full Stack (Docker Swarm + MariaDB + Dashboard)
 After=network.target docker.service
 Requires=docker.service
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 # ===========================================
-# WOLF Logic - Drive Mount Script
+# COMPLEX Logic - Drive Mount Script
 # ===========================================
 # Ensures all drives are mounted correctly after reboot
 #
@@ -247,7 +247,7 @@ set_permissions() {
 main() {
     echo -e "${BLUE}"
     echo "╔═══════════════════════════════════════════════════════════╗"
-    echo "║           WOLF Logic - Drive Mount Utility                ║"
+    echo "║           COMPLEX Logic - Drive Mount Utility                ║"
     echo "╚═══════════════════════════════════════════════════════════╝"
     echo -e "${NC}"
 

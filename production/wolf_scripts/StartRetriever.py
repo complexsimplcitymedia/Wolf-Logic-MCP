@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Button 2: Start Retriever Agent
-Auto-populated Wolf Logic script - runs the memory retrieval agent
+Auto-populated Complex Logic script - runs the memory retrieval agent
 """
 
 import asyncio

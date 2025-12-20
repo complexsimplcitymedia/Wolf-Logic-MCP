@@ -1,6 +1,6 @@
 #!/bin/bash
 # ===========================================
-# WOLF Logic - App Installer
+# COMPLEX Logic - App Installer
 # ===========================================
 # Downloads and installs common apps after fresh OS install
 # - Pika Backup
@@ -27,7 +27,7 @@ mkdir -p "$DOWNLOAD_DIR"
 
 echo -e "${BLUE}"
 echo "╔═══════════════════════════════════════════════════════════╗"
-echo "║          WOLF Logic - App Installer                       ║"
+echo "║          COMPLEX Logic - App Installer                       ║"
 echo "╚═══════════════════════════════════════════════════════════╝"
 echo -e "${NC}"
 

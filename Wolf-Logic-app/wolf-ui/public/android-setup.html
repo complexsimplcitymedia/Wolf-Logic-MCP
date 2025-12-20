@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Logic - Android Setup Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f12 0%, #1a1a20 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #dc143c;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #888;
+        }
+
+        .intro {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #dc143c;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .app-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .app-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(220, 20, 60, 0.5);
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .app-icon {
+            font-size: 40px;
+            margin-right: 15px;
+        }
+
+        .app-title {
+            font-size: 24px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .app-description {
+            color: #aaa;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: #dc143c;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #b01030;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(220, 20, 60, 0.2);
+            color: #dc143c;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .steps {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .steps h2 {
+            color: #dc143c;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            background: #dc143c;
+            color: #fff;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .step-desc {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #dc143c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐺 Complex Logic</h1>
+            <p class="subtitle">Android Setup Guide</p>
+        </header>
+
+        <div class="intro">
+            <h3 style="margin-bottom: 10px; color: #dc143c;">📱 What You're Setting Up</h3>
+            <p>Complex Logic connects your Android device to the <strong>Librarian</strong> - a distributed AI memory system with 97,000+ memories. To run AI models locally on your phone and access the memory system, you'll need to install a few companion apps.</p>
+        </div>
+
+        <!-- Termux -->
+        <div class="app-card">
+            <div class="app-header">
+                <div class="app-icon">📟</div>
+                <div>
+                    <div class="app-title">Termux<span class="badge">REQUIRED</span></div>
+                </div>
+            </div>
+            <p class="app-description">
+                Linux terminal emulator for Android. Provides command-line access to run AI models, execute scripts, and connect to the Librarian database. This is the foundation for all local AI operations.
+            </p>
+            <a href="https://f-droid.org/en/packages/com.termux/" class="download-btn" target="_blank">Download Termux (F-Droid)</a>
+        </div>
+
+        <!-- Ollama -->
+        <div class="app-card">
+            <div class="app-header">
+                <div class="app-icon">🤖</div>
+                <div>
+                    <div class="app-title">Ollama<span class="badge">REQUIRED</span></div>
+                </div>
+            </div>
+            <p class="app-description">
+                Run large language models locally on your device. Powers the AI assistant that queries the Librarian and provides natural language access to your memories. Includes models like Llama, Qwen, and specialized embedding models.
+            </p>
+            <a href="https://ollama.com/download/android" class="download-btn" target="_blank">Download Ollama</a>
+        </div>
+
+        <!-- Gemini CLI -->
+        <div class="app-card">
+            <div class="app-header">
+                <div class="app-icon">💎</div>
+                <div>
+                    <div class="app-title">Gemini CLI<span class="badge">OPTIONAL</span></div>
+                </div>
+            </div>
+            <p class="app-description">
+                Google's Gemini CLI with PostgreSQL extension. Enables natural language queries to the Librarian without writing SQL. Ask questions like "What did I discuss yesterday?" instead of constructing database queries.
+            </p>
+            <a href="https://github.com/google/generative-ai-cli" class="download-btn" target="_blank">View Installation Guide</a>
+        </div>
+
+        <!-- PostgreSQL Client -->
+        <div class="app-card">
+            <div class="app-header">
+                <div class="app-icon">🐘</div>
+                <div>
+                    <div class="app-title">PostgreSQL Client<span class="badge">OPTIONAL</span></div>
+                </div>
+            </div>
+            <p class="app-description">
+                Direct database access for advanced users. Connect to the Librarian (PostgreSQL) at <code>100.110.82.181:5433</code> to run custom queries, explore memory namespaces, and manage data.
+            </p>
+            <p style="margin-top: 10px; color: #666; font-size: 14px;">Install via Termux: <code>pkg install postgresql</code></p>
+        </div>
+
+        <!-- Setup Steps -->
+        <div class="steps">
+            <h2>📋 Quick Setup (5 Minutes)</h2>
+
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-title">Install Termux</div>
+                    <div class="step-desc">Download from F-Droid (NOT Google Play - the Play Store version is outdated). Grant storage permissions when prompted.</div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-title">Install Ollama in Termux</div>
+                    <div class="step-desc">Open Termux and run: <code>curl https://ollama.com/install.sh | sh</code></div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-title">Pull AI Models</div>
+                    <div class="step-desc">In Termux: <code>ollama pull qwen2.5:0.5b</code> (lightweight) or <code>ollama pull llama3.2:3b</code> (more powerful)</div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <div class="step-title">Connect to Librarian</div>
+                    <div class="step-desc">Open Complex Logic app. The backend at <code>100.110.82.181:2500</code> will handle database connections automatically.</div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <div class="step-title">Start Querying Memories</div>
+                    <div class="step-desc">Ask questions! "What did I work on last week?" → Complex Logic queries the Librarian's 97,000+ memories and responds.</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: rgba(220, 20, 60, 0.1); border-left: 4px solid #dc143c; border-radius: 8px;">
+            <h3 style="color: #dc143c; margin-bottom: 10px;">⚡ What Makes This Powerful</h3>
+            <ul style="margin-left: 20px; color: #aaa; line-height: 1.8;">
+                <li><strong>97,118 memories</strong> - Everything you've discussed, decided, created</li>
+                <li><strong>2560-dimensional vectors</strong> - Semantic search powered by qwen3-embedding:4b</li>
+                <li><strong>Local AI models</strong> - Run on your phone, no cloud dependency</li>
+                <li><strong>Natural language queries</strong> - Ask questions, get contextual answers</li>
+                <li><strong>Distributed access</strong> - Android, desktop, web - same memory system</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; color: #666;">
+            <p>Need help? Contact: <a href="mailto:ai-memory@complexsimplicityai.com" style="color: #dc143c; text-decoration: none;">ai-memory@complexsimplicityai.com</a></p>
+            <p style="margin-top: 5px;">Phone: <a href="tel:4243330799" style="color: #dc143c; text-decoration: none;">424-333-0799</a></p>
+        </div>
+    </div>
+</body>
+</html>

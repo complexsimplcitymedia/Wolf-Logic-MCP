@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Wolf Logic App - Backend API Server
+Complex Logic App - Backend API Server
 Port: 2500
 Provides API endpoints for script execution, GPU metrics, and system status
 """
@@ -136,7 +136,7 @@ def index():
 
 @app.route('/api/health')
 def health():
-    return jsonify({'status': 'healthy', 'service': 'Wolf Logic App', 'ports': {'frontend': 3333, 'backend': 2500}})
+    return jsonify({'status': 'healthy', 'service': 'Complex Logic App', 'ports': {'frontend': 3333, 'backend': 2500}})
 
 @app.route('/api/gpu-stats')
 def gpu_stats():
@@ -348,6 +348,11 @@ def script_status(script_id):
         return jsonify({'status': 'running' if p.poll() is None else 'completed'})
     return jsonify({'status': 'idle'})
 
+@app.route('/android-setup')
+@app.route('/android-setup.html')
+def android_setup():
+    return send_from_directory(os.path.join(BASE_DIR, 'wolf-ui/public'), 'android-setup.html')
+
 @app.route('/<path:path>')
 def serve_static(path):
     if os.path.exists(os.path.join(app.static_folder, path)):
@@ -360,7 +365,7 @@ if __name__ == '__main__':
     container_port = int(os.environ.get('WOLF_LOGIC_PORT', 2500))
 
     print("╔═══════════════════════════════════════════════════════════╗")
-    print("║              🐺 WOLF LOGIC APP - Backend                  ║")
+    print("║              🧠 COMPLEX LOGIC APP - Backend                  ║")
     print("╠═══════════════════════════════════════════════════════════╣")
     print(f"║  API Server:    http://localhost:{host_port} (container :{container_port})".ljust(61) + "║")
     print(f"║  Frontend:      http://localhost:{frontend_host_port}".ljust(61) + "║")

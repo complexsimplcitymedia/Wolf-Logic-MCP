@@ -17,6 +17,16 @@ export function HeroSection() {
         >
           <HeroTitle />
           <ExpertiseList />
+
+          <div className="mt-12">
+            <a 
+              href="/WolfLogic.apk" 
+              className="inline-block px-8 py-3 text-lg font-bold text-black bg-white rounded-full hover:bg-gray-200 transition-colors duration-300 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)]"
+              download
+            >
+              Download Complex Logic App
+            </a>
+          </div>
         </motion.div>
       </div>
     </section>
