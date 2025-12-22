@@ -10,7 +10,7 @@ Accessing it will result in immediate termination of access.
 
 ## Database Access - Tailscale Network
 
-**PostgreSQL:** wolf_logic @ 100.110.82.181:5433
+**PostgreSQL:** wolf_logic @ 100.110.82.181:5432
 
 **Connection String:**
 ```
