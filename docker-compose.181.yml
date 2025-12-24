@@ -1,0 +1,306 @@
+networks:
+  wolf_network:
+    driver: bridge
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  authentik_database:
+  authentik_redis:
+  portainer_data:
+  neo4j_data:
+  mariadb_data:
+
+services:
+  # Portainer - Container Management (PRIORITY 1)
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+  # Prometheus - Metrics Collection
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+
+  # Grafana - Monitoring Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SERVER_ROOT_URL=https://grafana.complexsimplicityai.com/
+      - GF_SECURITY_ADMIN_PASSWORD=wolflogic2024
+
+  # Node Exporter - System Metrics
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "9100:9100"
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+
+  # cAdvisor - Container Metrics
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "8081:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    privileged: true
+
+  # Authentik PostgreSQL
+  authentik-postgresql:
+    image: postgres:16-alpine
+    container_name: authentik-postgresql
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    volumes:
+      - authentik_database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: wolflogic2024
+      POSTGRES_USER: authentik
+      POSTGRES_DB: authentik
+
+  # Authentik Redis
+  authentik-redis:
+    image: redis:alpine
+    container_name: authentik-redis
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    command: --save 60 1 --loglevel warning
+
+  # Authentik Server
+  authentik-server:
+    image: ghcr.io/goauthentik/server:latest
+    container_name: authentik-server
+    restart: unless-stopped
+    command: server
+    networks:
+      - wolf_network
+    ports:
+      - "9001:9000"
+      - "9443:9443"
+    environment:
+      AUTHENTIK_REDIS__HOST: authentik-redis
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgresql
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: wolflogic2024
+      AUTHENTIK_SECRET_KEY: wolf-authentik-secret-change-me-in-production
+    depends_on:
+      - authentik-postgresql
+      - authentik-redis
+
+  # Authentik Worker
+  authentik-worker:
+    image: ghcr.io/goauthentik/server:latest
+    container_name: authentik-worker
+    restart: unless-stopped
+    command: worker
+    networks:
+      - wolf_network
+    environment:
+      AUTHENTIK_REDIS__HOST: authentik-redis
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgresql
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: wolflogic2024
+      AUTHENTIK_SECRET_KEY: wolf-authentik-secret-change-me-in-production
+    depends_on:
+      - authentik-postgresql
+      - authentik-redis
+
+  # Neo4j - Graph Database
+  neo4j:
+    image: neo4j:latest
+    container_name: neo4j
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
+    environment:
+      - NEO4J_AUTH=neo4j/wolflogic2024
+
+  # MariaDB
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: wolflogic2024
+      MYSQL_DATABASE: wolf_db
+
+  # Wolf REST API
+  wolf-rest-api:
+    image: api-wolf-rest-api:latest
+    container_name: wolf-rest-api
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "3030:3000"
+    environment:
+      - POSTGRES_HOST=100.110.82.181
+      - POSTGRES_PORT=5433
+      - POSTGRES_USER=wolf
+      - POSTGRES_PASSWORD=wolflogic2024
+      - POSTGRES_DB=wolf_logic
+
+  # # Wolf Registration API
+  # wolf-registration-api:
+  #   image: wolf-registration-api:latest
+  #   container_name: wolf-registration-api
+  #   restart: unless-stopped
+  #   networks:
+  #     - wolf_network
+  #   ports:
+  #     - "8765:8765"
+
+  # Wolf API (FastAPI)
+  wolf-api:
+    image: wolf-api:latest
+    container_name: wolf-api
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_HOST=100.110.82.181
+      - POSTGRES_PORT=5433
+      - POSTGRES_USER=wolf
+      - POSTGRES_PASSWORD=wolflogic2024
+      - POSTGRES_DB=wolf_logic
+
+  # Wolf Hunt API
+  wolf-hunt-api:
+    image: wolf-hunt-api:latest
+    container_name: wolf-hunt-api
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "5000:5000"
+    environment:
+      - POSTGRES_HOST=100.110.82.181
+      - POSTGRES_PORT=5433
+      - POSTGRES_USER=wolf
+      - POSTGRES_PASSWORD=wolflogic2024
+      - POSTGRES_DB=wolf_logic
+
+  # Wolf Hunt UI
+  wolf-hunt-ui:
+    image: wolf-hunt-ui:latest
+    container_name: wolf-hunt-ui
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "3333:3333"
+
+  # Wolf MCP Server
+  wolf-mcp:
+    image: wolf-mcp:latest
+    container_name: wolf-mcp
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "8001:8001"
+    environment:
+      - POSTGRES_HOST=100.110.82.181
+      - POSTGRES_PORT=5433
+      - POSTGRES_USER=wolf
+      - POSTGRES_PASSWORD=wolflogic2024
+      - POSTGRES_DB=wolf_logic
+      - MCP_HTTP_MODE=true
+
+  # Open WebUI
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "3005:8080"
+    volumes:
+      - ./open-webui:/app/backend/data
+
+  # AnythingLLM
+  anything-llm:
+    image: mintplexlabs/anythingllm
+    container_name: anything-llm
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./anythingllm:/app/server/storage
+
+  # Beta Memory Site
+  beta-memory-site:
+    image: traefik-beta-memory-site:latest
+    container_name: beta-memory-site
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    ports:
+      - "5001:5000"

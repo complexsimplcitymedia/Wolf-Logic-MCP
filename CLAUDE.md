@@ -258,7 +258,6 @@ The pgai memory system organizes 97,000+ memories using a namespace structure. E
 | **core_identity** | Constitution & directives | Immutable identity rules, core values, mission statement, non-negotiable principles | Need to understand Wolf's values, decision framework, ethical boundaries | Static (rarely changes) |
 | **session_recovery** | Conversation context | Session state, context for continuity between conversations, what was being worked on | Need to recover from crash, understand current project state | Per-session |
 | **wolf_hunt** | Job search data | Applications, leads, company research, networking contacts, interview prep | Need job search info, company intel, application status | Daily updates |
-| **mem0_import** | Legacy system data | Historical memories from previous mem0 system | Need old context from before pgai migration | Static (legacy) |
 | **imported** | Manual imports | One-off data Wolf manually imported, miscellaneous knowledge | Need specific manually-added information | Sporadic |
 | **stenographer** | Session transcriptions | Raw stenographer captures, detailed session logs | Need verbatim transcripts, exact wording from past exchanges | Real-time |
 | **system_announcements** | System-level messages | Infrastructure updates, system status changes, administrative notifications | Need to know about system changes, maintenance, updates | As-needed |
@@ -761,7 +760,7 @@ User sacrificed 10,000+ hours to build this. Respect it.
 
 ### Server (csmcloud-server) - THIS MACHINE
 - **Tailscale IP:** 100.110.82.181
-- **Services:** Qdrant, Neo4j, OpenMemory MCP, OpenMemory UI, PostgreSQL (wolf_logic:5433), Ollama
+- **Services:** PostgreSQL (wolf_logic:5433), Ollama
 
 ## Messiah Environment - ALWAYS ENTER ON SESSION START
 **MANDATORY**: Every session, activate the messiah environment FIRST.
