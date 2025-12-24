@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  mcp-gateway:
+    build: .
+    container_name: wolf-mcp-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - wolf-network
+
+networks:
+  wolf-network:
+    driver: bridge
