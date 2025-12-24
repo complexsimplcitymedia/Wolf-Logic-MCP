@@ -4,12 +4,14 @@ Wolf MCP Gateway - Unified REST API for all MCP servers
 Production-ready with Swagger docs, health checks, and full tool exposure
 """
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field
 from typing import Optional, Any, Dict, List
 from datetime import datetime
+from pathlib import Path
 import logging
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -20,6 +22,7 @@ import requests
 import base64
 import os
 import json
+import uuid
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -86,6 +89,43 @@ WP_HEADERS = {
 }
 
 # ============================================================================
+# AUTHENTIK OAUTH CONFIG
+# ============================================================================
+
+AUTHENTIK_URL = os.getenv("AUTHENTIK_URL", "https://authentik.complexsimplicityai.com")
+AUTHENTIK_TOKEN_URL = f"{AUTHENTIK_URL}/application/o/token/"
+AUTHENTIK_USERINFO_URL = f"{AUTHENTIK_URL}/application/o/userinfo/"
+
+security = HTTPBearer()
+
+async def verify_oauth_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Verify OAuth token with Authentik"""
+    token = credentials.credentials
+    
+    try:
+        response = requests.get(
+            AUTHENTIK_USERINFO_URL,
+            headers={"Authorization": f"Bearer {token}"}
+        )
+        
+        if response.status_code != 200:
+            raise HTTPException(status_code=401, detail="Invalid authentication token")
+        
+        user_info = response.json()
+        return user_info  # Contains username, email, etc.
+        
+    except Exception as e:
+        logger.error(f"OAuth verification error: {e}")
+        raise HTTPException(status_code=401, detail="Authentication failed")
+
+# ============================================================================
+# INTAKE CONFIG
+# ============================================================================
+
+INTAKE_DIR = Path("/mnt/Wolf-code/Wolf-Ai-Enterptises/data/client_dump")
+INTAKE_DIR.mkdir(parents=True, exist_ok=True)
+
+# ============================================================================
 # REQUEST/RESPONSE MODELS
 # ============================================================================
 
@@ -128,6 +168,10 @@ class StandardResponse(BaseModel):
     data: Optional[Any] = None
     timestamp: str = Field(default_factory=lambda: datetime.now().isoformat())
 
+class IntakeRequest(BaseModel):
+    text: str = Field(..., description="Text content to ingest")
+    metadata: Optional[Dict[str, Any]] = Field(None, description="Optional metadata")
+
 # ============================================================================
 # HEALTH & ROOT
 # ============================================================================
@@ -144,7 +188,8 @@ async def root():
             "health": "/health",
             "postgres": "/mcp/postgres/*",
             "email": "/mcp/email/*",
-            "wordpress": "/mcp/wordpress/*"
+            "wordpress": "/mcp/wordpress/*",
+            "intake": "/mcp/intake/*"
         }
     }
 
@@ -545,6 +590,96 @@ async def wordpress_create_post(request: WordPressPostRequest):
         raise
     except Exception as e:
         logger.error(f"WordPress create post error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================================================
+# INTAKE MCP TOOLS
+# ============================================================================
+
+@app.post("/mcp/intake/stream",
+          response_model=StandardResponse,
+          summary="Intake Text Stream",
+          description="Receive text stream from remote clients (requires Authentik OAuth)")
+async def intake_stream(
+    request: IntakeRequest,
+    user_info: dict = Depends(verify_oauth_token)
+):
+    """
+    Receive text stream from authenticated clients
+    - Requires Authentik OAuth token
+    - Writes to client_dump/{username}_{timestamp}_{uuid}.json
+    - Queued for swarm processing (categorization + sentiment)
+    """
+    try:
+        username = user_info.get("preferred_username", user_info.get("sub", "unknown"))
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        file_id = str(uuid.uuid4())[:8]
+        
+        filename = f"{username}_{timestamp}_{file_id}.json"
+        filepath = INTAKE_DIR / filename
+        
+        intake_data = {
+            "username": username,
+            "user_email": user_info.get("email"),
+            "text": request.text,
+            "metadata": request.metadata or {},
+            "timestamp": datetime.now().isoformat(),
+            "file_id": file_id
+        }
+        
+        with open(filepath, 'w') as f:
+            json.dump(intake_data, f, indent=2)
+        
+        logger.info(f"[INTAKE] Received stream from {username}: {len(request.text)} chars -> {filename}")
+        
+        return StandardResponse(
+            success=True,
+            message=f"Text intake successful - queued for swarm processing",
+            data={
+                "file_id": file_id,
+                "filename": filename,
+                "username": username,
+                "text_length": len(request.text),
+                "queue_path": str(filepath)
+            }
+        )
+        
+    except Exception as e:
+        logger.error(f"Intake error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/intake/stats",
+         response_model=StandardResponse,
+         summary="Intake Statistics",
+         description="Get intake queue statistics")
+async def intake_stats():
+    """Get intake queue statistics"""
+    try:
+        files = list(INTAKE_DIR.glob("*.json"))
+        
+        # Count by user
+        user_counts = {}
+        for f in files:
+            username = f.stem.split('_')[0]
+            user_counts[username] = user_counts.get(username, 0) + 1
+        
+        # Recent intakes (last hour)
+        hour_ago = datetime.now().timestamp() - 3600
+        recent = [f for f in files if f.stat().st_mtime > hour_ago]
+        
+        return StandardResponse(
+            success=True,
+            message="Intake statistics retrieved",
+            data={
+                "total_queued": len(files),
+                "last_hour": len(recent),
+                "by_user": user_counts,
+                "queue_path": str(INTAKE_DIR)
+            }
+        )
+        
+    except Exception as e:
+        logger.error(f"Intake stats error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # ============================================================================

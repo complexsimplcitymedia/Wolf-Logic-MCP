@@ -27,12 +27,14 @@ OLLAMA_URL = "http://localhost:11434"
 
 # The Fleet
 LLM_MODELS = ["qwen2.5:0.5b"]  # For extraction/summarization
+SENTIMENT_MODEL = "mistral:latest"  # For sentiment ranking
 EMBED_MODELS = [
     "nomic-embed-text:v1.5",
     "bge-large:latest",
     "mxbai-embed-large:latest",
     "snowflake-arctic-embed:137m",
 ]
+KEYWORD_MODELS = EMBED_MODELS  # Use embed models for keyword extraction
 
 # Postgres config
 PG_CONFIG = {
@@ -106,7 +108,7 @@ def extract_with_llm(chunk: str, model: str, chunk_id: int) -> list:
     return []
 
 
-def store_memories_batch(memories: list, source_file: str):
+def store_memories_batch(memories: list, source_file: str, keywords: list = None, sentiment: int = 3):
     """Store memories in pgai - embeddings handled by triggers"""
     if not memories:
         return 0
@@ -127,7 +129,10 @@ def store_memories_batch(memories: list, source_file: str):
                         "subcategory": mem.get("subcategory", ""),
                         "tags": mem.get("tags", []),
                         "importance": mem.get("importance", 5),
-                        "summary": mem.get("summary", "")
+                        "summary": mem.get("summary", ""),
+                        "swarm_keywords": keywords or [],
+                        "sentiment": sentiment,
+                        "sentiment_model": "mistral:latest"
                     }
 
                     cur.execute("""
@@ -154,6 +159,96 @@ def store_memories_batch(memories: list, source_file: str):
     except Exception as e:
         safe_print(f"DB connection error: {e}")
         return 0
+
+
+def extract_keywords_parallel(content: str) -> list:
+    """Extract keywords using multiple models in parallel"""
+    safe_print("  [Keywords] Extracting with model swarm...")
+
+    keyword_prompt = f"""Extract the 10-15 most important keywords/phrases from this text. Output ONLY a JSON array of strings.
+
+TEXT:
+{content[:3000]}
+
+JSON array of keywords:"""
+
+    all_keywords = []
+
+    with ThreadPoolExecutor(max_workers=len(KEYWORD_MODELS)) as executor:
+        futures = {
+            executor.submit(
+                lambda m: requests.post(
+                    f"{OLLAMA_URL}/api/generate",
+                    json={"model": m, "prompt": keyword_prompt, "stream": False, "options": {"temperature": 0.1}},
+                    timeout=60
+                ).json().get("response", ""),
+                model
+            ): model
+            for model in KEYWORD_MODELS
+        }
+
+        for future in as_completed(futures):
+            model = futures[future]
+            try:
+                result = future.result()
+                start = result.find("[")
+                end = result.rfind("]") + 1
+                if start >= 0 and end > start:
+                    keywords = json.loads(result[start:end])
+                    all_keywords.extend(keywords)
+            except Exception as e:
+                safe_print(f"  [Keywords] {model} failed: {e}")
+
+    # Deduplicate and return top keywords
+    unique_keywords = list(set(all_keywords))
+    safe_print(f"  [Keywords] Extracted {len(unique_keywords)} unique keywords")
+    return unique_keywords[:20]
+
+
+def get_sentiment(content: str) -> int:
+    """Get sentiment ranking 1-5 from Mistral"""
+    safe_print("  [Sentiment] Analyzing with Mistral...")
+
+    sentiment_prompt = f"""Analyze the sentiment and emotional tone of this conversation. Rate from 1-5:
+1 = Very Negative (conflict, frustration, errors)
+2 = Somewhat Negative (challenges, issues)
+3 = Neutral (informational, factual)
+4 = Somewhat Positive (progress, solutions)
+5 = Very Positive (breakthroughs, success)
+
+Output ONLY the number (1-5).
+
+CONVERSATION:
+{content[:4000]}
+
+Rating:"""
+
+    try:
+        response = requests.post(
+            f"{OLLAMA_URL}/api/generate",
+            json={
+                "model": SENTIMENT_MODEL,
+                "prompt": sentiment_prompt,
+                "stream": False,
+                "options": {"temperature": 0.1}
+            },
+            timeout=90
+        )
+
+        if response.status_code == 200:
+            result = response.json().get("response", "3").strip()
+            # Extract first digit
+            for char in result:
+                if char.isdigit():
+                    rating = int(char)
+                    if 1 <= rating <= 5:
+                        safe_print(f"  [Sentiment] Rating: {rating}/5")
+                        return rating
+    except Exception as e:
+        safe_print(f"  [Sentiment] Error: {e}")
+
+    safe_print("  [Sentiment] Defaulting to 3/5 (neutral)")
+    return 3
 
 
 def deduplicate_memories(all_memories: list) -> list:
@@ -189,6 +284,26 @@ def process_dump_parallel(filepath: str):
 
     print(f"Dump size: {len(content):,} chars")
 
+    # === PHASE 1: Model Swarm Analysis ===
+    print(f"\n{'='*60}")
+    print("PHASE 1: Model Swarm Analysis")
+    print(f"{'='*60}")
+
+    # Extract keywords using multiple models in parallel
+    keywords = extract_keywords_parallel(content)
+
+    # Get sentiment from Mistral
+    sentiment = get_sentiment(content)
+
+    print(f"\nSwarm Analysis Complete:")
+    print(f"  Keywords: {len(keywords)}")
+    print(f"  Sentiment: {sentiment}/5")
+
+    # === PHASE 2: Memory Extraction ===
+    print(f"\n{'='*60}")
+    print("PHASE 2: Memory Extraction")
+    print(f"{'='*60}")
+
     # Chunk it
     chunks = chunk_content(content, chunk_size=6000, overlap=300)
     print(f"Split into {len(chunks)} chunks")
@@ -217,10 +332,14 @@ def process_dump_parallel(filepath: str):
     unique_memories = deduplicate_memories(all_memories)
     print(f"After dedup: {len(unique_memories)} unique memories")
 
-    # Store
-    print("\nStoring in pgai...")
-    stored = store_memories_batch(unique_memories, os.path.basename(filepath))
+    # === PHASE 3: Store to pgai ===
+    print(f"\n{'='*60}")
+    print("PHASE 3: Handoff to pgai")
+    print(f"{'='*60}")
+    print("Storing memories with swarm metadata...")
+    stored = store_memories_batch(unique_memories, os.path.basename(filepath), keywords, sentiment)
     print(f"Stored: {stored} memories")
+    print("pgai will handle vectorization via triggers")
 
     # Mark processed
     Path(filepath + ".processed").touch()
@@ -231,12 +350,14 @@ def process_dump_parallel(filepath: str):
 
 def main():
     print("="*60)
-    print("THE LIBRARIAN FLEET")
+    print("THE LIBRARIAN FLEET - UNION WAY")
     print("Parallel Memory Processing System")
     print("="*60)
-    print(f"LLM Models: {LLM_MODELS}")
-    print(f"Workers: ThreadPool")
-    print(f"Target: pgai @ {PG_CONFIG['database']}")
+    print(f"Extraction: {LLM_MODELS}")
+    print(f"Keywords: {len(KEYWORD_MODELS)} models in swarm")
+    print(f"Sentiment: {SENTIMENT_MODEL}")
+    print(f"Storage: pgai @ {PG_CONFIG['database']}")
+    print(f"Vectorization: pgai auto-triggers")
     print("="*60)
 
     # Process existing dumps
