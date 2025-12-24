@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
 Scripty AI - Universal CLI-AI Monitor
-Uses llama3.2:1b to watch ALL CLI-AI interactions on this workstation:
+Uses Grok (xAI) to watch ALL CLI-AI interactions on this workstation:
 - Claude Code sessions
 - Gemini CLI sessions
 - Any AI terminal activity
 
 Creates intelligent summaries instead of raw transcription.
-Model: llama3.2:1b (8K context, 2K max output)
+Model: grok-beta (via xAI API)
 """
 
 import os
@@ -20,10 +20,13 @@ from datetime import datetime
 from pathlib import Path
 
 # Model configuration
-SCRIPTY_MODEL = "llama3.2:1b"
-OLLAMA_API = "http://localhost:11434"
-MODEL_CONTEXT_WINDOW = 8192  # 8K tokens for quantized llama3.2:1b
-MAX_OUTPUT_TOKENS = 2048
+SCRIPTY_MODEL = "grok-3"
+XAI_API_KEY = os.environ.get("XAI_API_KEY")
+if not XAI_API_KEY:
+    raise ValueError("XAI_API_KEY environment variable not set")
+XAI_API_URL = "https://api.x.ai/v1/chat/completions"
+MODEL_CONTEXT_WINDOW = 131072  # 128K context for Grok
+MAX_OUTPUT_TOKENS = 4096
 
 # Database
 PG_CONFIG = {
@@ -168,39 +171,41 @@ def get_recent_exchanges(session_file, session_type, last_position=0):
 
 
 def summarize_exchange(exchange, session_name):
-    """Use llama3.2:1b to create intelligent summary of exchange"""
+    """Use Grok to create intelligent summary of exchange"""
     try:
         # Truncate exchange if too long (rough estimate: 4 chars = 1 token)
         max_chars = MODEL_CONTEXT_WINDOW * 3  # Leave room for prompt
         user_text = exchange['user'][:max_chars]
         assistant_text = exchange['assistant'][:max_chars]
 
-        prompt = f"""Summarize this conversation exchange in 2-3 concise sentences. Focus on what task was requested and what action was taken.
-
-USER: {user_text}
-
-ASSISTANT: {assistant_text}
-
-SUMMARY:"""
-
-        # Call Ollama API
+        # Call xAI API (OpenAI-compatible format)
         response = requests.post(
-            f"{OLLAMA_API}/api/generate",
+            XAI_API_URL,
+            headers={
+                "Authorization": f"Bearer {XAI_API_KEY}",
+                "Content-Type": "application/json"
+            },
             json={
                 "model": SCRIPTY_MODEL,
-                "prompt": prompt,
-                "stream": False,
-                "options": {
-                    "num_predict": 256,  # Short summaries
-                    "temperature": 0.3,  # Focused, deterministic
-                }
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "You are a concise summarizer. Summarize conversation exchanges in 2-3 sentences focusing on task requested and action taken."
+                    },
+                    {
+                        "role": "user",
+                        "content": f"USER: {user_text}\n\nASSISTANT: {assistant_text}\n\nSUMMARY:"
+                    }
+                ],
+                "temperature": 0.3,
+                "max_tokens": 256
             },
             timeout=30
         )
 
         if response.status_code == 200:
             result = response.json()
-            summary = result.get('response', '').strip()
+            summary = result['choices'][0]['message']['content'].strip()
             return summary
         else:
             return f"[Summary unavailable: API error {response.status_code}]"
@@ -221,6 +226,7 @@ def log_to_memory(summary, metadata=None):
         metadata["timestamp"] = now.isoformat()
         metadata["type"] = "scripty_ai_summary"
         metadata["model"] = SCRIPTY_MODEL
+        metadata["provider"] = "xai"
 
         with conn.cursor() as cur:
             cur.execute("""
@@ -247,10 +253,10 @@ def log_to_memory(summary, metadata=None):
 def watch_sessions(check_interval_seconds=30):
     """Watch multiple CLI-AI sessions and create intelligent summaries"""
     print("=" * 60)
-    print("SCRIPTY AI - UNIVERSAL CLI-AI MONITOR")
+    print("SCRIPTY AI - UNIVERSAL CLI-AI MONITOR (GROK EDITION)")
     print("=" * 60)
-    print(f"Model: {SCRIPTY_MODEL}")
-    print(f"Context: {MODEL_CONTEXT_WINDOW} tokens")
+    print(f"Model: {SCRIPTY_MODEL} (xAI)")
+    print(f"Context: {MODEL_CONTEXT_WINDOW} tokens (128K)")
     print(f"Watching: Claude Code + Gemini CLI + All AI terminals")
     print(f"Watching up to 10 active sessions")
     print("=" * 60)
