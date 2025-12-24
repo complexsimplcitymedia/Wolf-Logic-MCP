@@ -1,0 +1,14 @@
+[Unit]
+Description=Mount Wolf Logic Drives
+DefaultDependencies=no
+Before=local-fs.target
+After=systemd-fsck@.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/mnt/WolfPack/Wolf-Logic-app/mount-drives.sh
+TimeoutSec=60
+
+[Install]
+WantedBy=local-fs.target
