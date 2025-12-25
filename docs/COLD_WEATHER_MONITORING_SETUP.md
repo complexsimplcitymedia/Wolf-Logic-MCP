@@ -6,7 +6,7 @@ Quick setup guide for enabling automated cold weather monitoring on Wolf Logic M
 
 - Root/sudo access to the server
 - Git repository cloned to `/opt/Wolf-Logic-MCP` (or adjust paths)
-- Required packages: `lm-sensors`, `smartmontools`, `bc`
+- Required packages: `lm-sensors`, `smartmontools`, `postgresql-client`
 - PostgreSQL credentials configured (see step 2b)
 
 ## Installation Steps
@@ -18,7 +18,7 @@ Quick setup guide for enabling automated cold weather monitoring on Wolf Logic M
 sudo apt update
 
 # Install monitoring tools
-sudo apt install -y lm-sensors smartmontools bc postgresql-client
+sudo apt install -y lm-sensors smartmontools postgresql-client
 
 # Configure sensors (answer YES to all prompts)
 sudo sensors-detect
@@ -231,9 +231,9 @@ sudo systemctl restart cold-weather-monitor.timer
 
 ## Additional Resources
 
-- **Full Operations Guide:** [docs/COLD_WEATHER_OPERATIONS.md](../docs/COLD_WEATHER_OPERATIONS.md)
-- **Network Architecture:** [docs/NETWORK_ARCHITECTURE.md](../docs/NETWORK_ARCHITECTURE.md)
-- **Main README:** [README.md](../README.md)
+- **Full Operations Guide:** [COLD_WEATHER_OPERATIONS.md](COLD_WEATHER_OPERATIONS.md)
+- **Network Architecture:** [NETWORK_ARCHITECTURE.md](NETWORK_ARCHITECTURE.md)
+- **Main README:** [../README.md](../README.md)
 
 ## Support
 

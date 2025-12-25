@@ -14,6 +14,12 @@ YELLOW='\033[1;33m'
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
+# Database connection parameters (can be overridden by environment variables)
+DB_HOST="${DB_HOST:-100.110.82.181}"
+DB_PORT="${DB_PORT:-5433}"
+DB_USER="${DB_USER:-wolf}"
+DB_NAME="${DB_NAME:-wolf_logic}"
+
 echo "========================================"
 echo "Wolf Logic MCP - Cold Weather Status"
 echo "========================================"
@@ -30,14 +36,17 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Function to get temperature status
+# Function to get temperature status (uses bash arithmetic, no bc dependency)
 get_temp_status() {
     local temp=$1
-    if (( $(echo "$temp < $CRITICAL_TEMP" | bc -l) )); then
+    # Convert float to integer for comparison (remove decimal point)
+    local temp_int=${temp%.*}
+    
+    if (( temp_int < CRITICAL_TEMP )); then
         echo "CRITICAL"
-    elif (( $(echo "$temp < $WARNING_TEMP" | bc -l) )); then
+    elif (( temp_int < WARNING_TEMP )); then
         echo "WARNING"
-    elif (( $(echo "$temp < $SAFE_TEMP" | bc -l) )); then
+    elif (( temp_int < SAFE_TEMP )); then
         echo "CAUTION"
     else
         echo "SAFE"
@@ -168,11 +177,11 @@ echo ""
 # Or use environment variable: export PGPASSWORD=your_password
 if command_exists psql; then
     # Try to use .pgpass or environment variable for authentication
-    if psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c "SELECT 1" >/dev/null 2>&1; then
+    if psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "SELECT 1" >/dev/null 2>&1; then
         echo -e "${GREEN}✓${NC} PostgreSQL: Connection successful"
         
         # Get memory count
-        MEMORY_COUNT=$(psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -t -c "SELECT COUNT(*) FROM memories;" 2>/dev/null | tr -d ' ')
+        MEMORY_COUNT=$(psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -t -c "SELECT COUNT(*) FROM memories;" 2>/dev/null | tr -d ' ')
         if [ -n "$MEMORY_COUNT" ]; then
             echo "  Memories in database: $MEMORY_COUNT"
         fi
@@ -222,16 +231,19 @@ echo ""
 if command_exists sensors; then
     AVG_TEMP=$(sensors | grep "Package id 0:" | awk '{print $4}' | sed 's/[+°C]//g' 2>/dev/null || echo "")
     if [ -n "$AVG_TEMP" ]; then
-        if (( $(echo "$AVG_TEMP < $CRITICAL_TEMP" | bc -l) )); then
+        # Convert float to integer for comparison
+        AVG_TEMP_INT=${AVG_TEMP%.*}
+        
+        if (( AVG_TEMP_INT < CRITICAL_TEMP )); then
             echo -e "${RED}⚠ CRITICAL: Temperature below 10°C${NC}"
             echo "  → Consider controlled shutdown to protect hardware"
             echo "  → See: docs/COLD_WEATHER_OPERATIONS.md - Shutdown Procedure"
-        elif (( $(echo "$AVG_TEMP < $WARNING_TEMP" | bc -l) )); then
+        elif (( AVG_TEMP_INT < WARNING_TEMP )); then
             echo -e "${YELLOW}⚠ WARNING: Temperature below 15°C${NC}"
             echo "  → Increase monitoring frequency"
             echo "  → Verify heating is adequate"
             echo "  → Prepare for potential shutdown"
-        elif (( $(echo "$AVG_TEMP < $SAFE_TEMP" | bc -l) )); then
+        elif (( AVG_TEMP_INT < SAFE_TEMP )); then
             echo -e "${YELLOW}ℹ CAUTION: Temperature below 20°C${NC}"
             echo "  → Monitor temperature trends"
             echo "  → Normal operations can continue"
