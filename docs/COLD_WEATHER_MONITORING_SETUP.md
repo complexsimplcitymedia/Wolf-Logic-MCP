@@ -36,12 +36,17 @@ sudo chown $USER:$USER /var/log/wolf-logic
 
 ### 2b. Configure PostgreSQL Authentication (Security Best Practice)
 
-Create a `.pgpass` file to avoid hardcoding passwords:
+**⚠️ SECURITY NOTE:** The database credentials shown here are from the project's README.md. 
+In a production environment, you should use unique, strong passwords and rotate them regularly.
+
+Create a `.pgpass` file to avoid hardcoding passwords in scripts:
 
 ```bash
 # Create .pgpass file in your home directory
+# Format: hostname:port:database:username:password
+# (Replace password with your actual database password - see README.md)
 cat > ~/.pgpass << 'EOF'
-100.110.82.181:5433:wolf_logic:wolf:wolflogic2024
+100.110.82.181:5433:wolf_logic:wolf:YOUR_PASSWORD_HERE
 EOF
 
 # Set restrictive permissions (required by PostgreSQL)
@@ -54,13 +59,15 @@ psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c "SELECT 1"
 **Alternative:** Use environment variable:
 ```bash
 # Add to your shell profile (~/.bashrc or ~/.profile)
-export PGPASSWORD=wolflogic2024
+export PGPASSWORD=YOUR_PASSWORD_HERE
 
 # Or create a systemd environment file
 sudo mkdir -p /etc/wolf-logic
-echo "PGPASSWORD=wolflogic2024" | sudo tee /etc/wolf-logic/environment
+echo "PGPASSWORD=YOUR_PASSWORD_HERE" | sudo tee /etc/wolf-logic/environment
 sudo chmod 600 /etc/wolf-logic/environment
 ```
+
+**Note:** The actual database password can be found in the project's `README.md` file.
 
 ### 3. Test the Monitoring Script
 
@@ -186,8 +193,8 @@ rocm-smi --version
 # Check if PostgreSQL is running
 systemctl status postgresql
 
-# Test connection manually
-PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c "SELECT 1;"
+# Test connection manually (ensure authentication is configured per step 2b)
+psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c "SELECT 1;"
 
 # Check Tailscale connectivity
 tailscale status

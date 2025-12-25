@@ -128,7 +128,9 @@ This guide addresses operational considerations for the Wolf Logic MCP infrastru
 3. **Verify Database Integrity**
    ```bash
    # PostgreSQL health check
-   PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic \
+   # Note: Use ~/.pgpass file or set PGPASSWORD environment variable
+   # See README.md for database credentials
+   psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic \
      -c "SELECT COUNT(*) as total_memories FROM memories;"
    ```
 
@@ -366,7 +368,9 @@ ls -lah /backup/wolf_logic/
 pg_dump --version
 
 # Test backup restoration (on test system)
-PGPASSWORD=wolflogic2024 pg_dump -h 100.110.82.181 -p 5433 -U wolf wolf_logic \
+# Note: Configure authentication via ~/.pgpass or PGPASSWORD environment variable
+# Database credentials are in README.md
+pg_dump -h 100.110.82.181 -p 5433 -U wolf wolf_logic \
   | gzip > /backup/wolf_logic/cold_weather_backup_$(date +%Y%m%d).sql.gz
 ```
 
@@ -467,9 +471,8 @@ ethtool eth0 | grep "Link detected"
 # Check service status
 systemctl status wolf-memory-api
 
-# Verify database connection
-PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic \
-  -c "SELECT 1;"
+# Verify database connection (use ~/.pgpass or PGPASSWORD env var)
+psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c "SELECT 1;"
 
 # Check GPU availability for embeddings
 docker exec <ollama-container> rocm-smi

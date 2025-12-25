@@ -1,6 +1,6 @@
 [Unit]
 Description=Wolf Logic MCP Cold Weather Monitoring
-Documentation=https://github.com/complexsimplcitymedia/Wolf-Logic-MCP/docs/COLD_WEATHER_OPERATIONS.md
+Documentation=https://github.com/complexsimplcitymedia/Wolf-Logic-MCP/blob/main/docs/COLD_WEATHER_OPERATIONS.md
 After=network.target postgresql.service docker.service
 
 [Service]
