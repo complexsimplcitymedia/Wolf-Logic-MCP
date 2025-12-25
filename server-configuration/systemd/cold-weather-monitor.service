@@ -1,0 +1,14 @@
+[Unit]
+Description=Wolf Logic MCP Cold Weather Monitoring
+Documentation=https://github.com/complexsimplcitymedia/Wolf-Logic-MCP/docs/COLD_WEATHER_OPERATIONS.md
+After=network.target postgresql.service docker.service
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/bin/bash -c '/path/to/Wolf-Logic-MCP/scripts/check_cold_weather_status.sh >> /var/log/wolf-logic/cold_weather_check.log 2>&1'
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

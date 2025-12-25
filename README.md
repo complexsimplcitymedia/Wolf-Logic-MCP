@@ -50,3 +50,8 @@ conn = psycopg2.connect(
 - **Server:** csmcloud-server (100.110.82.181)
 - **MacBook:** wolfbook (100.110.82.245)
 - **Network:** Tailscale VPN
+
+## Documentation
+- **[Cold Weather Operations Guide](docs/COLD_WEATHER_OPERATIONS.md)** - Critical procedures for cold weather conditions
+- **[Network Architecture](docs/NETWORK_ARCHITECTURE.md)** - Tailscale mesh network documentation
+- **[Memory Infrastructure](docs/MEMORY_INFRASTRUCTURE_WHITEPAPER.md)** - Memory system architecture
