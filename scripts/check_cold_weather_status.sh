@@ -163,18 +163,23 @@ echo "--- DATABASE STATUS ---"
 echo ""
 
 # Check PostgreSQL connection
+# Note: Configure ~/.pgpass for password-less authentication
+# Format: hostname:port:database:username:password
+# Or use environment variable: export PGPASSWORD=your_password
 if command_exists psql; then
-    if PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c "SELECT 1" >/dev/null 2>&1; then
+    # Try to use .pgpass or environment variable for authentication
+    if psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c "SELECT 1" >/dev/null 2>&1; then
         echo -e "${GREEN}✓${NC} PostgreSQL: Connection successful"
         
         # Get memory count
-        MEMORY_COUNT=$(PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -t -c "SELECT COUNT(*) FROM memories;" 2>/dev/null | tr -d ' ')
+        MEMORY_COUNT=$(psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -t -c "SELECT COUNT(*) FROM memories;" 2>/dev/null | tr -d ' ')
         if [ -n "$MEMORY_COUNT" ]; then
             echo "  Memories in database: $MEMORY_COUNT"
         fi
     else
         echo -e "${RED}✗${NC} PostgreSQL: Connection failed"
         echo "  Check if database is running and accessible"
+        echo "  Ensure ~/.pgpass is configured or PGPASSWORD environment variable is set"
     fi
 else
     echo "psql not found. Cannot check database."

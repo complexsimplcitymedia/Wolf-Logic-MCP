@@ -7,6 +7,7 @@ Quick setup guide for enabling automated cold weather monitoring on Wolf Logic M
 - Root/sudo access to the server
 - Git repository cloned to `/opt/Wolf-Logic-MCP` (or adjust paths)
 - Required packages: `lm-sensors`, `smartmontools`, `bc`
+- PostgreSQL credentials configured (see step 2b)
 
 ## Installation Steps
 
@@ -17,7 +18,7 @@ Quick setup guide for enabling automated cold weather monitoring on Wolf Logic M
 sudo apt update
 
 # Install monitoring tools
-sudo apt install -y lm-sensors smartmontools bc
+sudo apt install -y lm-sensors smartmontools bc postgresql-client
 
 # Configure sensors (answer YES to all prompts)
 sudo sensors-detect
@@ -26,11 +27,39 @@ sudo sensors-detect
 sensors
 ```
 
-### 2. Create Log Directory
+### 2a. Create Log Directory
 
 ```bash
 sudo mkdir -p /var/log/wolf-logic
 sudo chown $USER:$USER /var/log/wolf-logic
+```
+
+### 2b. Configure PostgreSQL Authentication (Security Best Practice)
+
+Create a `.pgpass` file to avoid hardcoding passwords:
+
+```bash
+# Create .pgpass file in your home directory
+cat > ~/.pgpass << 'EOF'
+100.110.82.181:5433:wolf_logic:wolf:wolflogic2024
+EOF
+
+# Set restrictive permissions (required by PostgreSQL)
+chmod 600 ~/.pgpass
+
+# Test connection
+psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c "SELECT 1"
+```
+
+**Alternative:** Use environment variable:
+```bash
+# Add to your shell profile (~/.bashrc or ~/.profile)
+export PGPASSWORD=wolflogic2024
+
+# Or create a systemd environment file
+sudo mkdir -p /etc/wolf-logic
+echo "PGPASSWORD=wolflogic2024" | sudo tee /etc/wolf-logic/environment
+sudo chmod 600 /etc/wolf-logic/environment
 ```
 
 ### 3. Test the Monitoring Script
@@ -46,13 +75,16 @@ sudo ./scripts/check_cold_weather_status.sh
 ### 4. Install Systemd Service (Optional - Automated Monitoring)
 
 ```bash
-# Update the service file path
-sudo sed -i 's|/path/to/Wolf-Logic-MCP|/opt/Wolf-Logic-MCP|g' \
-  /opt/Wolf-Logic-MCP/server-configuration/systemd/cold-weather-monitor.service
-
 # Copy service and timer to systemd
 sudo cp /opt/Wolf-Logic-MCP/server-configuration/systemd/cold-weather-monitor.service \
   /etc/systemd/system/
+
+# Update the REPO_PATH if your installation is not in /opt/Wolf-Logic-MCP
+# Edit line with Environment="REPO_PATH=..."
+sudo nano /etc/systemd/system/cold-weather-monitor.service
+
+# If using environment file for database password, add this line under [Service]
+# EnvironmentFile=/etc/wolf-logic/environment
 
 sudo cp /opt/Wolf-Logic-MCP/server-configuration/systemd/cold-weather-monitor.timer \
   /etc/systemd/system/
