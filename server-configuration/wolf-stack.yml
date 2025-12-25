@@ -1,0 +1,400 @@
+version: '3.8'
+
+networks:
+  wolf_overlay:
+    driver: overlay
+    attachable: true
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  authentik_database:
+  authentik_redis:
+  portainer_data:
+  neo4j_data:
+  mariadb_data:
+
+services:
+  # Portainer - Container Management
+  portainer:
+    image: portainer/portainer-ce:latest
+    networks:
+      - wolf_overlay
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+
+  # Prometheus - Metrics Collection
+  prometheus:
+    image: prom/prometheus:latest
+    networks:
+      - wolf_overlay
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == monitoring
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "caddy=prometheus.complexsimplicityai.com"
+        - "caddy.reverse_proxy={{upstreams 9090}}"
+
+  # Grafana - Monitoring Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    networks:
+      - wolf_overlay
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SERVER_ROOT_URL=https://grafana.complexsimplicityai.com/
+      - GF_SECURITY_ADMIN_PASSWORD=wolflogic2024
+      - GF_AUTH_GENERIC_OAUTH_ENABLED=true
+      - GF_AUTH_GENERIC_OAUTH_NAME=Authentik
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_ID=grafana
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=wolflogic2024
+      - GF_AUTH_GENERIC_OAUTH_SCOPES=openid profile email
+      - GF_AUTH_GENERIC_OAUTH_AUTH_URL=https://auth.complexsimplicityai.com/application/o/authorize/
+      - GF_AUTH_GENERIC_OAUTH_TOKEN_URL=https://auth.complexsimplicityai.com/application/o/token/
+      - GF_AUTH_GENERIC_OAUTH_API_URL=https://auth.complexsimplicityai.com/application/o/userinfo/
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == monitoring
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "caddy=grafana.complexsimplicityai.com"
+        - "caddy.reverse_proxy={{upstreams 3000}}"
+
+  # Node Exporter - System Metrics
+  node-exporter:
+    image: prom/node-exporter:latest
+    networks:
+      - wolf_overlay
+    ports:
+      - "9100:9100"
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+
+  # cAdvisor - Container Metrics
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    networks:
+      - wolf_overlay
+    ports:
+      - "8081:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    deploy:
+      mode: global
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+
+  # Authentik PostgreSQL
+  authentik-postgresql:
+    image: postgres:16-alpine
+    networks:
+      - wolf_overlay
+    volumes:
+      - authentik_database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: wolflogic2024
+      POSTGRES_USER: authentik
+      POSTGRES_DB: authentik
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == auth
+      restart_policy:
+        condition: on-failure
+
+  # Authentik Redis
+  authentik-redis:
+    image: redis:alpine
+    networks:
+      - wolf_overlay
+    command: --save 60 1 --loglevel warning
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == auth
+      restart_policy:
+        condition: on-failure
+
+  # Authentik Server
+  authentik-server:
+    image: ghcr.io/goauthentik/server:latest
+    command: server
+    networks:
+      - wolf_overlay
+    ports:
+      - "9001:9000"
+      - "9444:9443"
+    environment:
+      AUTHENTIK_REDIS__HOST: authentik-redis
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgresql
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: wolflogic2024
+      AUTHENTIK_SECRET_KEY: wolf-authentik-secret-change-me-in-production
+      AUTHENTIK_ERROR_REPORTING__ENABLED: "false"
+      # Native Caddy manager integration
+      AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE: ghcr.io/goauthentik/%(type)s:%(version)s
+      # Caddy API endpoint on host
+      CADDY_API_ENDPOINT: http://100.110.82.181:2019
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == auth
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "caddy=auth.complexsimplicityai.com"
+        - "caddy.reverse_proxy={{upstreams 9000}}"
+        - "caddy.reverse_proxy.header_up=X-Forwarded-Host {host}"
+        - "caddy.reverse_proxy.header_up=X-Forwarded-Proto {scheme}"
+
+  # Authentik Worker
+  authentik-worker:
+    image: ghcr.io/goauthentik/server:latest
+    command: worker
+    networks:
+      - wolf_overlay
+    environment:
+      AUTHENTIK_REDIS__HOST: authentik-redis
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgresql
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: wolflogic2024
+      AUTHENTIK_SECRET_KEY: wolf-authentik-secret-change-me-in-production
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == auth
+      restart_policy:
+        condition: on-failure
+
+  # Neo4j - Graph Database
+  neo4j:
+    image: neo4j:latest
+    networks:
+      - wolf_overlay
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
+    environment:
+      - NEO4J_AUTH=neo4j/wolflogic2024
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  # MariaDB
+  mariadb:
+    image: mariadb:latest
+    networks:
+      - wolf_overlay
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: wolflogic2024
+      MYSQL_DATABASE: wolf_db
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  # Wolf REST API
+  wolf-rest-api:
+    image: api-wolf-rest-api:latest
+    networks:
+      - wolf_overlay
+    ports:
+      - "3030:3000"
+    environment:
+      - POSTGRES_HOST=100.110.82.181
+      - POSTGRES_PORT=5433
+      - POSTGRES_USER=wolf
+      - POSTGRES_PASSWORD=wolflogic2024
+      - POSTGRES_DB=wolf_logic
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  # Wolf API (FastAPI)
+  wolf-api:
+    image: wolf-api:latest
+    networks:
+      - wolf_overlay
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_HOST=100.110.82.181
+      - POSTGRES_PORT=5433
+      - POSTGRES_USER=wolf
+      - POSTGRES_PASSWORD=wolflogic2024
+      - POSTGRES_DB=wolf_logic
+    deploy:
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "caddy=api.complexsimplicityai.com"
+        - "caddy.reverse_proxy={{upstreams 8000}}"
+
+  # Wolf Hunt API
+  wolf-hunt-api:
+    image: wolf-hunt-api:latest
+    networks:
+      - wolf_overlay
+    ports:
+      - "5000:5000"
+    environment:
+      - POSTGRES_HOST=100.110.82.181
+      - POSTGRES_PORT=5433
+      - POSTGRES_USER=wolf
+      - POSTGRES_PASSWORD=wolflogic2024
+      - POSTGRES_DB=wolf_logic
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  # Wolf Hunt UI
+  wolf-hunt-ui:
+    image: wolf-hunt-ui:latest
+    networks:
+      - wolf_overlay
+    ports:
+      - "3333:3333"
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  # Wolf MCP Server
+  wolf-mcp:
+    image: wolf-mcp:latest
+    networks:
+      - wolf_overlay
+    ports:
+      - "8001:8001"
+    environment:
+      - POSTGRES_HOST=100.110.82.181
+      - POSTGRES_PORT=5433
+      - POSTGRES_USER=wolf
+      - POSTGRES_PASSWORD=wolflogic2024
+      - POSTGRES_DB=wolf_logic
+      - MCP_HTTP_MODE=true
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  # Open WebUI
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    networks:
+      - wolf_overlay
+    ports:
+      - "3005:8080"
+    volumes:
+      - ./open-webui:/app/backend/data
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  # AnythingLLM
+  anything-llm:
+    image: mintplexlabs/anythingllm
+    networks:
+      - wolf_overlay
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./anythingllm:/app/server/storage
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  # Beta Memory Site
+  beta-memory-site:
+    image: traefik-beta-memory-site:latest
+    networks:
+      - wolf_overlay
+    ports:
+      - "5001:5000"
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure

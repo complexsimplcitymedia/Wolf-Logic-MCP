@@ -12,6 +12,8 @@ RUN pip install --no-cache-dir \
     authentik-client
 
 # Copy application files
+# Build context: /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP
+# Build command: cd /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP && docker build -f api/Dockerfile.registration -t wolf-registration-api:latest .
 COPY api/registration_api.py .
 COPY api/authentik_client.py .
 
@@ -20,6 +22,10 @@ COPY messaging /app/messaging
 
 # Expose port
 EXPOSE 8765
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD python -c "import requests; requests.get('http://localhost:8765/health')"
 
 # Run application
 CMD ["python", "registration_api.py"]

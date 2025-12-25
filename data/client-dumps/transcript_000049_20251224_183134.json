@@ -1,0 +1,15 @@
+{
+  "exchange_num": 49,
+  "timestamp": "2025-12-24T18:31:34.070655",
+  "user": [
+    {
+      "tool_use_id": "toolu_01WMmXX7FgzuEmZFKqFNMTPQ",
+      "type": "tool_result",
+      "content": "",
+      "is_error": false
+    }
+  ],
+  "assistant": "[THINKING]\nGood. Now I'll move the android files to android-client/. I need to move:\n1. Wolf-Logic-app/ directory\n2. output/wolflogic-apk/ directory\n3. mobile_wolf_gui.py\n4. termux_gui_control.py\n5. SESSION_HANDOFF_APPLE_INTELLIGENCE.md (if relevant to mobile)\n\nLet me do this carefully.",
+  "source": "server-scripty",
+  "type": "verbatim_transcript"
+}

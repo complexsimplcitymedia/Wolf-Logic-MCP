@@ -1,0 +1,71 @@
+{
+	admin 100.110.82.181:2019
+	auto_https off
+}
+
+# Main Site
+complexsimplicityai.com {
+	import custom_wildcard_tls
+	import security_headers
+	reverse_proxy http://100.110.82.181:7001
+}
+
+# LLM Interfaces
+openwebui.complexsimplicityai.com {
+	import custom_wildcard_tls
+	import security_headers
+	reverse_proxy http://100.110.82.181:3005
+}
+
+anyllm.complexsimplicityai.com {
+	import custom_wildcard_tls
+	import security_headers
+	reverse_proxy http://100.110.82.181:3001
+}
+
+# APIs
+api.complexsimplicityai.com {
+	import custom_wildcard_tls
+	import security_headers
+	reverse_proxy http://100.110.82.181:3030
+}
+
+wolf-logic-api.complexsimplicityai.com {
+	import custom_wildcard_tls
+	import security_headers
+	reverse_proxy http://100.110.82.181:8002
+}
+
+wolf-logic-mcp.complexsimplicityai.com {
+	import custom_wildcard_tls
+	import security_headers
+	reverse_proxy http://100.110.82.181:8001
+}
+
+# Ollama
+ollama.complexsimplicityai.com {
+	import custom_wildcard_tls
+	import security_headers
+	reverse_proxy http://100.110.82.181:11434
+}
+
+# Services
+speech.complexsimplicityai.com {
+	import custom_wildcard_tls
+	import security_headers
+	reverse_proxy http://100.110.82.181:10200
+}
+
+# Caddy Manager
+caddy-manager.complexsimplicityai.com {
+	import custom_wildcard_tls
+	import security_headers
+	reverse_proxy http://100.110.82.181:80
+}
+
+# cAdvisor
+cadvisor.complexsimplicityai.com {
+	import custom_wildcard_tls
+	import security_headers
+	reverse_proxy http://100.110.82.181:8081
+}

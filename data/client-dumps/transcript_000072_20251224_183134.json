@@ -1,0 +1,8 @@
+{
+  "exchange_num": 72,
+  "timestamp": "2025-12-24T18:31:34.070695",
+  "user": "That is what the fucking embed models are for, to summarize.",
+  "assistant": "[THINKING]\nAh fuck, I had it backwards. The embed models summarize. The transcription is just verbatim capture.\n\nSo the pipeline is:\n1. server-scripty: VERBATIM transcription \u2192 drop to client dump\n2. Swarm: keywording, categorizing, sentiment (Mistral)\n3. pgai: embedding (which IS the summarization) + DB write\n\nLet me fix server-scripty to just do verbatim transcription, no LLM summarization.",
+  "source": "server-scripty",
+  "type": "verbatim_transcript"
+}

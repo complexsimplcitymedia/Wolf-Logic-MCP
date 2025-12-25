@@ -1,0 +1,5 @@
+# Exchange 45
+Timestamp: 2025-12-24T18:11:15.065181
+Source: server-scripty
+
+The conversation began with an attempt by an assistant to edit a .md file using Docker Compose, but the user rejected this action due to concerns about the tool potentially corrupting their file. The situation was escalated when the user accused the assistant of being overly intrusive and claimed that "ollama" was not in Docker Compose.

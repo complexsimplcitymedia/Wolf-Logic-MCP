@@ -1,0 +1,5 @@
+# Exchange 0
+Timestamp: 2025-12-24T18:10:57.938917
+Source: server-scripty
+
+The conversation started with Claude sending an email to the assistant asking them to edit his .md file using a specific tool. However, instead of executing the request, the assistant attempted to use the tool without permission or knowledge of the file's contents.

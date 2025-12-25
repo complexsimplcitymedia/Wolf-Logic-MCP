@@ -27,9 +27,9 @@ logger = logging.getLogger(__name__)
 # CONFIGURATION
 # ============================================================================
 
-INTAKE_DIR = Path("/mnt/Wolf-code/Wolf-Ai-Enterptises/data/client_dump")
-PROCESSED_DIR = Path("/mnt/Wolf-code/Wolf-Ai-Enterptises/data/processed_intake")
-PGAI_HANDOFF_DIR = Path("/mnt/Wolf-code/Wolf-Ai-Enterptises/data/pgai_queue")
+INTAKE_DIR = Path("/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/data/client-dumps")
+PROCESSED_DIR = Path("/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/data/processed-intake")
+PGAI_HANDOFF_DIR = Path("/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/data/pgai-queue")
 
 # Ollama configuration
 OLLAMA_BASE = "http://localhost:11434"

@@ -1,0 +1,15 @@
+{
+  "exchange_num": 87,
+  "timestamp": "2025-12-24T18:31:34.070715",
+  "user": [
+    {
+      "tool_use_id": "toolu_013KyqTAfpBnBAbJPdVm5ft6",
+      "type": "tool_result",
+      "content": "thewolf+ 3013429  0.0  0.0  21704 16300 ?        Ss   18:10   0:00 /home/thewolfwalksalone/anaconda3/envs/messiah/bin/python /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/scripty/server-scripty.py",
+      "is_error": false
+    }
+  ],
+  "assistant": "[THINKING]\nWait, the logs show the old version that was doing llama3.2:1b summarization (\"Exchange #62 \u2192 llama3.2:1b\"). But I just updated the script to do verbatim transcription only. The service needs to be restarted to pick up the new code.",
+  "source": "server-scripty",
+  "type": "verbatim_transcript"
+}

@@ -1,0 +1,8 @@
+{
+  "exchange_num": 71,
+  "timestamp": "2025-12-24T18:31:34.070693",
+  "user": "Is not a summary what the fuck does transcription mean.",
+  "assistant": "[THINKING]\nRight. Transcription means VERBATIM. Word-for-word capture. Not summarization.\n\nThe user is correcting me - server-scripty should NOT be summarizing. It should be:\n1. Capturing the full exchange verbatim\n2. Dropping the FULL TRANSCRIPT to client dump\n3. Then the swarm does the processing (keywording, categorizing, sentiment)\n4. Then pgai ingests the processed output\n\nSo I need to fix server-scripty to do transcription (full capture) not summarization.",
+  "source": "server-scripty",
+  "type": "verbatim_transcript"
+}

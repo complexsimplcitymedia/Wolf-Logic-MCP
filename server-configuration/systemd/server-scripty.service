@@ -1,0 +1,18 @@
+[Unit]
+Description=Server Scripty - Local LLM Session Transcription (llama3.2:1b)
+After=network.target
+
+[Service]
+Type=simple
+User=thewolfwalksalone
+Group=thewolfwalksalone
+WorkingDirectory=/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/scripty
+Environment="PATH=/home/thewolfwalksalone/anaconda3/envs/messiah/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/home/thewolfwalksalone/anaconda3/envs/messiah/bin/python /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/scripty/server-scripty.py
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
