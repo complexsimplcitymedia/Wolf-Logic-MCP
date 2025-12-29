@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Wolf Logic Cold Weather Check every 4 hours
+Requires=cold-weather-monitor.service
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=4h
+Persistent=true
+
+[Install]
+WantedBy=timers.target

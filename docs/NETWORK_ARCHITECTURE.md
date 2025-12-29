@@ -197,6 +197,20 @@ https://portainer.complexsimplicityai.com
 
 ---
 
+## Environmental Considerations
+
+For cold weather operational procedures, server protection, and temperature monitoring guidelines, see:
+
+**[Cold Weather Operations Guide](COLD_WEATHER_OPERATIONS.md)**
+
+This guide covers:
+- Hardware protection in cold conditions
+- Temperature monitoring and alerts
+- Cold start/shutdown procedures
+- Troubleshooting cold weather issues
+
+---
+
 **SECURITY:** Never document or expose local network IPs.
 **ALWAYS use Tailscale IPs (`100.110.82.*`) for all inter-device communication.**
 

@@ -1,0 +1,20 @@
+[Unit]
+Description=Wolf Logic MCP Cold Weather Monitoring
+Documentation=https://github.com/complexsimplcitymedia/Wolf-Logic-MCP/blob/main/docs/COLD_WEATHER_OPERATIONS.md
+After=network.target postgresql.service docker.service
+
+[Service]
+Type=oneshot
+User=root
+Environment="REPO_PATH=/opt/Wolf-Logic-MCP"
+# Uncomment the line below if using environment file for database credentials:
+# EnvironmentFile=/etc/wolf-logic/environment
+ExecStart=/bin/bash ${REPO_PATH}/scripts/check_cold_weather_status.sh
+StandardOutput=append:/var/log/wolf-logic/cold_weather_check.log
+StandardError=append:/var/log/wolf-logic/cold_weather_check.log
+
+# Note: Update REPO_PATH above to match your installation directory
+# For database authentication, use ~/.pgpass file or set PGPASSWORD in environment file
+
+[Install]
+WantedBy=multi-user.target
