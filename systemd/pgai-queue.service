@@ -1,0 +1,29 @@
+[Unit]
+Description=PGAI Queue Ingestor - PostgreSQL Memory Writer
+After=network.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=thewolfwalksalone
+Group=thewolfwalksalone
+WorkingDirectory=/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP
+Environment="PATH=/home/thewolfwalksalone/anaconda3/envs/messiah/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="PGHOST=100.110.82.181"
+Environment="PGPORT=5433"
+Environment="PGDATABASE=wolf_logic"
+Environment="PGUSER=wolf"
+Environment="PGPASSWORD=wolflogic2024"
+ExecStart=/home/thewolfwalksalone/anaconda3/envs/messiah/bin/python /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/writers/ingest/pgai_queue_ingestor.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pgai-queue
+
+# Resource limits
+LimitNOFILE=65536
+Nice=5
+
+[Install]
+WantedBy=multi-user.target

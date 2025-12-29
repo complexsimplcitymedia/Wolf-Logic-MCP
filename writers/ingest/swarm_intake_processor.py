@@ -12,9 +12,11 @@ import requests
 from datetime import datetime
 from pathlib import Path
 
-# Directories
+# Directories - watch both camera/dailys (local) and data/client-dumps (remote nodes)
 DAILYS_DIR = Path("/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/camera/dailys")
+CLIENT_DUMPS_DIR = Path("/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/data/client-dumps")
 HANDOFF_DIR = Path("/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/data/pgai-queue")
+CLIENT_DUMPS_DIR.mkdir(parents=True, exist_ok=True)
 HANDOFF_DIR.mkdir(parents=True, exist_ok=True)
 
 # Ollama endpoint
@@ -112,53 +114,64 @@ def process_transcript(entry):
         "source": "swarm-intake"
     }
 
-def watch_dailys():
-    """Watch dailys directory and process new entries"""
-    print(f"[{datetime.now()}] Starting swarm-intake processor...")
+def watch_directory(directory, prefix):
+    """Watch a directory for JSONL files and process new entries"""
     processed = load_processed()
+
+    # Get today's file
+    today = datetime.now().strftime("%Y%m%d")
+    target_file = directory / f"{prefix}_{today}.jsonl"
+
+    if not target_file.exists():
+        return processed
+
+    # Read and process new entries
+    with open(target_file, 'r') as f:
+        lines = f.readlines()
+
+    for i, line in enumerate(lines):
+        file_key = f"{target_file.name}:{i}"
+
+        if file_key in processed:
+            continue
+
+        try:
+            entry = json.loads(line.strip())
+
+            # Process transcript
+            processed_data = process_transcript(entry)
+
+            if processed_data:
+                # Write to handoff queue
+                handoff_file = HANDOFF_DIR / f"intake_{int(time.time()*1000)}_{i}.json"
+                with open(handoff_file, 'w') as hf:
+                    json.dump(processed_data, hf, indent=2)
+
+                print(f"[{datetime.now()}] Processed: {file_key} → {handoff_file.name}")
+
+            # Mark as processed
+            mark_processed(file_key)
+            processed.add(file_key)
+
+        except json.JSONDecodeError:
+            continue
+        except Exception as e:
+            print(f"[{datetime.now()}] Error processing {file_key}: {e}")
+
+    return processed
+
+def watch_dailys():
+    """Watch both dailys and client-dumps directories"""
+    print(f"[{datetime.now()}] Starting swarm-intake processor...")
+    print(f"[{datetime.now()}] Watching: camera/dailys/ and data/client-dumps/")
 
     while True:
         try:
-            # Get today's file
-            today = datetime.now().strftime("%Y%m%d")
-            dailys_file = DAILYS_DIR / f"scripty_{today}.jsonl"
+            # Watch camera/dailys for local scripty output
+            watch_directory(DAILYS_DIR, "scripty")
 
-            if not dailys_file.exists():
-                time.sleep(30)
-                continue
-
-            # Read and process new entries
-            with open(dailys_file, 'r') as f:
-                lines = f.readlines()
-
-            for i, line in enumerate(lines):
-                file_key = f"{dailys_file.name}:{i}"
-
-                if file_key in processed:
-                    continue
-
-                try:
-                    entry = json.loads(line.strip())
-
-                    # Process transcript
-                    processed_data = process_transcript(entry)
-
-                    if processed_data:
-                        # Write to handoff queue
-                        handoff_file = HANDOFF_DIR / f"intake_{int(time.time()*1000)}_{i}.json"
-                        with open(handoff_file, 'w') as hf:
-                            json.dump(processed_data, hf, indent=2)
-
-                        print(f"[{datetime.now()}] Processed: {file_key} → {handoff_file.name}")
-
-                    # Mark as processed
-                    mark_processed(file_key)
-                    processed.add(file_key)
-
-                except json.JSONDecodeError:
-                    continue
-                except Exception as e:
-                    print(f"[{datetime.now()}] Error processing {file_key}: {e}")
+            # Watch data/client-dumps for remote node drops
+            watch_directory(CLIENT_DUMPS_DIR, "transcript")
 
             time.sleep(30)
 

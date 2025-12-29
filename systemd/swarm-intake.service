@@ -1,0 +1,24 @@
+[Unit]
+Description=Swarm Intake Processor - Keyword Categorization & Sentiment Analysis
+After=network.target ollama.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=thewolfwalksalone
+Group=thewolfwalksalone
+WorkingDirectory=/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP
+Environment="PATH=/home/thewolfwalksalone/anaconda3/envs/messiah/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/home/thewolfwalksalone/anaconda3/envs/messiah/bin/python /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/writers/ingest/swarm_intake_processor.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=swarm-intake
+
+# Resource limits
+LimitNOFILE=65536
+Nice=5
+
+[Install]
+WantedBy=multi-user.target
