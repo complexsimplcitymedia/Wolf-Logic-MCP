@@ -1,0 +1,28 @@
+[Unit]
+Description=Wolf Logic Memory API - REST API with Swagger
+After=network.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=thewolfwalksalone
+Group=thewolfwalksalone
+WorkingDirectory=/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP
+Environment="PATH=/home/thewolfwalksalone/anaconda3/envs/messiah/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="PGHOST=100.110.82.181"
+Environment="PGPORT=5433"
+Environment="PGDATABASE=wolf_logic"
+Environment="PGUSER=wolf"
+Environment="PGPASSWORD=wolflogic2024"
+ExecStart=/home/thewolfwalksalone/anaconda3/envs/messiah/bin/uvicorn api.memory_api:app --host 0.0.0.0 --port 8001
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=memory-api
+
+# Resource limits
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
