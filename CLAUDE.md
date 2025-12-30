@@ -216,6 +216,63 @@ Use env: `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD` (see ENV_SETUP
 
 ### Query Protocol - How to Talk to the Librarian
 
+**PREFERRED METHOD: REST API (Works for Claude, Gemini, and all models)**
+
+The Librarian is now accessible via REST API at `https://api.complexsimplicityai.com/memories`
+
+**API Token (valid until 2026-12-30):**
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoid29sZiIsInN1YiI6IndvbGYtYXBpLWNsaWVudCIsImlhdCI6MTc2NzA2NTA0NiwiZXhwIjoxNzk4NjAxMDQ2fQ.G4BIYiokDSPIZbgasJ7EHjLNijZ3LcpKYq54B3lDytM
+```
+
+**Basic Query Examples:**
+
+```bash
+# Get recent memories (limit 10)
+curl -s -H 'Authorization: Bearer <TOKEN>' \
+  'https://api.complexsimplicityai.com/memories?limit=10&order=created_at.desc'
+
+# Filter by namespace (scripty, core_identity, wolf_hunt, etc.)
+curl -s -H 'Authorization: Bearer <TOKEN>' \
+  'https://api.complexsimplicityai.com/memories?namespace=eq.scripty&limit=20&order=created_at.desc'
+
+# Filter by multiple namespaces
+curl -s -H 'Authorization: Bearer <TOKEN>' \
+  'https://api.complexsimplicityai.com/memories?namespace=in.(scripty,core_identity)&order=created_at.desc&limit=10'
+
+# Search content (case-insensitive)
+curl -s -H 'Authorization: Bearer <TOKEN>' \
+  'https://api.complexsimplicityai.com/memories?content=ilike.*search%20term*&limit=20'
+
+# Filter by date range
+curl -s -H 'Authorization: Bearer <TOKEN>' \
+  'https://api.complexsimplicityai.com/memories?created_at=gte.2025-12-01&namespace=eq.wolf_hunt&order=created_at.desc'
+
+# Select specific columns only
+curl -s -H 'Authorization: Bearer <TOKEN>' \
+  'https://api.complexsimplicityai.com/memories?select=content,namespace,created_at&limit=10'
+```
+
+**PostgREST Query Syntax Reference:**
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `eq.` | equals | `namespace=eq.scripty` |
+| `neq.` | not equals | `namespace=neq.imported` |
+| `gt.` | greater than | `created_at=gt.2025-12-01` |
+| `gte.` | greater or equal | `created_at=gte.2025-12-01` |
+| `lt.` | less than | `created_at=lt.2025-12-30` |
+| `lte.` | less or equal | `created_at=lte.2025-12-30` |
+| `like.` | LIKE (case-sensitive) | `content=like.*pattern*` |
+| `ilike.` | ILIKE (case-insensitive) | `content=ilike.*pattern*` |
+| `in.()` | IN list | `namespace=in.(scripty,core_identity)` |
+| `is.` | IS (null check) | `metadata=is.null` |
+
+**Response Format:** JSON array of memory objects with fields: `id`, `user_id`, `content`, `metadata`, `memory_type`, `namespace`, `created_at`, `updated_at`
+
+---
+
+**ALTERNATE METHOD: Direct SQL (Claude Code with psql access only)**
+
 **Step 1: Identify What You Need**
 - Looking for a concept? (business strategy, code pattern) → Semantic search
 - Looking for an exact phrase? (specific quote, command) → Text search
