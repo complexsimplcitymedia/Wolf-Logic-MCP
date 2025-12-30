@@ -1,0 +1,24 @@
+{
+  "text": "This conversation did not require a summary. Here is a summary of the conversation in 2-3 sentences:\n\nThe user provided a script for standardized Scripty, an Edge-First API that captures text and optionally summarizes it via Ollama or inserts it into Postgres. The script includes instructions on how to install, start, send tests, and troubleshoot issues related to Gateway, authentication, and models. Additionally, the script mentions various environment variables and configuration options for interacting with the Scripty service.",
+  "content": "USER: [{'tool_use_id': 'toolu_0135pQx78zuToTBQiSyZeZM2', 'type': 'tool_result', 'content': '# Standardized Scripty (Edge-First)\\n\\nSame scripty on every device. Captures text, optionally summarizes/embeds locally via Ollama, and forwards to 181 via a gateway (preferred) or inserts to Postgres (optional). Uniform inputs, uniform outputs.\\n\\n## Install\\n```bash\\n# From repo root\\ncd Wolf-Logic-MCP/writers\\nchmod +x install_scripty.sh\\n./install_scripty.sh\\n```\\n\\nEdit /opt/scripty/.env (minimum):\\n- `GATEWAY_URL` and `SCRIPTY_AUTH_TOKEN` if using gateway\\n- or set `DIRECT_PG=true` and configure PG* (only if approved)\\n- ensure `SCRIPTY_INPUT_DIR` exists (default /var/log/scripty)\\n\\nStart service:\\n```bash\\nsudo systemctl start scripty.service\\nsudo systemctl status scripty.service\\n```\\n\\n## Send a Test Event\\n```bash\\necho \"hello from scripty $(date -Is)\" > /var/log/scripty/test.$(date +%s).txt\\n```\\nCheck logs:\\n```bash\\ntail -n 200 /var/log/scripty/scripty.out.log\\n```\\nExpected: `[scripty] delivered via gateway` or `[scripty] inserted directly into Postgres`.\\n\\n## Environment Reference\\n- `SCRIPTY_MODE=edge|hub` (edge = summarize+embed locally; hub = raw only)\\n- `OLLAMA_HOST=http://localhost:11434`\\n- `SCRIPTY_EMBED_MODEL=qwen3-embedding:4b`\\n- `SCRIPTY_SUMMARY_MODEL=llama3.2:1b`\\n- `GATEWAY_URL=http://100.110.82.181:8000/memory`\\n- `SCRIPTY_AUTH_TOKEN=`\\n- `DIRECT_PG=false` (enable only if allowed)\\n- `PGHOST=100.110.82.181 PGPORT=5433 PGDATABASE=wolf_logic PGUSER=... PGPASSWORD=...`\\n- `SCRIPTY_INPUT_DIR=/var/log/scripty`\\n- `SCRIPTY_SPOOL_DIR=~/.scripty_spool`\\n\\n## Gateway Contract (POST)\\nURL: `${GATEWAY_URL}`\\nPayload (JSON):\\n```json\\n{\\n  \"namespace\": \"scripty\",\\n  \"content\": \"raw text...\",\\n  \"embedding\": [0.01, 0.02],\\n  \"meta\": {\"device\": \"hostname\", \"created_at\": \"iso\", \"summary\": \"...\", \"dimensions\": 2560}\\n}\\n```\\nNotes:\\n- `embedding` may be null; server can vectorize\\n- Include `Authorization: Bearer ${SCRIPTY_AUTH_TOKEN}` if required\\n\\n## Models on Client\\n```bash\\nollama pull qwen3-embedding:4b\\nollama pull llama3.2:1b\\n```\\n\\n## CLI Usage (ad-hoc runs)\\n```bash\\n/opt/scripty/venv/bin/python /opt/scripty/scripty_agent.py --stdin <<\\'EOF\\'\\nThis is a one-off snippet to capture.\\nEOF\\n\\n/opt/scripty/venv/bin/python /opt/scripty/scripty_agent.py --file /var/log/scripty/test.txt\\n\\n/opt/scripty/venv/bin/python /opt/scripty/scripty_agent.py --watch /var/log/scripty\\n```\\n\\n## Troubleshooting\\n- Gateway 4xx/5xx \u2192 check `GATEWAY_URL`/token, network/Tailscale\\n- `DIRECT_PG=true` errors \u2192 verify PG* env, connectivity, and pg_hba rules on 181\\n- No events \u2192 confirm `SCRIPTY_INPUT_DIR` exists and service is active\\n- Watch mode requires `watchdog` in `/opt/scripty/venv`', 'is_error': False}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "c2917c9c-32f3-45db-afb0-553c39fb6eef",
+  "timestamp": "2025-12-29T09:48:42.691168",
+  "keywords": [
+    "Here are 7 key topics/keywords from the conversation:\n\nstandardized_scripty",
+    "tool_result",
+    "scripty",
+    "install_scripty",
+    "gateway",
+    "pgdatabase",
+    "postgres",
+    "environment_reference",
+    "gateway_contract_post \n\nLet me know if you'd like me to help with anything else."
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral as it primarily provides instructions and technical information about a script named \"scripty.\" However, the overall tone is informative and helpful, which can be considered positive.\n\nThe rating for the sentiment would be around 3.5 out of 5, leaning slightly more towards the positive side due to the usefulness and clarity of the provided instructions. This conversation does not contain negative or aggressive language. Instead, it focuses on providing a detailed explanation for installing, running, and sending a test event with the scripty tool.\n\nThe instructions cover various aspects such as installation, configuration, and even provide an overview of the environment variables and gateway contract (POST). The detailed explanation shows that this conversation is designed to assist users in understanding and using the \"scripty\" tool effectively."
+  },
+  "source": "swarm-intake"
+}

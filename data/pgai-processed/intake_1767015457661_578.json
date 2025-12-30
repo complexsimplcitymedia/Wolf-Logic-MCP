@@ -1,0 +1,8 @@
+{
+  "text": "USER: [{'tool_use_id': 'toolu_01Eta8HHJ4cLL5FMHEBP8Mop', 'type': 'tool_result', 'content': 'The file /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/writers/ingest/pgai_queue_ingestor.py has been updated. Here\\'s the result of running `cat -n` on a snippet of the edited file:\\n    35\u2192    try:\\n    36\u2192        conn = get_db_connection()\\n    37\u2192        cur = conn.cursor()\\n    38\u2192\\n    39\u2192        # Insert into memories table\\n    40\u2192        cur.execute(\"\"\"\\n    41\u2192            INSERT INTO memories (user_id, content, namespace, metadata, created_at)\\n    42\u2192            VALUES (%s, %s, %s, %s, NOW())\\n    43\u2192        \"\"\", (\\n    44\u2192            data.get(\\'username\\', \\'wolf\\'),\\n    45\u2192            data.get(\\'text\\', data.get(\\'content\\', \\'\\')),\\n    46\u2192            data.get(\\'namespace\\', \\'scripty\\'),\\n    47\u2192            json.dumps({\\n    48\u2192                \"session\": data.get(\\'session\\'),\\n    49\u2192                \"timestamp\": data.get(\\'timestamp\\'),\\n    50\u2192                \"keywords\": data.get(\\'keywords\\', []),\\n    51\u2192                \"sentiment\": data.get(\\'sentiment\\', {}),\\n    52\u2192                \"source\": data.get(\\'source\\', \\'unknown\\')\\n    53\u2192            })\\n    54\u2192        ))\\n    55\u2192\\n    56\u2192        conn.commit()\\n    57\u2192        cur.close()\\n    58\u2192        conn.close()'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:35:10.814037",
+  "source": "swarm-intake"
+}

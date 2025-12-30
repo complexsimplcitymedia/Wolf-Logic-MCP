@@ -1,0 +1,20 @@
+{
+  "text": "This conversation has not started yet, so there is nothing to summarize. This message appears to be a tool result indicating that the user was interrupted by you, and it is marked as an error.",
+  "content": "USER: [{'type': 'tool_result', 'content': 'Interrupted by user', 'is_error': True, 'tool_use_id': 'toolu_01N4J5xWR5sQYJNyS386G7oQ'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:40.406750",
+  "keywords": [
+    "interrupted",
+    "user",
+    "tool_result",
+    "tool_u",
+    "01N4J5xWR5sQYJNyS386G7oQ"
+  ],
+  "sentiment": {
+    "score": 1,
+    "analysis": "Based on the provided conversation, it appears that the interaction between the user and the tool resulted in an interruption or error. Therefore, I would rate this conversation as 1 (very negative), as it indicates a problematic situation where the intended action was not completed successfully. This could potentially affect the user's experience negatively and require further attention to resolve the issue."
+  },
+  "source": "swarm-intake"
+}

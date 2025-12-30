@@ -1,0 +1,25 @@
+{
+  "text": "Here is a summary of our conversation in 2-3 sentences:\n\nYou are receiving an error message from a web application that is trying to use two different ports, one for API requests and another for a specific service. The error is pointing to either `api.complexsimplicityai.com` or `wolf-hunt.complexsimplicityai.com`, which suggest the issue may be related to a port conflict. You can check the port situation by checking if both URLs are accessing different ports on the same server.",
+  "content": "ASSISTANT: `api.complexsimplicityai.com` already exists (line 94) pointing to 100.110.82.245:3000. \n\n**Problem:** wolf-hunt.complexsimplicityai.com is also on port 3333 - same as PostgREST now.\n\nLet me check the port situation:",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:56:02.742967",
+  "keywords": [
+    "assistant",
+    "complexsimplicity",
+    "ai",
+    "postgrest",
+    "port",
+    "issue",
+    "existing",
+    "duplicate",
+    "assistant",
+    "api"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation seems neutral, with a rating of 3. The user (ASSISTANT) is simply stating facts and reporting potential issues they have discovered during their work. There is no indication of positive or negative emotions in the message. However, the problem mentioned suggests that there might be a conflict or overlap in the usage of port numbers between two services, which could lead to complications if not resolved."
+  },
+  "source": "swarm-intake"
+}

@@ -1,0 +1,24 @@
+{
+  "text": "This conversation has just started, so there is nothing to summarize yet. The assistant provided a message stating that Postgres is running on a Unix socket with an authentication issue, but the TCP connection isn't working. They plan to investigate further by checking pg_hba.conf and restarting the service if necessary.",
+  "content": "ASSISTANT: Postgres is running (unix socket works, just auth issue). TCP still not binding. Let me check pg_hba.conf and try a full stop/start:",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:29:44.928698",
+  "keywords": [
+    "Postgres",
+    "assistant",
+    "postgresql",
+    "unix socket",
+    "tcp",
+    "authentication",
+    "pg_hba_conf",
+    "check",
+    "full_stop_start"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment in this conversation is neutral as it's primarily focusing on technical troubleshooting of a database system (Postgres), which doesn't inherently convey positive or negative emotions. However, the user is trying to resolve an issue, indicating some level of frustration or concern.\n\nThe rating would be around 3 due to the technical nature and problem-solving focus of the conversation. The user is attempting to address a problem with Postgres (auth issue and TCP not binding) but remains optimistic by stating that they will check `pg_hba.conf` and perform a full stop/start, indicating an effort to resolve the issue."
+  },
+  "source": "swarm-intake"
+}

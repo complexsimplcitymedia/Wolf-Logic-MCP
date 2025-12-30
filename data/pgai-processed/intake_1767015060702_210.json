@@ -1,0 +1,19 @@
+{
+  "text": "This is the start of a conversation, likely within a Minecraft server or client. The first command sent to the server is `USER`, followed by `/sandbox`. This suggests that the user wants to create a new sandbox environment for testing purposes.",
+  "content": "USER: <command-name>/sandbox</command-name>\n            <command-message>sandbox</command-message>\n            <command-args></command-args>",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:57.126885",
+  "keywords": [
+    "sandbox",
+    "command-name",
+    "command-message",
+    "command-args"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral. The user is simply providing a command to access a sandbox environment, without any expressing positive or negative emotions. A rating of 3 would be appropriate for this interaction, as it's neither very negative nor very positive."
+  },
+  "source": "swarm-intake"
+}

@@ -1,0 +1,25 @@
+{
+  "text": "This conversation started by providing test curl commands to verify that PostgREST is running and functioning correctly. The Assistant then showed how to use these tests to interact with the PostgREST API, including listing tables, querying memory data, searching content, and counting records. Additionally, it mentioned that the Librarian has now gained access to a REST API through PostgREST.",
+  "content": "ASSISTANT: Sandbox blocking my curl. But PostgREST is running. Test from your terminal:\n\n```bash\n# List tables\ncurl http://100.110.82.181:3333/\n\n# Query memories (first 5)\ncurl \"http://100.110.82.181:3333/memories?limit=5\"\n\n# Query by namespace\ncurl \"http://100.110.82.181:3333/memories?namespace=eq.core_identity\"\n\n# Search content (contains)\ncurl \"http://100.110.82.181:3333/memories?content=ilike.*wolf*&limit=10\"\n\n# Count memories\ncurl \"http://100.110.82.181:3333/memories?select=count\"\n```\n\n**PostgREST endpoints:**\n- http://100.110.82.181:3333/memories - query memories table\n- http://100.110.82.181:3333/memories_embedding - query with embeddings\n\n**Librarian now has a REST API.**",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:53:15.453533",
+  "keywords": [
+    "Here are 5-10 key topics/keywords from this conversation:\n\nsandbox",
+    "curl",
+    "PostgREST",
+    "memory",
+    "tables",
+    "namespace",
+    "search",
+    "content",
+    "endpoint",
+    "api"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral to slightly positive. The user is encountering an issue but is also providing solutions and relevant information, which indicates a problem-solving attitude. The introduction of the PostgREST endpoints and the mention that \"Librarian now has a REST API\" implies progress and a potential resolution to the sandbox issue.\n\nThe rating would be around 3 because while there is a problem (the sandbox blocking curl), the user is proactively trying to find a solution by using PostgREST, which shows a positive approach."
+  },
+  "source": "swarm-intake"
+}

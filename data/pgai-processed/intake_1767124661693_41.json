@@ -1,0 +1,23 @@
+{
+  "text": "This conversation has just started, so there's nothing for me to summarize. I'm happy to help you troubleshoot your internet issue, though! What specifically are you experiencing - slow speeds, dropped connections, or something else?",
+  "content": "USER: i think thats interfering with my internet access",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "622206dd-d4fe-4c2b-9c6a-800259ceed55",
+  "timestamp": "2025-12-30T14:57:10.689444",
+  "keywords": [
+    "i",
+    "think",
+    "that's",
+    "interfering",
+    "with",
+    "your",
+    "internet",
+    "access \n\nuser: what seems to be the cause of the issue?"
+  ],
+  "sentiment": {
+    "score": 2,
+    "analysis": "The sentiment in this conversation is rated as 2 (Neutral to Negative). The user expresses a concern or complaint about their internet access, which generally indicates dissatisfaction. However, the tone remains polite and direct, which moderates the negativity slightly. The user's statement is factual and does not contain any strong emotional language, further supporting the neutral rating."
+  },
+  "source": "swarm-intake"
+}

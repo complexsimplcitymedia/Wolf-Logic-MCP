@@ -1,0 +1,42 @@
+# COMPLEX Logic - fstab backup (2025-11-27)
+# Copy these entries to /etc/fstab after OS reinstall
+
+# Root filesystem (will change with new install)
+# /dev/disk/by-uuid/8287a2da-ca3c-4a4b-87c3-860a8e29b86e / ext4 defaults 0 1
+
+# Boot EFI (will change with new install)
+# /dev/disk/by-uuid/B46D-1B4A /boot/efi vfat defaults 0 1
+
+# ============================================
+# DATA DRIVES - Add these after fresh install
+# ============================================
+
+# Wolfpack (NTFS - 1.8TB) - Main data drive
+UUID=4EAEB996AEB97755  /mnt/Wolfpack  ntfs  defaults,windows_names,uid=1000,gid=1000,umask=000  0  0
+
+# Wolf-backup-1TB (ext4 - 931GB)
+UUID=de9ecef4-3fe9-4a21-ae5a-0e59bca76f88 /mnt/Wolf-backup-1TB ext4 defaults 0 2
+
+# Wolf-backup-4TB (ext4 - 3.6TB)
+UUID=51fe93db-be27-441d-a917-d883bf672752 /mnt/Wolf-backup-4TB ext4 defaults 0 2
+
+# Wolf-code LVM (ext4 - 477GB NVMe RAID) - MUST activate VG first
+UUID=41298109-dbd9-4bcf-8d32-c7a7135360b7 /mnt/wolf-code ext4 defaults,nofail 0 2
+
+# ============================================
+# INSTALLATION STEPS
+# ============================================
+# 1. After fresh Kubuntu 25.10 install:
+#    sudo mkdir -p /mnt/Wolfpack /mnt/Wolf-backup-1TB /mnt/Wolf-backup-4TB /mnt/wolf-code
+#
+# 2. Activate LVM (NVMe drives):
+#    sudo vgchange -ay wolf-code
+#
+# 3. Copy the DATA DRIVES section above to /etc/fstab:
+#    sudo nano /etc/fstab
+#
+# 4. Mount all:
+#    sudo mount -a
+#
+# OR just run:
+#    /mnt/Wolfpack/Wolf-Logic-app/mount-drives.sh --apply-fstab

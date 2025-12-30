@@ -1,0 +1,8 @@
+{
+  "exchange_num": 13,
+  "timestamp": "2025-12-24T18:31:34.070601",
+  "user": "move final 7 items to Wolf-Logic-MCP",
+  "assistant": "[THINKING]\nThe user wants to move the final 7 items from /mnt/Wolf-code/Wolf-Ai-Enterptises/ to /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/\n\nLet me first see what those 7 items are.",
+  "source": "server-scripty",
+  "type": "verbatim_transcript"
+}

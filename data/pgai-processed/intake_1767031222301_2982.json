@@ -1,0 +1,20 @@
+{
+  "text": "This conversation has started with a command named `<command-name>` followed by `/sandbox` and ending with `<command-message>` and `<command-args>.` indicating that the user is attempting to launch a sandbox environment.",
+  "content": "USER: <command-name>/sandbox</command-name>\n            <command-message>sandbox</command-message>\n            <command-args></command-args>",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T12:59:47.368886",
+  "keywords": [
+    "sandbox",
+    "user",
+    "command-name",
+    "command-message",
+    "command-args"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral. The user is simply inputting a command to access the \"sandbox\" which suggests they are following instructions or exploring a new feature, but there's no expressed emotion or opinion in the message. A rating of 3 seems appropriate for this interaction as it's neither negative nor positive, just informative."
+  },
+  "source": "swarm-intake"
+}

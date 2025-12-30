@@ -1,0 +1,19 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install dependencies
+RUN pip install --no-cache-dir \
+    flask \
+    psycopg2-binary \
+    requests
+
+# Copy application files
+COPY rcs_webhook.py /app/
+COPY rcs_client.py /app/
+
+# Expose webhook port
+EXPOSE 9090
+
+# Run webhook listener
+CMD ["python", "/app/rcs_webhook.py"]

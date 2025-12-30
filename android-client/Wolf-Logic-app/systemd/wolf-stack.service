@@ -1,0 +1,16 @@
+[Unit]
+Description=Complex Logic Full Stack (Docker Swarm + MariaDB + Dashboard)
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=root
+WorkingDirectory=/mnt/WolfPack/Wolf-Logic-app
+ExecStart=/mnt/WolfPack/Wolf-Logic-app/start-wolf.sh
+ExecStop=/mnt/WolfPack/Wolf-Logic-app/start-wolf.sh --stop
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target

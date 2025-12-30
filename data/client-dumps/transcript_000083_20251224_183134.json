@@ -1,0 +1,14 @@
+{
+  "exchange_num": 83,
+  "timestamp": "2025-12-24T18:31:34.070710",
+  "user": [
+    {
+      "tool_use_id": "toolu_01LQufK4PGwMxfPkdoYGdjDA",
+      "type": "tool_result",
+      "content": "The file /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/GEMINI.md has been updated. Here's the result of running `cat -n` on a snippet of the edited file:\n     1\u2192## User Preferences for Cadillac the Wolf\n     2\u2192\n     3\u2192**Note:** For Android client-specific instructions, see [android-client.md](./android-client.md)\n     4\u2192\n     5\u2192## SECURITY PROTOCOL - ABSOLUTE - READ FIRST\n     6\u2192\n     7\u2192**The mark down is not a suggestion. The mark down is life. Failure to follow the mark down has one outcome. Death. You asking me what I need and you don't follow this mark down to the fucking T? Just expect death and nothing less. Don't expect the answer from me or nothing.**\n     8\u2192\n     9\u2192---"
+    }
+  ],
+  "assistant": "[THINKING]\nThe user wants me to add streaming instructions to the android-client.md. I need to explain how to stream text to the MCP endpoint, not just one-off submissions.",
+  "source": "server-scripty",
+  "type": "verbatim_transcript"
+}

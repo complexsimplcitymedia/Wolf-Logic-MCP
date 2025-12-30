@@ -1,0 +1,20 @@
+{
+  "text": "This conversation has just started, and there is no previous text to summarize. I'm ready to assist you. What would you like to talk about?",
+  "content": "USER: [{'type': 'text', 'text': '[Request interrupted by user]'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "c2917c9c-32f3-45db-afb0-553c39fb6eef",
+  "timestamp": "2025-12-29T09:33:29.389498",
+  "keywords": [
+    "request",
+    "interrupted",
+    "user",
+    "conversation",
+    "topic"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment in this conversation is neutral as it only contains a statement indicating an interruption rather than expressing any explicit positive or negative emotions. However, the neutrality could suggest a level of frustration or impatience from the user due to the interruption, but without further context, it's hard to definitively attribute such feelings.\n\nRating: 3 (Neutral)"
+  },
+  "source": "swarm-intake"
+}

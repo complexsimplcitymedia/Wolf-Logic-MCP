@@ -1,0 +1,19 @@
+{
+  "text": "This conversation has just started. There is no text to summarize.",
+  "content": "USER: [{'type': 'tool_result', 'content': 'Interrupted by user', 'is_error': True, 'tool_use_id': 'toolu_01N4J5xWR5sQYJNyS386G7oQ'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:57.125808",
+  "keywords": [
+    "interrupted by user",
+    "tool result",
+    "is error",
+    "tool use id"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "Based on the provided conversation, it appears that the interaction was not successful as the tool returned an error. Therefore, I would rate this conversation a 1, indicating a very negative sentiment. The user encountered an interruption or failure in using the tool, which suggests frustration or disappointment. However, it is important to note that the sentiment analysis is based on the limited information provided in this exchange, and the actual sentiment of the user might vary depending on other contextual factors."
+  },
+  "source": "swarm-intake"
+}

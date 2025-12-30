@@ -1,0 +1,25 @@
+22 tools:
+ - code-mode - Create a JavaScript-enabled tool that combines multiple MCP server tools.
+ - dataset_search - Dataset Search
+ - docker - use the docker cli
+ - execute_query - Execute PromQL Query
+ - execute_range_query - Execute PromQL Range Query
+ - get_metric_metadata - Get Metric Metadata
+ - get_targets - Get Scrape Targets
+ - gr1_qwen_image_fast_generate_image - mcp-tools/Qwen-Image-Fast - Qwen_Image_Fast_generate_image 🖼️
+ - health_check - Health Check
+ - hf_doc_fetch - Fetch a document from the Hugging Face documentation library
+ - hf_doc_search - Hugging Face Documentation Search
+ - hf_whoami - Hugging Face User Info
+ - hub_repo_details - Hub Repo Details
+ - list_metrics - List Available Metrics
+ - mcp-add - Add a new MCP server to the session.
+ - mcp-config-set - Set configuration values for MCP servers.
+ - mcp-exec - Execute a tool that exists in the current session.
+ - mcp-find - Find MCP servers in the current catalog by name, title, or description.
+ - mcp-remove - Remove an MCP server from the registry and reload the configuration.
+ - model_search - Model Search
+ - paper_search - Paper Search
+ - space_search - Hugging Face Space Search
+Tip: For tool details, use docker mcp tools inspect <tool-name>. To test the tool, use docker mcp tools call <tool-name>
+

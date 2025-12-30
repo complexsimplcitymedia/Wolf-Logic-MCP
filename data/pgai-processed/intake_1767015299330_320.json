@@ -1,0 +1,19 @@
+{
+  "text": "We haven't had a conversation yet, so there's nothing to summarize. Let's start fresh! What would you like to talk about? I can summarise our conversation at the end if you'd like.",
+  "content": "USER: he is transcribing not summarizeing",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:13:40.437903",
+  "keywords": [
+    "transcript",
+    "summarize",
+    "transcribe",
+    "transcription"
+  ],
+  "sentiment": {
+    "score": 2,
+    "analysis": "In this context, the user's statement suggests a neutral to slightly negative sentiment towards the person they are referring to. The person is being criticized for not effectively performing their task (transcribing), which should have been summarizing. A rating of 2 seems appropriate as the comment indicates a lack of satisfaction with the performance but does not contain any explicit negativity or hostility.\n\nIn terms of sentiment analysis, it is important to consider the user's tone, language, and overall context to accurately determine the sentiment behind their statement. In this case, the user's comment can be seen as constructive criticism rather than outright negative feedback."
+  },
+  "source": "swarm-intake"
+}

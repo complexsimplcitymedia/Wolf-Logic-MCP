@@ -1,0 +1,135 @@
+{
+  "memory_server_scripts": [
+    {
+      "id": "memory_api",
+      "name": "Memory API Server",
+      "description": "Flask REST API for memory queries",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/api/memory_api.py",
+      "port": 5000,
+      "category": "api"
+    },
+    {
+      "id": "scripty",
+      "name": "Scripty (Stenographer)",
+      "description": "Session capture and monitoring",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/scripty/scripty.py",
+      "port": null,
+      "category": "monitoring"
+    },
+    {
+      "id": "session_logger",
+      "name": "Session Logger (Dailies)",
+      "description": "60-second dailies capture",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/camera/session_logger.py",
+      "port": null,
+      "category": "monitoring"
+    },
+    {
+      "id": "visual_dashboard",
+      "name": "Generate Dashboard",
+      "description": "Create performance charts",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/metrics/visual_dashboard.py",
+      "port": null,
+      "category": "visualization"
+    },
+    {
+      "id": "metrics_exporter",
+      "name": "Metrics Exporter",
+      "description": "Prometheus metrics endpoint",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/api/metrics_exporter.py",
+      "port": 9090,
+      "category": "monitoring"
+    },
+    {
+      "id": "ingest_agent",
+      "name": "File Ingestion",
+      "description": "Ingest files into memory system",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/writers/ingest_agent.py",
+      "port": null,
+      "category": "ingestion"
+    },
+    {
+      "id": "neo4j_etl",
+      "name": "Neo4j ETL",
+      "description": "Load memories into Neo4j graph",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/writers/postgres_to_neo4j_etl.py",
+      "port": null,
+      "category": "etl"
+    },
+    {
+      "id": "rank_memories",
+      "name": "Rank Memories",
+      "description": "Prioritize memories by importance",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/writers/rank_memories.py",
+      "port": null,
+      "category": "processing"
+    },
+    {
+      "id": "load_context",
+      "name": "Load Session Context",
+      "description": "Load contextual memories for session",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/writers/load_session_context.py",
+      "port": null,
+      "category": "processing"
+    },
+    {
+      "id": "db_performance",
+      "name": "Database Performance Tracker",
+      "description": "Track query performance metrics",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/metrics/db_performance_tracker.py",
+      "port": null,
+      "category": "monitoring"
+    },
+    {
+      "id": "wordpress_sync",
+      "name": "WordPress → PostgreSQL",
+      "description": "Sync WordPress posts/pages to wolf_logic database",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/writers/wordpress_to_postgres.py",
+      "port": null,
+      "category": "wordpress"
+    }
+  ],
+  "button_actions": {
+    "start_memory_api": {
+      "label": "Start API",
+      "command": "nohup python /mnt/Wolf-code/Wolf-Ai-Enterptises/api/memory_api.py > /tmp/memory_api.log 2>&1 & echo $!",
+      "icon": "▶️"
+    },
+    "stop_memory_api": {
+      "label": "Stop API",
+      "command": "pkill -f 'python.*memory_api.py'",
+      "icon": "⏹️"
+    },
+    "restart_memory_api": {
+      "label": "Restart API",
+      "command": "pkill -f 'python.*memory_api.py' && sleep 1 && nohup python /mnt/Wolf-code/Wolf-Ai-Enterptises/api/memory_api.py > /tmp/memory_api.log 2>&1 &",
+      "icon": "🔄"
+    },
+    "generate_dashboard": {
+      "label": "Refresh Dashboard",
+      "command": "python /mnt/Wolf-code/Wolf-Ai-Enterptises/metrics/visual_dashboard.py",
+      "icon": "📊"
+    },
+    "ingest_file": {
+      "label": "Ingest File",
+      "command": "python /mnt/Wolf-code/Wolf-Ai-Enterptises/writers/ingest_agent.py",
+      "icon": "📥",
+      "requires_input": "file_path"
+    },
+    "check_status": {
+      "label": "System Status",
+      "command": "ps aux | grep -E 'memory_api|scripty|session_logger' | grep -v grep",
+      "icon": "📡"
+    },
+    "view_logs": {
+      "label": "View Logs",
+      "command": "tail -n 50 /tmp/memory_api.log",
+      "icon": "📜"
+    },
+    "db_stats": {
+      "label": "Database Stats",
+      "command": "PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -c 'SELECT COUNT(*) as total_memories FROM memories; SELECT namespace, COUNT(*) as count FROM memories GROUP BY namespace ORDER BY count DESC LIMIT 5;'",
+      "icon": "💾"
+    }
+  }
+}

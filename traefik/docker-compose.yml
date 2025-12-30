@@ -1,0 +1,295 @@
+version: '3.8'
+
+# Complex Logic Production Stack - Traefik Reverse Proxy
+# Handles SSL, load balancing, and routing for all services
+# Ready for 100K+ scale
+
+networks:
+  wolf_network:
+    external: true
+    name: wolf_network
+  traefik_public:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.1.0/24
+
+volumes:
+  traefik_letsencrypt:
+    name: traefik_letsencrypt
+  portainer_data:
+  grafana_data:
+  authentik_database:
+
+services:
+  # Traefik - Edge Router
+  traefik:
+    image: traefik:v2.11
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - traefik_public
+      - wolf_network
+    ports:
+      - "80:80"     # HTTP
+      - "443:443"   # HTTPS
+      - "9091:8080" # Dashboard (secure this!)
+    environment:
+      - CF_DNS_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+      - TZ=America/New_York
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/traefik.yml:ro
+      - ./config:/config:ro
+      - traefik_letsencrypt:/letsencrypt
+      - /etc/caddy/certs:/certs:ro
+      - ../web/csm-site-backup/dist:/www:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=http"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.complexsimplicityai.com`)"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=wolf:$$apr1$$H6uskkkW$$IgXLP6ewTrSuBkTrqE8wj/"
+      - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
+      - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
+      - "traefik.http.routers.traefik-secure.entrypoints=https"
+      - "traefik.http.routers.traefik-secure.rule=Host(`traefik.complexsimplicityai.com`)"
+      - "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
+      - "traefik.http.routers.traefik-secure.tls=true"
+      - "traefik.http.routers.traefik-secure.tls.certresolver=cloudflare"
+      - "traefik.http.routers.traefik-secure.tls.domains[0].main=complexsimplicityai.com"
+      - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.complexsimplicityai.com"
+      - "traefik.http.routers.traefik-secure.service=api@internal"
+
+  # Complex Logic FastAPI - Main REST API
+  wolf-api:
+    image: wolf-api:latest
+    build:
+      context: ../api
+      dockerfile: Dockerfile
+    container_name: wolf-api
+    restart: unless-stopped
+    networks:
+      - traefik_public
+      - wolf_network
+    environment:
+      - POSTGRES_HOST=100.110.82.181
+      - POSTGRES_PORT=5433
+      - POSTGRES_USER=wolf
+      - POSTGRES_PASSWORD=wolflogic2024
+      - POSTGRES_DB=wolf_logic
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wolf-api.entrypoints=https"
+      - "traefik.http.routers.wolf-api.rule=Host(`api.complexsimplicityai.com`)"
+      - "traefik.http.routers.wolf-api.tls=true"
+      - "traefik.http.routers.wolf-api.tls.certresolver=cloudflare"
+      - "traefik.http.services.wolf-api.loadbalancer.server.port=8000"
+      # Rate limiting
+      - "traefik.http.middlewares.wolf-api-ratelimit.ratelimit.average=100"
+      - "traefik.http.middlewares.wolf-api-ratelimit.ratelimit.burst=200"
+      - "traefik.http.routers.wolf-api.middlewares=wolf-api-ratelimit"
+
+  # Wolf Hunt API - Job Search Backend
+  wolf-hunt-api:
+    image: wolf-hunt-api:latest
+    build:
+      context: ../wolf-hunt-ui
+      dockerfile: Dockerfile.api
+    container_name: wolf-hunt-api
+    restart: unless-stopped
+    networks:
+      - traefik_public
+      - wolf_network
+    environment:
+      - POSTGRES_HOST=100.110.82.181
+      - POSTGRES_PORT=5433
+      - POSTGRES_USER=wolf
+      - POSTGRES_PASSWORD=wolflogic2024
+      - POSTGRES_DB=wolf_logic
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wolf-hunt-api.entrypoints=https"
+      - "traefik.http.routers.wolf-hunt-api.rule=Host(`hunt.complexsimplicityai.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.wolf-hunt-api.tls=true"
+      - "traefik.http.routers.wolf-hunt-api.tls.certresolver=cloudflare"
+      - "traefik.http.services.wolf-hunt-api.loadbalancer.server.port=5000"
+
+  # Wolf Hunt UI - Job Search Frontend
+  wolf-hunt-ui:
+    image: wolf-hunt-ui:latest
+    build:
+      context: ../wolf-hunt-ui
+      dockerfile: Dockerfile.ui
+    container_name: wolf-hunt-ui
+    restart: unless-stopped
+    networks:
+      - traefik_public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wolf-hunt-ui.entrypoints=https"
+      - "traefik.http.routers.wolf-hunt-ui.rule=Host(`hunt.complexsimplicityai.com`)"
+      - "traefik.http.routers.wolf-hunt-ui.tls=true"
+      - "traefik.http.routers.wolf-hunt-ui.tls.certresolver=cloudflare"
+      - "traefik.http.services.wolf-hunt-ui.loadbalancer.server.port=3333"
+
+  # MCP Server - HTTP Wrapper for AI Agents
+  wolf-mcp:
+    image: wolf-mcp:latest
+    build:
+      context: ../mcp-servers
+      dockerfile: Dockerfile
+    container_name: wolf-mcp
+    restart: unless-stopped
+    networks:
+      - traefik_public
+      - wolf_network
+    environment:
+      - POSTGRES_HOST=100.110.82.181
+      - POSTGRES_PORT=5433
+      - POSTGRES_USER=wolf
+      - POSTGRES_PASSWORD=wolflogic2024
+      - POSTGRES_DB=wolf_logic
+      - MCP_HTTP_MODE=true  # Enable HTTP server mode
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wolf-mcp.entrypoints=https"
+      - "traefik.http.routers.wolf-mcp.rule=Host(`mcp.complexsimplicityai.com`)"
+      - "traefik.http.routers.wolf-mcp.tls=true"
+      - "traefik.http.routers.wolf-mcp.tls.certresolver=cloudflare"
+      - "traefik.http.services.wolf-mcp.loadbalancer.server.port=8001"
+      # Heavy rate limiting for MCP (AI agents can be chatty)
+      - "traefik.http.middlewares.wolf-mcp-ratelimit.ratelimit.average=500"
+      - "traefik.http.middlewares.wolf-mcp-ratelimit.ratelimit.burst=1000"
+      - "traefik.http.routers.wolf-mcp.middlewares=wolf-mcp-ratelimit"
+
+  # Portainer - Container Management
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    networks:
+      - traefik_public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.entrypoints=https"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.complexsimplicityai.com`)"
+      - "traefik.http.routers.portainer.tls=true"
+      - "traefik.http.routers.portainer.tls.certresolver=cloudflare"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+
+  # Grafana - Monitoring Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    networks:
+      - traefik_public
+      - wolf_network
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SERVER_ROOT_URL=https://grafana.complexsimplicityai.com/
+      - GF_AUTH_GENERIC_OAUTH_ENABLED=true
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_ID=${GRAFANA_OAUTH_CLIENT_ID}
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=${GRAFANA_OAUTH_CLIENT_SECRET}
+      - GF_AUTH_GENERIC_OAUTH_AUTH_URL=https://auth.complexsimplicityai.com/application/o/authorize/
+      - GF_AUTH_GENERIC_OAUTH_TOKEN_URL=https://auth.complexsimplicityai.com/application/o/token/
+      - GF_AUTH_GENERIC_OAUTH_API_URL=https://auth.complexsimplicityai.com/application/o/userinfo/
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.entrypoints=https"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.complexsimplicityai.com`)"
+      - "traefik.http.routers.grafana.tls=true"
+      - "traefik.http.routers.grafana.tls.certresolver=cloudflare"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+
+  # Authentik - SSO/OAuth Provider
+  authentik-server:
+    image: ghcr.io/goauthentik/server:latest
+    container_name: authentik-server
+    restart: unless-stopped
+    command: server
+    networks:
+      - traefik_public
+      - wolf_network
+    environment:
+      AUTHENTIK_REDIS__HOST: authentik-redis
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgresql
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+    volumes:
+      - ./authentik/media:/media
+      - ./authentik/custom-templates:/templates
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.authentik.entrypoints=https"
+      - "traefik.http.routers.authentik.rule=Host(`auth.complexsimplicityai.com`)"
+      - "traefik.http.routers.authentik.tls=true"
+      - "traefik.http.routers.authentik.tls.certresolver=cloudflare"
+      - "traefik.http.services.authentik.loadbalancer.server.port=9000"
+
+  beta-memory-site:
+    build:
+      context: ../web/beta-memory-site
+    container_name: beta-memory-site
+    restart: unless-stopped
+    networks:
+      - traefik_public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.beta-memory.entrypoints=https"
+      - "traefik.http.routers.beta-memory.rule=Host(`beta-memory.complexsimplicityai.com`)"
+      - "traefik.http.routers.beta-memory.tls=true"
+      - "traefik.http.services.beta-memory.loadbalancer.server.port=5000"
+
+  authentik-worker:
+    image: ghcr.io/goauthentik/server:latest
+    container_name: authentik-worker
+    restart: unless-stopped
+    command: worker
+    networks:
+      - wolf_network
+    environment:
+      AUTHENTIK_REDIS__HOST: authentik-redis
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgresql
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+    volumes:
+      - ./authentik/media:/media
+      - ./authentik/certs:/certs
+      - ./authentik/custom-templates:/templates
+
+  authentik-postgresql:
+    image: postgres:16-alpine
+    container_name: authentik-postgresql
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    volumes:
+      - authentik_database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASS}
+      POSTGRES_USER: ${PG_USER:-authentik}
+      POSTGRES_DB: ${PG_DB:-authentik}
+
+  authentik-redis:
+    image: redis:alpine
+    container_name: authentik-redis
+    restart: unless-stopped
+    networks:
+      - wolf_network
+    command: --save 60 1 --loglevel warning
+
+# Complex Logic - Production Ready
+# "Today we go scale" - Wolf, 2025-12-16

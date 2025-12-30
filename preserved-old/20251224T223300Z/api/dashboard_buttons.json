@@ -1,0 +1,83 @@
+{
+  "essential_buttons": [
+    {
+      "id": "btn_start_api",
+      "label": "Start API",
+      "icon": "▶️",
+      "color": "#00ff88",
+      "endpoint": "/api/control/start/memory_api",
+      "command": "source ~/anaconda3/bin/activate messiah && nohup python /mnt/Wolf-code/Wolf-Ai-Enterptises/api/memory_api.py > /tmp/memory_api.log 2>&1 & echo $!",
+      "category": "control"
+    },
+    {
+      "id": "btn_stop_api",
+      "label": "Stop API",
+      "icon": "⏹️",
+      "color": "#ff4444",
+      "endpoint": "/api/control/stop/memory_api",
+      "command": "pkill -f 'python.*memory_api.py'",
+      "category": "control"
+    },
+    {
+      "id": "btn_refresh_dashboard",
+      "label": "Refresh Charts",
+      "icon": "📊",
+      "color": "#66bbff",
+      "endpoint": "/api/dashboard/refresh",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/metrics/visual_dashboard.py",
+      "category": "visualization"
+    },
+    {
+      "id": "btn_system_status",
+      "label": "Status",
+      "icon": "📡",
+      "color": "#ffaa33",
+      "endpoint": "/api/system/status",
+      "command": "ps aux | grep -E 'memory_api|scripty|session_logger' | grep -v grep | wc -l",
+      "category": "monitoring"
+    },
+    {
+      "id": "btn_db_stats",
+      "label": "DB Stats",
+      "icon": "💾",
+      "color": "#bb66ff",
+      "endpoint": "/api/database/stats",
+      "command": "PGPASSWORD=wolflogic2024 psql -h localhost -p 5433 -U wolf -d wolf_logic -t -c 'SELECT COUNT(*) FROM memories'",
+      "category": "database"
+    },
+    {
+      "id": "btn_view_logs",
+      "label": "Logs",
+      "icon": "📜",
+      "color": "#909090",
+      "endpoint": "/api/logs/view",
+      "command": "tail -n 50 /tmp/memory_api.log",
+      "category": "monitoring"
+    },
+    {
+      "id": "btn_ingest_file",
+      "label": "Ingest",
+      "icon": "📥",
+      "color": "#00ff88",
+      "endpoint": "/api/ingest/file",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/writers/ingest_agent.py",
+      "category": "ingestion",
+      "requires_input": true,
+      "input_placeholder": "Enter file path..."
+    },
+    {
+      "id": "btn_start_scripty",
+      "label": "Start Scripty",
+      "icon": "🎬",
+      "color": "#ff8844",
+      "endpoint": "/api/control/start/scripty",
+      "command": "source ~/anaconda3/bin/activate messiah && nohup python /mnt/Wolf-code/Wolf-Ai-Enterptises/scripty/scripty.py > /tmp/scripty.log 2>&1 & echo $!",
+      "category": "control"
+    }
+  ],
+  "button_layout": {
+    "primary_row": ["btn_start_api", "btn_stop_api", "btn_refresh_dashboard"],
+    "secondary_row": ["btn_system_status", "btn_db_stats", "btn_view_logs"],
+    "utility_row": ["btn_ingest_file", "btn_start_scripty"]
+  }
+}

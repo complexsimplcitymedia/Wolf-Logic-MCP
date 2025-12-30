@@ -1,0 +1,21 @@
+{
+  "text": "Here is a summary of our conversation in 2-3 sentences:\n\nYou have a failover setup with two default routes configured in your network, using wired and wireless connections as alternatives. This means that traffic will use the wired connection if it's available, but may switch to the wireless connection if the wired one fails. There are no load balancing features enabled or recommended for this setup.",
+  "content": "ASSISTANT: Based on the output:\n\n**No load balancing is currently configured.**\n\nWhat you have is:\n- **Two default routes** with different metrics (failover, not load balancing):\n  - `eno1` (wired) - metric 100 (primary)\n  - `wlp0s20f3` (wireless) - metric 600 (backup)\n\n- IP forwarding is enabled (`1`)\n- No bonding interfaces (`bond*` or `team*`)\n- No multipath routing\n\nThis is a **failover setup**, not load balancing. Traffic uses the wired connection (eno1) by default, and only fails over to wireless if eno1 goes down.\n\nWould you like me to check for anything specific, or help set up actual load balancing (like bonding or multipath routing)?",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "622206dd-d4fe-4c2b-9c6a-800259ceed55",
+  "timestamp": "2025-12-30T14:57:10.689380",
+  "keywords": [
+    "Here are 5-10 key topics/keywords from this conversation:\n\nTwo default routes with different metrics",
+    "IP forwarding enabled",
+    "no bonding interfaces",
+    "no multipath routing",
+    "failover setup",
+    "load balancing not applicable. \n\nLet me know if you'd like me to help with anything specific or if you'd like me to summarize the conversation in full."
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral as it is providing factual information about the current network setup, which is a failover setup rather than a load balancing one. The assistant is offering further assistance to set up load balancing if requested by the user. Sentiment rating: 3 (Neutral)"
+  },
+  "source": "swarm-intake"
+}

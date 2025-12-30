@@ -1,0 +1,20 @@
+{
+  "text": "This conversation has just started, and there is no previous message to summarize. The JSON object you provided indicates that a request was interrupted by the user.",
+  "content": "USER: [{'type': 'text', 'text': '[Request interrupted by user]'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:40.406770",
+  "keywords": [
+    "[user]: {'type': 'text'",
+    "'text': '[Request interrupted by user]'}",
+    "KEYWORDS: User",
+    "Interrupted",
+    "Request"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of the provided conversation is neutral to slightly negative, as the user has interrupted a request. However, it does not contain any explicitly negative or positive statements, so I would rate it a 2. This rating indicates that the user's action may have disrupted the intended interaction, but the tone itself does not necessarily convey strong emotions."
+  },
+  "source": "swarm-intake"
+}

@@ -1,0 +1,52 @@
+services:
+  # Port 3550 - Dashboard (Metrics, Memory Counts, GPU Stats)
+  wolf-dashboard:
+    build:
+      context: /mnt/Wolf-code/Wolf-Ai-Enterptises/art/set_dec
+      dockerfile: Dockerfile.hybrid
+    container_name: wolf-dashboard
+    image: wolf-dashboard:latest
+    network_mode: "host"
+    environment:
+      PG_HOST: localhost
+      PG_PORT: 5433
+      PG_DB: wolf_logic
+      PG_USER: wolf
+      PG_PASS: wolflogic2024
+      PORT: 3550
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - /run/lactd.sock:/var/run/lactd.sock:ro
+    restart: unless-stopped
+
+  # Port 2550 - Control Center (32 Programmable Buttons)
+  wolf-control:
+    build:
+      context: .
+      dockerfile: Dockerfile.hybrid
+    container_name: wolf-control
+    image: wolf-control:latest
+    network_mode: "host"
+    environment:
+      PORT: 2550
+      PG_HOST: localhost
+      PG_PORT: 5433
+      PG_DB: wolf_logic
+      PG_USER: wolf
+      PG_PASS: wolflogic2024
+      OPENMEMORY_API: http://100.110.82.181:8765
+      USER_ID: neo4j
+      NEO4J_URI: bolt://100.110.82.181:8687
+      PYTHONUNBUFFERED: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
+    volumes:
+      - /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-app/control_app.py:/app/app.py:ro
+      - /mnt/Wolf-code/Wolf-Ai-Enterptises/api:/mnt/Wolf-code/Wolf-Ai-Enterptises/api:ro
+      - /mnt/Wolf-code/Wolf-Ai-Enterptises/writers:/mnt/Wolf-code/Wolf-Ai-Enterptises/writers:ro
+      - /home/thewolfwalksalone/anaconda3/envs/messiah:/home/thewolfwalksalone/anaconda3/envs/messiah:ro
+      - /run/lactd.sock:/var/run/lactd.sock:ro
+    restart: unless-stopped
+
+networks:
+  wolf-network:
+    driver: bridge

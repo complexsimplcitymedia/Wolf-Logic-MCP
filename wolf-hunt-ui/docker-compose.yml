@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  wolf-hunt-ui:
+    build: .
+    container_name: wolf-hunt-ui
+    ports:
+      - "3333:3333"
+    restart: unless-stopped
+    networks:
+      - wolf-network
+
+networks:
+  wolf-network:
+    name: production_wolf-network
+    external: true

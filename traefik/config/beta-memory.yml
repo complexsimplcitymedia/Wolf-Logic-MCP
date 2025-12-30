@@ -1,0 +1,18 @@
+http:
+  services:
+    beta-memory-api:
+      loadBalancer:
+        servers:
+          - url: "http://172.17.0.1:5001"
+
+  routers:
+    beta-memory-api:
+      rule: "Host(`beta-memory.complexsimplicityai.tech`)"
+      entryPoints:
+        - https
+      service: beta-memory-api
+      priority: 20
+      middlewares:
+        - authentik-auth
+      tls:
+        certResolver: cloudflare

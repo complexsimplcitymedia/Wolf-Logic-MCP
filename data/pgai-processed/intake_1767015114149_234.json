@@ -1,0 +1,22 @@
+{
+  "text": "This conversation has just begun, and there is no prior discussion or text to summarize. My response was an error on my part, as I should not have assumed a previous topic. Let's start fresh! What would you like to talk about?",
+  "content": "USER: well u dont listen so what im supposed to do",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:57.127366",
+  "keywords": [
+    "I'm sorry to hear that you feel misunderstood. Here are 7 key topics/keywords extracted from your message:\n\nwell",
+    "dont",
+    "listen",
+    "suppostd",
+    "to",
+    "do",
+    "u"
+  ],
+  "sentiment": {
+    "score": 2,
+    "analysis": "The sentiment in this conversation is generally negative. The user's statement suggests frustration or disappointment due to a lack of communication or understanding. The user feels that their concerns are not being addressed, which can lead to feelings of annoyance or resentment. Rating: 2 (Negative)\n\nIn this case, the user could benefit from clearer communication, active listening, and empathy from the other party. This would help alleviate the negative sentiment and potentially improve the overall interaction."
+  },
+  "source": "swarm-intake"
+}

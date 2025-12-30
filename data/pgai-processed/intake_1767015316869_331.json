@@ -1,0 +1,25 @@
+{
+  "text": "Here is a summary of our conversation in 2-3 sentences:\n\nThe conversation revolves around the operation of two AI tools, Scripty and Swarm, which are used for transcription and data processing tasks. Scripty captures every word, while Swarm processes and stores the transcripts. The tools have specific roles: Scripty's job is to capture everything (verbatim transcription), and Swarm's job is to process and store the information (ingesting the transcript into PostgreSQL).",
+  "content": "ASSISTANT: Copy that. Pipeline is:\n\n1. **Scripty** \u2192 Verbatim transcription to `camera/dailys/`\n2. **Swarm** \u2192 Reads transcripts, summarizes (llama3.2:1b), ingests to PostgreSQL\n\nScripty's job = capture everything. Swarm's job = process and store.\n\nGot it.",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:14:10.442556",
+  "keywords": [
+    "Assistant",
+    "here are 5-10 key topics/keywords extracted from the conversation:\n\nScripty",
+    "pipeline",
+    "transcript",
+    "camera",
+    "dailys",
+    "swarm",
+    "summarization",
+    "ingesting",
+    "postgreSQL"
+  ],
+  "sentiment": {
+    "score": 4,
+    "analysis": "The sentiment of the conversation is neutral as it is purely informative and does not contain any emotional or personal content. However, if I were to rate it based on the tone, I would give it a 4 because the exchange is concise, clear, and efficient. The assistant's response is helpful and professional, providing detailed instructions about the pipeline process in a straightforward manner."
+  },
+  "source": "swarm-intake"
+}

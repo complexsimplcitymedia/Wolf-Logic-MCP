@@ -1,0 +1,24 @@
+[Unit]
+Description=Scripty Session Stenographer with llama3.2:1b
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=thewolfwalksalone
+Group=thewolfwalksalone
+WorkingDirectory=/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP
+Environment="PATH=/home/thewolfwalksalone/anaconda3/envs/messiah/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/home/thewolfwalksalone/anaconda3/envs/messiah/bin/python /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/scripty/scripty.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=scripty
+
+# Resource limits
+LimitNOFILE=65536
+Nice=5
+
+[Install]
+WantedBy=multi-user.target

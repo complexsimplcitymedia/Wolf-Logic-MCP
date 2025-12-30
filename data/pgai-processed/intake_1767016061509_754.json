@@ -1,0 +1,22 @@
+{
+  "text": "Here is a summary of the conversation in 2-3 sentences:\n\nThe scripty pipeline's SSH connection timed out, prompting for an SSH key or alternative settings. Despite the issue, the server-scripty.py, swarm_intake_processor.py, and pgai_queue_ingestor.py pipelines continue to run and process tasks. To fix the issue, the user needs to set up an SSH key or change the port/URL used for pushing changes to GitLab.",
+  "content": "ASSISTANT: SSH connection to `gitlab.complexsimplicityai.com` port 22 timed out. \n\n**Scripty pipeline is operational:**\n- **server-scripty.py** - Running, capturing to camera/dailys/\n- **swarm_intake_processor.py** - Running, processing with llama3.2:1b + mistral\n- **pgai_queue_ingestor.py** - Running, writing to PostgreSQL\n- **Memory count:** 99,370 \u2192 99,958+ (growing in real-time)\n\n**Git status:**\n- Branch `server-scripty` committed locally\n- 3 pipeline files tracked\n- Push to GitLab failed (SSH connection timeout)\n\nNeed SSH key setup or different port/URL to push to GitLab. Files are safe locally and pipeline is working.",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:46:57.811777",
+  "keywords": [
+    "SSH connection to gitlab.complexsimplicityai.com port 22 timed out",
+    "server-scripty.py running",
+    "swarm_intake_processor.py processing",
+    "pgai_queue_ingestor.py writing",
+    "Git status: branch committed",
+    "3 pipeline files tracked",
+    "push failed (SSH connection timeout)"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of the conversation appears to be neutral, as it presents a technical issue along with providing relevant information about the system's current state. However, the user might experience frustration due to the SSH connection timeout preventing them from pushing changes to GitLab.\n\nRating: 3 (Neutral)\n\nExplanation: The assistant is providing an update on the status of various components in the system, including their operational status, memory usage, and Git status. However, it mentions a problem with the SSH connection, which indicates that there's an issue preventing the user from making updates to GitLab. Despite this setback, the assistant notes that the files are safe locally and the pipeline is still functional, which may help alleviate concerns about data loss or major system failures."
+  },
+  "source": "swarm-intake"
+}

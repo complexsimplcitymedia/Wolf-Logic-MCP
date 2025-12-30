@@ -1,0 +1,18 @@
+{
+  "text": "This conversation has just started, and there is no text to summarize. The provided dictionary contains an error message indicating that the user was interrupted, but it does not contain any relevant information about the conversation so far.",
+  "content": "USER: [{'type': 'tool_result', 'content': 'Interrupted by user', 'is_error': True, 'tool_use_id': 'toolu_01A7d1YxMVR8jFPBxAwDXRgt'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:57.125849",
+  "keywords": [
+    "INTERRUPTED BY USER",
+    "TOOL UPGRADE REQUIRED",
+    "TOOL USE ID"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "Based on the provided conversation snippet, it appears that the interaction was disrupted. The tool's response indicates an issue or error. Therefore, I would rate this conversation a 1, indicating very negative sentiment due to the interruption and error message. This suggests a need for improvement in user experience and system functionality."
+  },
+  "source": "swarm-intake"
+}

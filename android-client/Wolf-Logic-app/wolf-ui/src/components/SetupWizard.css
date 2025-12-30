@@ -1,0 +1,148 @@
+.setup-wizard {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.wizard-container {
+  width: 80%;
+  max-width: 600px;
+  background: #0a0a0a;
+  border: 2px solid #00ff88;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+}
+
+.wizard-header {
+  border-bottom: 1px solid #00ff88;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  color: #00ff88;
+  font-weight: bold;
+}
+
+.wizard-screen h2 {
+  color: #00ff88;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.wizard-screen p {
+  color: #ccc;
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+.permission-box {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.permission-box label {
+  color: #00ff88;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.model-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.model-card {
+  border: 1px solid #333;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+}
+
+.model-card:hover {
+  border-color: #00ff88;
+  background: rgba(0, 255, 136, 0.1);
+}
+
+.model-card.selected {
+  border-color: #00ff88;
+  background: rgba(0, 255, 136, 0.2);
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+}
+
+.model-card h3 {
+  color: #00ff88;
+  margin: 0 0 5px 0;
+  font-size: 1rem;
+}
+
+.model-card p {
+  font-size: 0.7rem;
+  color: #aaa;
+  margin: 0;
+}
+
+.wizard-btn {
+  background: transparent;
+  border: 1px solid #00ff88;
+  color: #00ff88;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+  width: 100%;
+}
+
+.wizard-btn:hover {
+  background: #00ff88;
+  color: #000;
+}
+
+.terminal-logs {
+  background: #000;
+  padding: 15px;
+  height: 250px;
+  overflow-y: auto;
+  border: 1px solid #333;
+  margin-bottom: 20px;
+}
+
+.log-line {
+  color: #00ff88;
+  font-size: 0.8rem;
+  margin-bottom: 5px;
+  white-space: pre-wrap;
+}
+
+.blink {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% { opacity: 0; }
+}
+
+.pulse {
+  animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+  0% { box-shadow: 0 0 0 0px rgba(0, 255, 136, 0.4); }
+  100% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+}
+
+.cursor {
+  display: inline-block;
+  color: #00ff88;
+  animation: blinker 0.8s step-start infinite;
+}

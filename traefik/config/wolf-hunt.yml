@@ -1,0 +1,16 @@
+http:
+  services:
+    wolf-hunt-ui:
+      loadBalancer:
+        servers:
+          - url: "http://172.17.0.1:3333"
+
+  routers:
+    wolf-hunt-ui:
+      rule: "Host(`hunt.complexsimplicityai.com`)"
+      entryPoints:
+        - https
+      service: wolf-hunt-ui
+      priority: 10
+      tls:
+        certResolver: cloudflare

@@ -1,0 +1,19 @@
+{
+  "text": "This conversation has started with a single message from the user, who initiated a request to summarize their input but hasn't provided any text yet.",
+  "content": "USER: [{'type': 'text', 'text': '[Request interrupted by user for tool use]'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:13:40.437890",
+  "keywords": [
+    "request",
+    "interrupt",
+    "tool",
+    "user"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "Based on the provided conversation snippet, it is difficult to determine the sentiment as there is no explicit emotional content or opinion expressed. However, since the user seems to be requesting something (a tool), it could be inferred that the interaction might lean towards being neutral or positive, depending on whether the user was looking for a tool that they found useful or necessary for their task.\n\nRating: 3 (Neutral)"
+  },
+  "source": "swarm-intake"
+}

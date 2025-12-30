@@ -1,0 +1,2 @@
+# Messiah Environment - Auto-activation
+source ~/anaconda3/bin/activate rocm

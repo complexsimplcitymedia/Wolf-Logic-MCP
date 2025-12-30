@@ -1,0 +1,1 @@
+/mnt/WolfPack/A_Letter_to_my_son/GEMINI.md

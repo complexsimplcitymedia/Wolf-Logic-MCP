@@ -1,0 +1,24 @@
+{
+  "text": "This conversation started with a request to post the IP address of a proxy server, which was then used to connect to an API endpoint using PostgREST. The test revealed that the Librarian REST API is now available at `https://api.complexsimplicityai.com`.",
+  "content": "ASSISTANT: **Done.**\n\n`api.complexsimplicityai.com` \u2192 PostgREST (100.110.82.181:3333)\n\nCaddy reloaded. Test it:\n\n```bash\n# Via domain\ncurl https://api.complexsimplicityai.com/\n\n# List tables\ncurl https://api.complexsimplicityai.com/memories?limit=3\n\n# Query core_identity\ncurl \"https://api.complexsimplicityai.com/memories?namespace=eq.core_identity\"\n```\n\n**Librarian REST API is live at https://api.complexsimplicityai.com**",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:57:32.770015",
+  "keywords": [
+    "Here are 5-10 key topics/keywords extracted from the conversation:\n\nlibrary",
+    "assistant",
+    "caddy",
+    "postgrest",
+    "api",
+    "memory",
+    "core",
+    "identity",
+    "librarian"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment in this conversation appears to be neutral as it primarily focuses on providing information about the status of a project or system (the Librarian REST API being live). There is no explicit positive or negative emotion expressed, but rather a factual communication about the successful reload and functionality of the Caddy server. The rating would be around 3, as it neither shows extreme positivity nor negativity."
+  },
+  "source": "swarm-intake"
+}

@@ -1,0 +1,4 @@
+id,company_name,position_title,job_url,resume_version,date_applied,email_sent,call_made,response_received,response_type,interview_scheduled,interview_date,notes
+3,Apple,ML Engineer,https://careers.apple.com/job3,,2025-12-02 21:05:38.193592,No,No,No,,No,,
+2,Microsoft,Cloud Architect,https://careers.microsoft.com/job2,v1.0,2025-12-02 21:05:37.020289,Yes,No,No,,No,,
+1,Google,Software Engineer,https://careers.google.com/job1,v1.0,2025-12-02 21:05:35.501797,Yes,Yes,Yes,callback,No,,Recruiter wants technical interview

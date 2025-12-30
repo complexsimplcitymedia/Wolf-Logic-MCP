@@ -1,0 +1,8 @@
+{
+  "text": "USER: [{'tool_use_id': 'toolu_01AtXP2m9y8vVCvAQz4ZTrTs', 'type': 'tool_result', 'content': 'thewolf+  234902  0.0  0.0  22092 15436 ?        Ss   08:11   0:00 /home/thewolfwalksalone/anaconda3/envs/messiah/bin/python /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/scripty/server-scripty.py\\nthewolf+  235598  0.0  0.0  22000 16160 ?        S    08:11   0:00 python scripty/server-scripty.py', 'is_error': False}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:19:10.604549",
+  "source": "swarm-intake"
+}

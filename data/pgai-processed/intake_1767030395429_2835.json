@@ -1,0 +1,23 @@
+{
+  "text": "This user has posted a blog article on the Grafana Cloud documentation site, titled \"Getting Started with Postgres Database Observability\". The post provides an overview of how to set up and monitor a PostgreSQL database in Grafana Cloud. It covers topics such as creating a database instance, installing the necessary plugins, and configuring monitoring settings for performance and security.",
+  "content": "USER: https://grafana.com/docs/grafana-cloud/monitor-applications/database-observability/get-started/postgres/",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T12:46:16.895917",
+  "keywords": [
+    "postgres",
+    "grafana",
+    "cloud",
+    "monitoring",
+    "application",
+    "database",
+    "observability",
+    "getstarted"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral to slightly positive. The user is providing a link to a documentation page, which suggests that they are seeking information or trying to help themselves. While there's no explicit expression of satisfaction or dissatisfaction, the act of sharing a resource indicates a cooperative and problem-solving approach, which typically implies a neutral or positive intent.\n\nRating: 3.5 (slightly positive)"
+  },
+  "source": "swarm-intake"
+}

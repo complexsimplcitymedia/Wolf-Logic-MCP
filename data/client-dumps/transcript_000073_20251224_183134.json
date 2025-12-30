@@ -1,0 +1,8 @@
+{
+  "exchange_num": 73,
+  "timestamp": "2025-12-24T18:31:34.070696",
+  "user": "yes",
+  "assistant": "[THINKING]\nUser confirmed. I need to fix server-scripty.py to:\n1. Remove all LLM/summarization code (no llama3.2:1b calls)\n2. Just capture verbatim transcripts\n3. Drop full exchange text to client dump directory\n4. That's it - no processing\n\nLet me update the file.",
+  "source": "server-scripty",
+  "type": "verbatim_transcript"
+}

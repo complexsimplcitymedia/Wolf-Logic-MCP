@@ -1,0 +1,13 @@
+{"version": 2, "width": 71, "height": 25, "timestamp": 1765361416, "env": {"SHELL": "/bin/bash", "TERM": "xterm"}}
+[1.14499, "o", "\u001b]697;OSCUnlock=e8be1c6a0b0c47ce93d3dd1db012acdf\u0007\u001b]697;Dir=/mnt/Wolf-code/Wolf-Ai-Enterptises\u0007\u001b]697;Shell=bash\u0007\u001b]697;ShellPath=/usr/bin/bash\u0007\u001b]697;PID=65720\u0007\u001b]697;ExitCode=0\u0007\u001b]697;TTY=/dev/pts/5\u0007\u001b]697;Log=\u0007"]
+[1.145251, "o", "\u001b]697;User=thewolfwalksalone\u0007"]
+[1.145631, "o", "\u001b]697;OSCLock=e8be1c6a0b0c47ce93d3dd1db012acdf\u0007"]
+[1.145643, "o", "\u001b]697;PreExec\u0007"]
+[1.148077, "o", "\u001b]697;OSCLock=e8be1c6a0b0c47ce93d3dd1db012acdf\u0007"]
+[1.148097, "o", "\u001b]697;PreExec\u0007"]
+[1.151061, "o", "\u001b[?2004h"]
+[1.151092, "o", "\u001b]697;StartPrompt\u0007(base) \u001b]0;thewolfwalksalone@csmcloud-server: /mnt/Wolf-code/Wolf-Ai-Enterptises\u0007thewolfwalksalone@csmcloud-server:/mnt/Wolf-code/Wolf-Ai-Enterptises$ \u001b]697;EndPrompt\u0007\u001b]697;NewCmd=e8be1c6a0b0c47ce93d3dd1db012acdf\u0007"]
+[32.147603, "r", "71x24"]
+[32.147724, "o", "\r\u001b[K\r\u001b[A\u001b[K\r\u001b]697;StartPrompt\u0007(base) \u001b]0;thewolfwalksalone@csmcloud-server: /mnt/Wolf-code/Wolf-Ai-Enterptises\u0007thewolfwalksalone@csmcloud-server:/mnt/Wolf-code/Wolf-Ai-Enterptises$ \u001b]697;EndPrompt\u0007\u001b]697;NewCmd=e8be1c6a0b0c47ce93d3dd1db012acdf\u0007"]
+[38.698245, "r", "71x23"]
+[38.698429, "o", "\r\u001b[K\r\u001b[A\u001b[K\r\u001b]697;StartPrompt\u0007(base) \u001b]0;thewolfwalksalone@csmcloud-server: /mnt/Wolf-code/Wolf-Ai-Enterptises\u0007thewolfwalksalone@csmcloud-server:/mnt/Wolf-code/Wolf-Ai-Enterptises$ \u001b]697;EndPrompt\u0007\u001b]697;NewCmd=e8be1c6a0b0c47ce93d3dd1db012acdf\u0007"]

@@ -1,0 +1,20 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install dependencies
+RUN pip install --no-cache-dir \
+    fastapi \
+    uvicorn[standard] \
+    psycopg2-binary \
+    pydantic \
+    neo4j
+
+# Copy application files
+COPY wolf_rest_api.py .
+
+# Expose port
+EXPOSE 3000
+
+# Run application
+CMD ["python", "wolf_rest_api.py"]

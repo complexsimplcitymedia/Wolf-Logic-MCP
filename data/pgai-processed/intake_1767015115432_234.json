@@ -1,0 +1,22 @@
+{
+  "text": "This conversation has just begun, and there is nothing for me to summarize yet. Our conversation started with your question about summarizing a conversation that hadn't taken place, and you responded by telling me that I didn't listen. Let's start fresh! What would you like to talk about?",
+  "content": "USER: well u dont listen so what im supposed to do",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:57.127366",
+  "keywords": [
+    "I'm sorry to hear that you're feeling frustrated. I'll do my best to extract relevant keywords for you. Here are 7 key topics/keywords: \n\nlisten",
+    "communicate",
+    "frustration",
+    "conflict",
+    "resolution",
+    "understanding",
+    "empathy"
+  ],
+  "sentiment": {
+    "score": 2,
+    "analysis": "The sentiment in this conversation is slightly negative, rating 2 out of 5. The user's message suggests frustration and dissatisfaction due to feeling unheard or ignored by the other party. This could potentially lead to a breakdown in communication if not addressed promptly. However, it's important to note that the response given here is based on the text provided and does not take into account any additional context or tone of voice that may be present in an actual conversation."
+  },
+  "source": "swarm-intake"
+}

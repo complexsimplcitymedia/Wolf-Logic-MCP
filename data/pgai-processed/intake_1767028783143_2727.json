@@ -1,0 +1,18 @@
+{
+  "text": "This conversation has just begun. You've only asked \"where's my Neo4j Bridge\". There is no previous conversation or context to summarize. I'd be happy to help answer your question once it's been addressed, though!",
+  "content": "USER: where my neo4j bridge",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T12:19:33.412746",
+  "keywords": [
+    "neo4j",
+    "bridge",
+    "user"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "Sentiment Rating: 3 (Neutral)\n\nExplanation: The user's message is a straightforward inquiry about the location of their Neo4j bridge. It does not contain any negative or positive emotional language, making it generally neutral. However, if the user was experiencing issues with the bridge, their sentiment could potentially be lower."
+  },
+  "source": "swarm-intake"
+}

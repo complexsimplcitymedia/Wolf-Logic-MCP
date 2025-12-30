@@ -1,0 +1,18 @@
+{
+  "text": "This conversation has just begun, so there is nothing to summarize yet. I'm happy to chat with you and provide assistance on the topics you'd like to discuss, including PostgreSQL (PostGREST). What would you like to talk about first?",
+  "content": "USER: \u000b\u000bi know it bro after you get that back up let's install postgrest",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:25:14.828445",
+  "keywords": [
+    "Here are the extracted keywords in a comma-separated list:\n\nget back",
+    "install postgres",
+    "after you"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral to slightly positive. The user is showing support for the other person by acknowledging a previous issue (getting a backup) and suggesting a solution (installing PostgREST). However, the interaction is brief and lacks emotional expressions, which contributes to its neutral tone. A rating of 3 would be appropriate."
+  },
+  "source": "swarm-intake"
+}

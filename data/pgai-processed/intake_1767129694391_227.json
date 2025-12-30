@@ -1,0 +1,25 @@
+{
+  "text": "This conversation started with a user asking for a summary of a text containing API query examples and tools used to interact with the Complex Simplicity AI library. The response provided a 2-3 sentence summary, listing the preferred method (REST API) along with an example API token and basic query examples.",
+  "content": "USER: [{'tool_use_id': 'toolu_011xQhqVwGxYTFqxa13jUU3F', 'type': 'tool_result', 'content': \"diff --git a/CLAUDE.md b/CLAUDE.md\\nindex fdd0271..b517d6f 100644\\n--- a/CLAUDE.md\\n+++ b/CLAUDE.md\\n@@ -216,6 +216,63 @@ Use env: `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD` (see ENV_SETUP\\n \\n ### Query Protocol - How to Talk to the Librarian\\n \\n+**PREFERRED METHOD: REST API (Works for Claude, Gemini, and all models)**\\n+\\n+The Librarian is now accessible via REST API at `https://api.complexsimplicityai.com/memories`\\n+\\n+**API Token (valid until 2026-12-30):**\\n+```\\n+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoid29sZiIsInN1YiI6IndvbGYtYXBpLWNsaWVudCIsImlhdCI6MTc2NzA2NTA0NiwiZXhwIjoxNzk4NjAxMDQ2fQ.G4BIYiokDSPIZbgasJ7EHjLNijZ3LcpKYq54B3lDytM\\n+```\\n+\\n+**Basic Query Examples:**\\n+\\n+```bash\\n+# Get recent memories (limit 10)\\n+curl -s -H 'Authorization: Bearer <TOKEN>' \\\\\\n+  'https://api.complexsimplicityai.com/memories?limit=10&order=created_at.desc'\\n+\\n+# Filter by namespace (scripty, core_identity, wolf_hunt, etc.)\\n+curl -s -H 'Authorization: Bearer <TOKEN>' \\\\\\n+  'https://api.complexsimplicityai.com/memories?namespace=eq.scripty&limit=20&order=created_at.desc'\\n+\\n+# Filter by multiple namespaces\\n+curl -s -H 'Authorization: Bearer <TOKEN>' \\\\\\n+  'https://api.complexsimplicityai.com/memories?namespace=in.(scripty,core_identity)&order=created_at.desc&limit=10'\\n+\\n+# Search content (case-insensitive)\\n+curl -s -H 'Authorization: Bearer <TOKEN>' \\\\\\n+  'https://api.complexsimplicityai.com/memories?content=ilike.*search%20term*&limit=20'\\n+\\n+# Filter by date range\\n+curl -s -H 'Authorization: Bearer <TOKEN>' \\\\\\n+  'https://api.complexsimplicityai.com/memories?created_at=gte.2025-12-01&namespace=eq.wolf_hunt&order=created_at.desc'\\n+\\n+# Select specific columns only\\n+curl -s -H 'Authorization: Bearer <TOKEN>' \\\\\\n+  'https://api.complexsimplicityai.com/memories?select=content,namespace,created_at&limit=10'\\n+```\\n+\\n+**PostgREST Query Syntax Reference:**\\n+| Operator | Meaning | Example |\\n+|----------|---------|---------|\\n+| `eq.` | equals | `namespace=eq.scripty` |\\n+| `neq.` | not equals | `namespace=neq.imported` |\", 'is_error': False}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "010ca39e-cf7c-4923-8211-b6e6ba3ac85d",
+  "timestamp": "2025-12-30T16:21:12.307156",
+  "keywords": [
+    "Here are 5-10 key topics/keywords from this conversation:\n\nmemory",
+    "postgrest",
+    "rest-api",
+    "toolu_011xQhqVwGxYTFqxa13jUU3F",
+    "pghost",
+    "pgport",
+    "pgdatabase",
+    "pguser",
+    "pgpassword",
+    "api-token"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of the conversation appears to be very positive, rated as a 4.5 out of 5. The user is provided with detailed instructions on how to access and query data from the Librarian (a database or memory storage service) via REST API, which implies that the user has easy and efficient access to valuable data. The provided examples demonstrate versatility in filtering data by namespaces, searching content, and selecting specific columns. This conversation aims to empower the user with knowledge about using a new tool effectively, creating a positive user experience."
+  },
+  "source": "swarm-intake"
+}

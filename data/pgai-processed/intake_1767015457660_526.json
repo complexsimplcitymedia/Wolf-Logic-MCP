@@ -1,0 +1,8 @@
+{
+  "text": "USER: [{'tool_use_id': 'toolu_015oC5YirXW3EtMS7FWZT4z4', 'type': 'tool_result', 'content': 'total 200\\n-rw-r--r-- 1 thewolfwalksalone thewolfwalksalone 1310 Dec 29 08:22 intake_1767014567386_9.json\\n-rw-rw-r-- 1 thewolfwalksalone thewolfwalksalone 1209 Dec 29 08:22 intake_1767014565928_8.json\\n-rw-r--r-- 1 thewolfwalksalone thewolfwalksalone 1682 Dec 29 08:22 intake_1767014565005_8.json\\n-rw-rw-r-- 1 thewolfwalksalone thewolfwalksalone 1509 Dec 29 08:22 intake_1767014563040_7.json\\n-rw-r--r-- 1 thewolfwalksalone thewolfwalksalone 1385 Dec 29 08:22 intake_1767014561906_7.json\\n-rw-rw-r-- 1 thewolfwalksalone thewolfwalksalone 1193 Dec 29 08:22 intake_1767014560392_6.json\\n-rw-r--r-- 1 thewolfwalksalone thewolfwalksalone 1019 Dec 29 08:22 intake_1767014558882_6.json\\n-rw-rw-r-- 1 thewolfwalksalone thewolfwalksalone 1077 Dec 29 08:22 intake_1767014557815_5.json\\n-rw-r--r-- 1 thewolfwalksalone thewolfwalksalone 1024 Dec 29 08:22 intake_1767014556619_5.json', 'is_error': False}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:22:57.448796",
+  "source": "swarm-intake"
+}

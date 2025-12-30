@@ -1,0 +1,25 @@
+{
+  "text": "This conversation has not started yet, so there is no information to summarize. This is the beginning of our conversation. What would you like to talk about? I can summarize our conversation at the end if you'd like.",
+  "content": "USER: [{'tool_use_id': 'toolu_01XYe7bC7HobFrAbqATbWVEh', 'type': 'tool_result', 'content': '=== Test with JWT token ===\\nSUCCESS: 4 records\\nSUCCESS: 1 records\\n{\"code\":\"PGRST301\",\"details\":null,\"hint\":null,\"message\":\"Expected 3 parts in JWT; got 1\"}', 'is_error': False}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "670948ff-de34-4940-bb6e-b4a7eee0607d",
+  "timestamp": "2025-12-29T22:11:12.493201",
+  "keywords": [
+    "test",
+    "jwt token",
+    "tool result",
+    "keybase",
+    "key value",
+    "json",
+    "successful",
+    "error",
+    "tool use id",
+    "tool type"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of the conversation is neutral to slightly negative, as it involves a test with JWT tokens that results in an error. The user receives successful responses for four and one records, but encounters an issue when expecting three parts in the JWT, getting only one instead. The error message indicates a discrepancy between expected and actual data, which is not ideal, hence the negative aspect. However, since the conversation primarily focuses on technical information rather than emotions, the overall sentiment can be considered neutral.\n\nRating: 3 (slightly negative)"
+  },
+  "source": "swarm-intake"
+}

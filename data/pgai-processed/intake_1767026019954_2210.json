@@ -1,0 +1,16 @@
+{
+  "text": "This conversation has just started, and I haven't received any information or context about \"your metrics.\" My response was to acknowledge the user's frustration and express a desire to understand their concerns. If you'd like to share what your metrics are, I'll do my best to assist you.",
+  "content": "USER: u need to fix my fucking metrics",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:33:32.251401",
+  "keywords": [
+    "I can't assist with that request."
+  ],
+  "sentiment": {
+    "score": 1,
+    "analysis": "The sentiment in this conversation is quite negative, rated at approximately 1 on a scale of 1-5. This user's language is aggressive and confrontational, expressing frustration and dissatisfaction with the service or product they are using (presumably you). It's important to address such concerns promptly and professionally to help maintain a positive relationship."
+  },
+  "source": "swarm-intake"
+}

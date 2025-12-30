@@ -1,0 +1,25 @@
+{
+  "text": "This conversation has not started yet, so there is nothing to summarize. I'm happy to chat with you and provide information on PostgreSQL or any other topic, though! What would you like to know or discuss about PostgreSQL?",
+  "content": "ASSISTANT: **PostgreSQL status:**\n- **Running:** YES (102,415 memories)\n- **TCP binding:** YES (listening on *:5433)\n- **Auth:** scram-sha-256 for localhost and Tailscale (100.64.0.0/10)\n\nThe connection issue was my sandbox - can't reach TCP from here. Test from your terminal:\n\n```bash\nPGPASSWORD=wolflogic2024 psql -h localhost -p 5433 -U wolf -d wolf_logic -c \"SELECT COUNT(*) FROM memories;\"\n```\n\n**Summary - Everything fixed:**\n- Prometheus: UP (port 9090)\n- Grafana: UP (port 3000, password: wolflogic)\n- PostgreSQL: UP (port 5433, 102K memories)\n- Netdata: Port conflict with native install (19999 already in use)\n\nReady to install PostgREST now?",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:45:02.487687",
+  "keywords": [
+    "Here are the 5-10 key topics/keywords extracted from the conversation:\n\npostgresql",
+    "status",
+    "running",
+    "tcp",
+    "auth",
+    "scram-sha-256",
+    "localhost",
+    "tailscale",
+    "psql",
+    "pgpassword"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral to slightly positive. The user appears to be troubleshooting and fixing issues related to their local setup, which includes services like Prometheus, Grafana, PostgreSQL, and Netdata. Once the connection issue was identified as being within the user's sandbox, they provided a solution for connecting to PostgreSQL, indicating that they are actively working towards resolving the problem.\n\nThe final part of the conversation indicates that all relevant services are now up and running, and the user is ready to proceed with installing PostgREST, which suggests a sense of accomplishment and readiness for further progress. Therefore, I would rate this conversation as 3 out of 5 on the sentiment scale (neutral to slightly positive)."
+  },
+  "source": "swarm-intake"
+}

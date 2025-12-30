@@ -1,0 +1,21 @@
+[Unit]
+Description=MCP Intake Stream API - OAuth-secured client text streams
+After=network.target
+
+[Service]
+Type=simple
+User=thewolfwalksalone
+Group=thewolfwalksalone
+WorkingDirectory=/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/api
+Environment="PATH=/home/thewolfwalksalone/anaconda3/envs/messiah/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="AUTHENTIK_URL=https://auth.complexsimplicityai.com"
+Environment="INTAKE_PORT=8002"
+Environment="INTAKE_WORKERS=4"
+ExecStart=/home/thewolfwalksalone/anaconda3/envs/messiah/bin/python /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/api/intake_api.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

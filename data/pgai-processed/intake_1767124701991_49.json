@@ -1,0 +1,22 @@
+{
+  "text": "Here is a summary of our conversation in 3 sentences:\n\nA user reported that their system was using the wired connection but had 100% packet loss and couldn't connect through it, while their WiFi connection was fine. The problem lies with the eno1 interface, which has a lower metric than the default route to the internet via the wired connection. To fix this, the user suggested removing the default route for eno1 using the `ip route` command.",
+  "content": "ASSISTANT: **Found the problem:**\n\n- **eno1 (wired)**: 100% packet loss - NOT WORKING\n- **wlp0s20f3 (WiFi)**: Working fine\n- **System is using eno1** because it has lower metric (100 vs 600)\n\nYour traffic is being routed through the broken wired connection. You can fix this by removing the eno1 default route:\n\n```bash\nsudo ip route del default via 10.0.0.1 dev eno1\n```\n\nThis will make all traffic use WiFi. Want me to run this command, or would you prefer to troubleshoot why eno1 isn't working?",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "622206dd-d4fe-4c2b-9c6a-800259ceed55",
+  "timestamp": "2025-12-30T14:58:10.708445",
+  "keywords": [
+    "asso",
+    "eno1",
+    "wired connection",
+    "packet loss",
+    "ip route",
+    "default route",
+    "network troubleshooting"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral-positive. The assistant is providing a solution to the user's problem, which shows empathy and helpfulness. However, the issue at hand (100% packet loss on the wired connection) is negative for the user. The overall rating would be 3 out of 5, as the conversation focuses more on solving a technical problem rather than expressing positive emotions. The assistant offers two options to the user, allowing them to choose the best course of action based on their preference or circumstances."
+  },
+  "source": "swarm-intake"
+}

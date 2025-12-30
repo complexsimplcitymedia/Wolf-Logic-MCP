@@ -1,0 +1,75 @@
+.dashboard-page {
+  padding: 20px;
+  min-height: 100vh;
+  background: #0a0a0a;
+}
+
+.dashboard-page h1 {
+  text-align: center;
+  color: #00ff88;
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.dashboard-page .timestamp {
+  text-align: center;
+  color: #888;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.dashboard-page .refresh-btn {
+  background: #00ff88;
+  color: #0a0a0a;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.dashboard-page .refresh-btn:hover {
+  background: #00cc6a;
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 25px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.chart-card {
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid #333;
+  transition: all 0.3s ease;
+}
+
+.chart-card:hover {
+  border-color: #00ff88;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+}
+
+.chart-card img {
+  width: 100%;
+  border-radius: 5px;
+  background: #2a2a2a;
+}
+
+.chart-title {
+  color: #00ff88;
+  font-size: 1.3em;
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: bold;
+}

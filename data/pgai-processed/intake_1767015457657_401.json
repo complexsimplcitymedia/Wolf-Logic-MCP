@@ -1,0 +1,8 @@
+{
+  "text": "USER: [{'type': 'tool_result', 'content': \"Exit code 2\\nls: cannot access '/mnt/Wolf-code/Wolf-Ai-Enterptises/.git': No such file or directory\", 'is_error': True, 'tool_use_id': 'toolu_0191xySihCQZoJNvJdhWc9fU'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:18:27.352137",
+  "source": "swarm-intake"
+}

@@ -1,0 +1,16 @@
+{
+  "text": "Here is a summary of the conversation in 2-3 sentences:\n\nThe Tailscale interface is not visible due to a restriction at the local host or a down PostgreSQL service requiring a specific IP address. The issue can be resolved by changing the `listen_addresses` configuration from `'localhost,100.110.82.181'` to `'*'`, which listens on all available network interfaces.",
+  "content": "ASSISTANT: **ROOT CAUSE FOUND:**\n\nTailscale interface isn't visible (sandbox restriction or Tailscale is down). PostgreSQL config requires `100.110.82.181` to bind TCP - if that IP isn't available at startup, **TCP binding fails entirely**.\n\n**THE FIX:** Change `listen_addresses` from `'localhost,100.110.82.181'` to `'*'` (listen on all interfaces).",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:17:44.691228",
+  "keywords": [
+    "root cause: Tailscale interface not visible due to sandbox restriction or down.\npostgresql config requirement: bind TCP using '100.110.82.181'\ntcp binding failure: not available at startup\nfix: change `listen_addresses` to '*'."
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral as it is a technical issue report and its solution. It does not contain any negative or positive emotions.\n\nHowever, the tone can be described as informative and solution-oriented. The assistant is providing detailed information about the root cause of an issue and suggesting a fix for it. This shows professionalism and competence in problem-solving.\n\nRating: 3 (Neutral)"
+  },
+  "source": "swarm-intake"
+}

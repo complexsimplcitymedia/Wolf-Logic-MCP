@@ -1,0 +1,36 @@
+# API Keys and Secrets
+*.key
+*.pem
+*.env
+.env
+.env.*
+*_key
+*_secret
+*api_key*
+*secret*
+secrets/
+credentials/
+
+# Sensitive configs
+config.json
+*credentials.json
+
+# Logs with potential secrets
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+pgdata/
+
+# OS
+.DS_Store
+Thumbs.db

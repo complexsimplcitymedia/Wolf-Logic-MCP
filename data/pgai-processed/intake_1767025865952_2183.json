@@ -1,0 +1,25 @@
+{
+  "text": "Here is a summary of our conversation in 2-3 sentences:\n\nYou provided a code snippet that appears to be configuring and starting a PostgreSQL service, but it has encountered an issue. The error message indicates that the TCP port is not binding, suggesting a problem with how it was stopped or started. You were asked to investigate further using commands like `lsof` to see if any blocking processes are preventing the service from listening on port 5433.",
+  "content": "ASSISTANT: Config is correct (`listen_addresses = '*'`, `port = 5433`). Service shows active but TCP not binding. This needs a hard stop/start:\n\n```bash\nsudo pg_ctlcluster 18 main stop && sleep 2 && sudo pg_ctlcluster 18 main start && sleep 3 && ss -tlnp | grep 5433\n```\n\nIf that still shows nothing, check what's blocking:\n```bash\nsudo lsof -i :5433\n```",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:30:02.168943",
+  "keywords": [
+    "config",
+    "listen_addresses",
+    "port",
+    "stop",
+    "start",
+    "pg_ctlcluster",
+    "main",
+    "hard stop",
+    "start",
+    "ss"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral (3). The assistant is providing troubleshooting steps for a problem with a service, which suggests a problematic state, but the tone remains professional and informative. The commands provided are aimed at resolving the issue, indicating a proactive approach. The user will likely appreciate the assistance in diagnosing and addressing the problem. If the problem persists after following these steps, the next command is suggested to identify any potential blockers, showing further commitment to finding a solution."
+  },
+  "source": "swarm-intake"
+}

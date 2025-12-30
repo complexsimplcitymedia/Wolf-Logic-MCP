@@ -1,0 +1,17 @@
+[Unit]
+Description=Complex Logic UI Dashboard
+After=network.target wolf-backend.service
+Wants=wolf-backend.service
+
+[Service]
+Type=simple
+User=thewolfwalksalone
+WorkingDirectory=/mnt/WolfPack/Wolf-Logic-app/wolf-ui
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+RestartSec=10
+Environment=PORT=3333
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

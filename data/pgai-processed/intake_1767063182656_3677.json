@@ -1,0 +1,20 @@
+{
+  "text": "We have not had a conversation yet, so there is nothing to summarize. This appears to be the start of our conversation, and I'm happy to chat with you. What would you like to talk about?",
+  "content": "ASSISTANT: [TOOL: EnterPlanMode]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "670948ff-de34-4940-bb6e-b4a7eee0607d",
+  "timestamp": "2025-12-29T21:52:12.116539",
+  "keywords": [
+    "assistant\n\nassist",
+    "tool",
+    "enter",
+    "plan",
+    "mode"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "In this case, the conversation doesn't contain any emotional or sentimental content as it seems to be a command for a tool named \"EnterPlanMode\". Therefore, it is neither positive nor negative. The sentiment rating would be neutral, around 3 if we were to rate it on a scale of 1-5. This rating system is typically used for analyzing human conversations where emotions and sentiments are expressed, not for commands or instructions given to tools or systems."
+  },
+  "source": "swarm-intake"
+}

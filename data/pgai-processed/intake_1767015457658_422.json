@@ -1,0 +1,8 @@
+{
+  "text": "USER: [{'type': 'tool_result', 'content': 'Exit code 128\\nfatal: not a git repository (or any parent up to mount point /mnt)\\nStopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).', 'is_error': True, 'tool_use_id': 'toolu_01TeZtSCap4YB7iXxouJB9VC'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:19:27.390420",
+  "source": "swarm-intake"
+}

@@ -1,0 +1,164 @@
+{
+  "essential_buttons": [
+    {
+      "id": "btn_start_api",
+      "label": "Start API",
+      "icon": "\u25b6\ufe0f",
+      "color": "#00ff88",
+      "endpoint": "/api/control/memory-api/start",
+      "command": "source ~/anaconda3/bin/activate messiah && nohup python /mnt/Wolf-code/Wolf-Ai-Enterptises/api/memory_api.py > /tmp/memory_api.log 2>&1 & echo $!",
+      "category": "control",
+      "response_type": "text"
+    },
+    {
+      "id": "btn_stop_api",
+      "label": "Stop API",
+      "icon": "\u23f9\ufe0f",
+      "color": "#ff4444",
+      "endpoint": "/api/control/memory-api/stop",
+      "command": "pkill -f 'python.*memory_api.py' && echo 'Memory API stopped' || echo 'API not running'",
+      "category": "control",
+      "response_type": "text"
+    },
+    {
+      "id": "btn_refresh_dashboard",
+      "label": "Refresh Charts",
+      "icon": "\ud83d\udcca",
+      "color": "#66bbff",
+      "endpoint": "/api/dashboard/refresh",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/metrics/visual_dashboard_api.py --json",
+      "category": "visualization",
+      "response_type": "json"
+    },
+    {
+      "id": "btn_scripty_status",
+      "label": "Scripty Status",
+      "icon": "\ud83c\udfac",
+      "color": "#ffaa33",
+      "endpoint": "/api/control/scripty/status",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/scripty/scripty_control.py status",
+      "category": "monitoring",
+      "response_type": "json"
+    },
+    {
+      "id": "btn_start_scripty",
+      "label": "Start Scripty",
+      "icon": "\u25b6\ufe0f",
+      "color": "#00ff88",
+      "endpoint": "/api/control/scripty/start",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/scripty/scripty_control.py start",
+      "category": "control",
+      "response_type": "json"
+    },
+    {
+      "id": "btn_stop_scripty",
+      "label": "Stop Scripty",
+      "icon": "\u23f9\ufe0f",
+      "color": "#ff4444",
+      "endpoint": "/api/control/scripty/stop",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/scripty/scripty_control.py stop",
+      "category": "control",
+      "response_type": "json"
+    },
+    {
+      "id": "btn_db_stats",
+      "label": "DB Stats",
+      "icon": "\ud83d\udcbe",
+      "color": "#bb66ff",
+      "endpoint": "/api/database/stats",
+      "command": "PGPASSWORD=wolflogic2024 psql -h 100.110.82.181 -p 5433 -U wolf -d wolf_logic -t -A -c 'SELECT json_build_object(\\\"total_memories\\\", COUNT(*), \\\"last_updated\\\", MAX(created_at)) FROM memories'",
+      "category": "database",
+      "response_type": "json"
+    },
+    {
+      "id": "btn_view_logs",
+      "label": "Logs",
+      "icon": "\ud83d\udcdc",
+      "color": "#909090",
+      "endpoint": "/api/logs/view",
+      "command": "tail -n 50 /tmp/memory_api.log 2>/dev/null || echo 'No logs available'",
+      "category": "monitoring",
+      "response_type": "text"
+    },
+    {
+      "id": "btn_ingest_file",
+      "label": "Ingest",
+      "icon": "\ud83d\udce5",
+      "color": "#00ff88",
+      "endpoint": "/api/ingest/file",
+      "command": "source ~/anaconda3/bin/activate messiah && python /mnt/Wolf-code/Wolf-Ai-Enterptises/writers/ingest/ingest_agent_api.py --json",
+      "category": "ingestion",
+      "response_type": "json",
+      "requires_input": true,
+      "input_param": "filepath",
+      "input_placeholder": "Enter file path..."
+    },
+    {
+      "id": "btn_system_status",
+      "label": "System Status",
+      "icon": "\ud83d\udce1",
+      "color": "#ffaa33",
+      "endpoint": "/api/system/status",
+      "command": "ps aux | grep -E 'memory_api|scripty' | grep -v grep | awk '{print $2, $11}' | wc -l",
+      "category": "monitoring",
+      "response_type": "text"
+    },
+    {
+      "id": "btn_start_swarm",
+      "label": "Start Swarm",
+      "icon": "\ud83d\udc1d",
+      "color": "#00ff88",
+      "endpoint": "/api/control/swarm/start",
+      "command": "source ~/anaconda3/bin/activate messiah && nohup python /mnt/Wolf-code/Wolf-Ai-Enterptises/writers/ingest/swarm_realtime.py > /tmp/swarm.log 2>&1 & echo $\\!",
+      "category": "control",
+      "response_type": "text"
+    },
+    {
+      "id": "btn_stop_swarm",
+      "label": "Stop Swarm",
+      "icon": "\u23f9\ufe0f",
+      "color": "#ff4444",
+      "endpoint": "/api/control/swarm/stop",
+      "command": "pkill -f swarm_realtime.py && echo \"Swarm stopped\" || echo \"Swarm not running\"",
+      "category": "control",
+      "response_type": "text"
+    },
+    {
+      "id": "btn_swarm_status",
+      "label": "Swarm Status",
+      "icon": "\ud83d\udc1d",
+      "color": "#ffaa33",
+      "endpoint": "/api/control/swarm/status",
+      "command": "ps aux | grep swarm_realtime | grep -v grep && echo \"Running\" || echo \"Stopped\"",
+      "category": "monitoring",
+      "response_type": "text"
+    }
+  ],
+  "button_layout": {
+    "primary_control": [
+      "btn_start_api",
+      "btn_stop_api",
+      "btn_refresh_dashboard"
+    ],
+    "scripty_control": [
+      "btn_start_scripty",
+      "btn_stop_scripty",
+      "btn_scripty_status"
+    ],
+    "monitoring": [
+      "btn_system_status",
+      "btn_db_stats",
+      "btn_view_logs"
+    ],
+    "utility": [
+      "btn_ingest_file"
+    ],
+    "swarm_control": [
+      "btn_start_swarm",
+      "btn_stop_swarm",
+      "btn_swarm_status"
+    ]
+  },
+  "api_ready": true,
+  "updated_at": "2025-12-04T00:00:00"
+}

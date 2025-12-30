@@ -1,0 +1,25 @@
+{
+  "text": "Here is a 3 sentence summary of our conversation:\n\nYou shared information about the `wolf-api-mcp.py` file, which wraps PostgREST API as MCP tools. This includes details about individual MCP scripts (e.g., `postgres_mcp.py`, `wordpress_mcp.py`) and their purposes. The MCP servers are currently inactive, but you can start one using a script (`start_wolf_api_mcp.sh`) in the `/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/mcp-servers` directory.",
+  "content": "ASSISTANT: Yes. MCP servers in `/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/mcp-servers/`:\n\n| Server | Description |\n|--------|-------------|\n| `wolf_api_mcp.py` | Wraps PostgREST API as MCP tools |\n| `postgres_mcp.py` | Direct PostgreSQL access |\n| `email_mcp.py` | Email operations |\n| `browser_automation_mcp.py` | Browser automation |\n| `thunderbird_mcp.py` | Thunderbird email client |\n| `wordpress_mcp.py` | WordPress CMS |\n| `youtube_pipeline_server.py` | YouTube pipeline |\n\n**None currently running as MCP servers.** Only scripty and ingestion processes are active.\n\nTo start the Wolf API MCP:\n```bash\ncd /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/mcp-servers\n./start_wolf_api_mcp.sh\n```\n\nWant me to start one?",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "670948ff-de34-4940-bb6e-b4a7eee0607d",
+  "timestamp": "2025-12-29T22:14:42.591235",
+  "keywords": [
+    "assistant",
+    "mcp",
+    "wolf-api-mcp.py",
+    "postgres",
+    "wordpress",
+    "youtube-pipeline",
+    "thunderbird",
+    "email",
+    "browserautomation",
+    "wordpress-mcp"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment in this conversation is neutral, as it provides factual information about the MCP servers and instructions on how to start one. However, there's no expressive language that indicates a positive or negative emotion. The rating would be around 3, indicating a neutral sentiment.\n\nThis conversation seems to be focused on technical information rather than personal feelings or opinions, making it challenging to assign an emotional tone. The user is given instructions for starting the Wolf API MCP server if they wish to do so, but no explicit desire or need to start one has been expressed by the user."
+  },
+  "source": "swarm-intake"
+}

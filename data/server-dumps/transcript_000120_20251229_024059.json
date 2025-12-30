@@ -1,0 +1,10 @@
+{
+  "exchange_num": 120,
+  "timestamp": "2025-12-29T02:40:59.393786",
+  "text": "USER: (base) thewolfwalksalone@csmcloud-server:~$   systemctl list-jobs\nJOB     UNIT               TYPE  STATE  \n1092900 chkrootkit.service start running\n1323854 nfs-server.service start running\n\n\nASSISTANT: [THINKING]\nTwo services are stuck starting:\n1. chkrootkit.service - rootkit checker, probably scanning and taking forever\n2. nfs-server.service - the NFS server we're trying to start\n\nThe chkrootkit service is likely blocking or causing system slowdown. We need to:\n1. Cancel these stuck jobs\n2. Kill chkrootkit if needed\n3. Get NFS running\n\nLet me provide commands to fix this.",
+  "user": "(base) thewolfwalksalone@csmcloud-server:~$   systemctl list-jobs\nJOB     UNIT               TYPE  STATE  \n1092900 chkrootkit.service start running\n1323854 nfs-server.service start running\n",
+  "assistant": "[THINKING]\nTwo services are stuck starting:\n1. chkrootkit.service - rootkit checker, probably scanning and taking forever\n2. nfs-server.service - the NFS server we're trying to start\n\nThe chkrootkit service is likely blocking or causing system slowdown. We need to:\n1. Cancel these stuck jobs\n2. Kill chkrootkit if needed\n3. Get NFS running\n\nLet me provide commands to fix this.",
+  "username": "wolf",
+  "source": "server-scripty",
+  "type": "verbatim_transcript"
+}

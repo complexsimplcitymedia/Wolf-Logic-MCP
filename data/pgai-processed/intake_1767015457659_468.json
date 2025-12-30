@@ -1,0 +1,8 @@
+{
+  "text": "USER: [{'tool_use_id': 'toolu_01HQ5di31RfmYNaEpzoNhW2Y', 'type': 'tool_result', 'content': 'total 20\\ndrwxrwxr-x  5 thewolfwalksalone thewolfwalksalone 4096 Dec 29 01:27 .\\ndrwxrwxr-x 54 thewolfwalksalone thewolfwalksalone 4096 Dec 29 08:00 ..\\ndrwxrwxr-x  3 thewolfwalksalone thewolfwalksalone 4096 Dec 29 01:27 analysis\\ndrwxrwxr-x  2 thewolfwalksalone thewolfwalksalone 4096 Dec 24 17:50 __pycache__\\ndrwxrwxr-x  2 thewolfwalksalone thewolfwalksalone 4096 Dec 24 17:50 transcription', 'is_error': False}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:20:40.631332",
+  "source": "swarm-intake"
+}

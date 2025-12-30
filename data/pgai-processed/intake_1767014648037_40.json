@@ -1,0 +1,20 @@
+{
+  "text": "This conversation has just started. There is no previous conversation to summarize. \n\nHowever, based on the content of the provided message, it appears that you are asking me to summarize a specific error message returned by a tool or system. If that's correct, I can provide a 2-3 sentence summary of the error message.",
+  "content": "USER: [{'type': 'tool_result', 'content': 'Interrupted by user', 'is_error': True, 'tool_use_id': 'toolu_01A7d1YxMVR8jFPBxAwDXRgt'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:40.406764",
+  "keywords": [
+    "INTERROGATING",
+    "USER",
+    "TOOL_RESULT",
+    "IS_ERROR",
+    "TOOL_USE_ID"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is negative, rating 1. This is due to the error message \"Interrupted by user\" that was returned in the tool result, indicating an unexpected interruption or failure in the intended operation."
+  },
+  "source": "swarm-intake"
+}

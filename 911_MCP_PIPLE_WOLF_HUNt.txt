@@ -1,0 +1,332 @@
+ROCN LAYER
+https://publicapis.io/zip-recruiter-api
+https://webextension-api.thunderbird.net/en/mv3/
+https://gamebrain.co/api
+https://publicapis.io/zip-recruiter-api
+https://publicapis.io/fantastic-jobs-api
+https://publicapis.io/indeed-api
+https://publicapis.io/graphql-jobs-api
+https://publicapis.io/remotive-job-api
+https://publicapis.io/whatjobs-api
+https://publicapis.io/remotive-job-api
+https://github.com/Amit-Ashok-Swain/Job-Search-Portal.git
+https://github.com/Amit-Ashok-Swain/Job-Search-Portal.git
+
+
+COMS LAyer
+https://webextension-api.thunderbird.net/en/mv3/
+Linux Kernel API
+1
+
+The Linux Kernel API provides a comprehensive set of functions and data structures to interact with the kernel. These APIs are essential for developing kernel modules, device drivers, and other low-level system software.
+
+Core API Functions
+
+List Manipulation
+
+The Linux Kernel provides various functions to manipulate doubly linked lists. Some of the key functions include:
+
+    list_add(struct list_head *new, struct list_head *head): Adds a new entry after the specified head, useful for implementing stacks.
+
+    list_add_tail(struct list_head *new, struct list_head *head): Adds a new entry before the specified head, useful for implementing queues.
+
+    list_del_init(struct list_head *entry): Deletes an entry from the list and reinitializes it.
+
+String Conversions
+
+The kernel provides functions to convert strings to various numeric types:
+
+    kstrtoull(const char *s, unsigned int base, unsigned long long *res): Converts a string to an unsigned long long.
+
+    kstrtoul(const char *s, unsigned int base, unsigned long *res): Converts a string to an unsigned long.
+
+    kstrtol(const char *s, unsigned int base, long *res): Converts a string to a signed long.
+
+Memory Management
+
+Memory management functions are crucial for kernel development:
+
+    kmalloc(size_t size, gfp_t flags): Allocates memory.
+
+    kfree(const void *objp): Frees previously allocated memory.
+
+    vmalloc(unsigned long size): Allocates virtually contiguous memory
+    1
+    .
+
+Interrupt Handling
+
+Handling interrupts is a critical aspect of kernel programming:
+
+    request_irq(unsigned int irq, irq_handler_t handler, unsigned long irqflags, const char *devname, void *dev_id): Allocates an interrupt line.
+
+    free_irq(unsigned int irq, void *dev_id): Frees an interrupt allocated with request_irq.
+
+    disable_irq(unsigned int irq): Disables an interrupt and waits for completion
+    1
+    .
+
+Block Devices
+
+The kernel provides functions to interact with block devices:
+
+    blk_init_queue(request_fn_proc *rfn, spinlock_t *lock): Prepares a request queue for use with a block device.
+
+    blk_cleanup_queue(struct request_queue *q): Shuts down a request queue.
+
+    blk_queue_make_request(struct request_queue *q, make_request_fn *mfn): Defines an alternate make_request function for a device
+    1
+    .
+
+Example Code
+
+Here is an example of how to use the kmalloc and kfree functions for memory allocation and deallocation:
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/slab.h>
+
+static int __init my_module_init(void) {
+char *buffer;
+
+// Allocate memory
+buffer = kmalloc(100, GFP_KERNEL);
+if (!buffer) {
+printk(KERN_ERR "Memory allocation failed\n");
+return -ENOMEM;
+}
+
+// Use the buffer
+strcpy(buffer, "Hello, Kernel!");
+
+printk(KERN_INFO "%s\n", buffer);
+
+// Free the memory
+kfree(buffer);
+
+return 0;
+}
+
+static void __exit my_module_exit(void) {
+printk(KERN_INFO "Module exiting\n");
+}
+
+module_init(my_module_init);
+module_exit(my_module_exit);
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Author");
+MODULE_DESCRIPTION("A simple example module");
+
+Important Considerations
+
+When working with the Linux Kernel API, it is essential to be aware of the following:
+
+    Concurrency: Ensure proper synchronization when accessing shared resources.
+
+    Error Handling: Always check the return values of kernel functions and handle errors appropriately.
+
+    Memory Management: Avoid memory leaks by freeing allocated memory and using appropriate allocation flags
+    1
+    .
+
+By understanding and utilizing the Linux Kernel API, developers can create efficient and robust kernel modules and device drivers. The API provides the necessary tools to interact with the kernel and manage system resources effectively
+1
+https://github.com/KDE/kdeconnect-kde.git
+
+Skip to content
+200
+
+    All
+
+SearchImagesVideosMapsNewsCopilot
+
+    More
+
+LibreOffice
+Office software suite
+Overview
+Features
+History
+
+The LibreOffice API allows developers to integrate and automate tasks within the LibreOffice suite, providing access to its various applications and functionalities.
+What is the LibreOffice API?
+The LibreOffice API is part of the LibreOffice SDK (Software Development Kit) that enables developers to create custom solutions and integrate with the LibreOffice suite. It utilizes the UNO (Universal Network Objects) component model, which is the foundation of the LibreOffice API, allowing for extensive automation and manipulation of documents across different applications like Writer, Calc, Impress, and more.
+LibreOffice
++1
+Key Features
+
+    Cross-Platform Compatibility: The API works across various operating systems, making it versatile for different development environments.
+    Multiple Language Support: The SDK provides bindings for several programming languages, including Java, Python, C++, and LibreOffice Basic, allowing developers to choose their preferred language for integration.
+
+2
+Rich Functionality: Developers can control and manipulate text documents, spreadsheets, presentations, and databases, as well as access features like spell checkers and charting tools.
+1
+
+    3 Sources
+
+Getting Started with the API
+
+    Download the SDK: The LibreOffice SDK can be downloaded from the official LibreOffice website, which includes all necessary libraries and documentation.
+
+1
+Explore Documentation: The SDK documentation provides comprehensive guides and examples to help developers understand how to use the API effectively.
+2
+Utilize Examples: The SDK includes a variety of examples in different programming languages, demonstrating how to perform common tasks and utilize the API's capabilities.
+2
+
+    4 Sources
+
+Resources
+
+    LibreOffice SDK Overview: LibreOffice SDK - Overview
+    API Concepts: LibreOffice API Concepts
+    Examples and Guides: LibreOffice SDK Examples and LibreOffice SDK Programming Guide
+    By leveraging the LibreOffice API, developers can create powerful applications that enhance productivity and streamline workflows within the LibreOffice environment.
+
+LibreOffice
+LibreOffice 24.2 SDK - Overview
+LibreOffice 24.2 software is a complete, feature-rich office productivity suite that provides, in combination with this SDK, all the essential tools for building and deploying cust…
+The Document Foundation
+LibreOffice SDK Programming Guide - The Document Foundation
+LibreOffice SDK Programming Guide (SDKGuide) is intended for programmers who want to learn how to use the the LibreOffice API. This allows developers to control and manipulate Libr…
+View all
+Global web icon
+LibreOffice
+https://api.libreoffice.org
+LibreOffice 25.8 SDK - Overview
+
+The SDK provides everything necessary to use the Office API from external programs (e.g. Java, C++) or to extend the Office functionality with new components (e.g. new filter components, …
+
+    C++ Reference
+
+    LibreOffice LibreOffice 25.8 SDK C/C++ …
+    License
+
+    The Modified (3-clause) BSD License, …
+    Java UNO Runtime Reference
+
+    package indexPackages Package …
+    Developer's Guide Examples
+
+    Builds a connection to LibreOffice 25.8 …
+    MPLv2
+
+    About Us / Licenses Licenses LibreOffice …
+
+    Classes
+
+    LibreOffice LibreOffice 25.8 SDK API …
+    Help
+
+    Index The Index contains an alphabetic …
+    Python Scripts
+
+    LibreOffice Python Scripts Help …
+    CharacterProperties Service R…
+
+    This is a set of properties to describe the …
+    Servicemanager Service Refe…
+
+    Enumeration of all service factories. It is …
+
+See results only from api.libreoffice.org
+People also search for
+
+google docs api
+adobe firefly api
+api library
+jira api
+quickbooks api
+
+    open ai api
+
+Global web icon
+The Document Foundation Wiki
+https://wiki.documentfoundation.org › Documentation …
+LibreOffice API Concepts - The Document Foundation
+
+This chapter describes LibreOffice API concepts without resorting to code (that comes along in the next chapter). These concepts include Office as a …
+Global web icon
+LibreOffice
+https://api.libreoffice.org › examples › examples.html
+LibreOffice 25.8 SDK - Examples
+
+The SDK provides a rich set of examples in different programming languages (Java, Python, C++, LibreOffice 25.8 Basic, OLE) to illustrate the use of the API and demonstrate how to benefit …
+Searches you might like
+
+    jira api
+    google docs api
+    adobe firefly api
+    api library
+    quickbooks api
+    google workspace api
+
+Global web icon
+flywire.github.io
+https://flywire.github.io › lo-p › index.html
+LibreOffice Programming - GitHub Pages
+
+    Web page related images
+    Web page related images
+    Web page related images
+    Web page related images
+
+Although most of the examples are Java programs that call the LibreOffice API, I briefly look at other kinds of programming, such as Java macros and new LibreOffice functionality, accessible …
+Global web icon
+The Document Foundation Wiki
+https://wiki.documentfoundation.org › Documentation › SDKGuide
+LibreOffice SDK Programming Guide - The Document Foundation
+
+Chapter 1: LibreOffice API Concepts. This chapter describes LibreOffice API concepts without resorting to code. These concepts some History of LibreOffice, help and examples for the …
+Global web icon
+Github
+https://github.com › topics › libreoffice-api
+libreoffice-api · GitHub Topics · GitHub
+
+Nov 6, 2025 · High-performance HTTP server for document format conversions, specializing in .doc to .docx conversion via LibreOffice. Features REST API, pluggable converter architecture, …
+People also ask
+
+    Feedback
+    Global web icon
+    LibreOffice
+    https://api.libreoffice.org › docs › install.html
+    LibreOffice 25.8 SDK - Installation Guide
+
+    The LibreOffice 25.8 SDK comes with a set of development tools, base libraries, header files and helper class files that can be used to develop Java/C++ components, to embed the LibreOffice …
+    Global web icon
+    The Document Foundation Wiki
+    https://wiki.documentfoundation.org › Documentation › DevGuide
+    LibreOffice Developer's Guide - The Document Foundation Wiki
+
+    This chapter describes the application framework of the LibreOffice application that includes how the LibreOffice API deals with the LibreOffice application and the features available across all …
+    Global web icon
+    LibreOffice
+    https://api.libreoffice.org › examples › Developers...
+    LibreOffice 25.8 SDK - Developer's Guide Examples
+
+    Builds a connection to LibreOffice 25.8 using C++. Demonstrates usage of RTL string classes OString, OUString and OUStringBuffer. Shows the transparent use of office UNO components …
+    Global web icon
+    flywire.github.io
+    https://flywire.github.io › lo-p
+    Chapter 1. LibreOffice API Concepts - LibreOffice …
+
+    This chapter describes LibreOffice API concepts without resorting to code (that comes along in the next chapter). These concepts include Office as a …
+    Deep dive into libreoffice api
+        libreoffice api python
+        libreoffice basic api
+        libreoffice calc api
+        libreoffice git
+        libreoffice uno api
+        libreoffice calc basic programming guide
+        libreoffice github
+        libreoffice access
+        1
+        2
+        3
+        4
+        5
+
+    Privacy
+    Terms
+
+vuklan api

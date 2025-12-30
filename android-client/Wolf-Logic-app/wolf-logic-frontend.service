@@ -1,0 +1,17 @@
+[Unit]
+Description=Complex Logic App Frontend
+After=network.target wolf-logic-backend.service
+Wants=wolf-logic-backend.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/mnt/WolfPack/Wolf-Logic-app/wolf-ui
+ExecStart=/usr/bin/npm start
+Restart=always
+RestartSec=5
+Environment=PORT=3333
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

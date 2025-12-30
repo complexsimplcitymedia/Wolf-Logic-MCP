@@ -1,0 +1,16 @@
+{
+  "llm": {
+    "provider": "ollama",
+    "model": "messiah_awakening:latest",
+    "base_url": "http://localhost:11434"
+  },
+  "mcp_servers": {
+    "librarian": {
+      "command": "python",
+      "args": ["-m", "mcp_server_postgres"],
+      "env": {
+        "DATABASE_URL": "postgresql://wolf:wolflogic2024@127.0.0.1:5433/wolf_logic"
+      }
+    }
+  }
+}

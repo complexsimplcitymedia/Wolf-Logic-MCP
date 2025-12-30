@@ -1,0 +1,25 @@
+{
+  "text": "Here is a summary of the conversation in 2-3 sentences:\n\nThe assistant provided instructions for troubleshooting PostgreSQL service issues. The code snippet suggests running two commands to troubleshoot: `sudo pg_ctlcluster 18 main stop` to ensure the service is stopped, and `sudo lsof -i :5433` to check for any blocking processes on port 5433. If the problem persists, a hard reboot of the system may be required.",
+  "content": "ASSISTANT: Config is correct (`listen_addresses = '*'`, `port = 5433`). Service shows active but TCP not binding. This needs a hard stop/start:\n\n```bash\nsudo pg_ctlcluster 18 main stop && sleep 2 && sudo pg_ctlcluster 18 main start && sleep 3 && ss -tlnp | grep 5433\n```\n\nIf that still shows nothing, check what's blocking:\n```bash\nsudo lsof -i :5433\n```",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:30:14.940372",
+  "keywords": [
+    "assistant",
+    "active service",
+    "hard stop",
+    "hard start",
+    "pg_ctlcluster",
+    "listen_addresses",
+    "port",
+    "TCP not binding",
+    "sudo",
+    "ss"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral. The assistant is providing instructions to resolve an issue with a service, but there is no apparent empathy or positive encouragement in the message. The issue seems to be a problem with the service not binding to the specified port, and the assistant suggests a series of commands to troubleshoot and potentially solve the problem. The rating would be around 3 as it shows the assistant is performing its function of providing helpful guidance."
+  },
+  "source": "swarm-intake"
+}

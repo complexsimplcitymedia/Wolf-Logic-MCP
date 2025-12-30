@@ -1,0 +1,25 @@
+{
+  "text": "Here is a summary of the conversation in 2-3 sentences:\n\nThe assistant completed an OAuth setup for their service, which includes authentication with Authentik and PostgREST APIs. The assistant also provided instructions on how to obtain a JWT secret and create a sample token for testing purposes. Additionally, they outlined the remaining manual step necessary to configure Authentik as an OAuth2 provider for internal use within their organization.",
+  "content": "ASSISTANT: **OAuth Setup Complete.** Summary:\n\n## What's Running\n| Service | Port | Status |\n|---------|------|--------|\n| Authentik | 9000 | Running (http://100.110.82.181:9000) |\n| PostgREST | 3333 | Running with JWT auth |\n\n## PostgREST API (port 3333)\n**JWT Secret:** `ipC5Xi04TlDcuBArsdFfn17bJIOMNEgEnxF6pRtPbG4=`\n\n**Sample token (1 year validity):**\n```\neyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoid29sZiIsInN1YiI6IndvbGYtYXBpLWNsaWVudCIsImlhdCI6MTc2NzA2NDIxOCwiZXhwIjoxNzk4NjAwMjE4fQ.QbYeODx2MCQf8xQ0AQ_cuQtunsFG0ekS6JoPNjaZX44\n```\n\n**Usage:**\n```bash\ncurl -H \"Authorization: Bearer $TOKEN\" http://100.110.82.181:3333/memories?limit=10\n```\n\n## Remaining Manual Step\nConfigure Authentik OAuth2 provider at http://100.110.82.181:9000:\n1. First-time setup: Create admin user\n2. Create OAuth2/OpenID Provider named `wolf-logic-api`\n3. Create Application linked to provider\n4. Add `AUTHENTIK_CLIENT_ID` and `AUTHENTIK_CLIENT_SECRET` to `/api/.env`\n\nConfig saved to: `/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/api/.env`",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "670948ff-de34-4940-bb6e-b4a7eee0607d",
+  "timestamp": "2025-12-29T22:11:42.511573",
+  "keywords": [
+    "OAuth Setup Complete",
+    "Authentik",
+    "PostgREST",
+    "JWT Secret",
+    "Token",
+    "Authorization",
+    "Bearer",
+    "Authentik OAuth2 provider",
+    "Wolf Logic API",
+    "Client ID"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is informative and instructive, rating a 4. It provides detailed instructions on how to set up and use the services, including the API endpoint, JWT secret, sample token, usage example, and remaining manual steps with clear explanations for each step. Overall, it helps the user to understand and implement the system effectively, making it more positive rather than negative."
+  },
+  "source": "swarm-intake"
+}

@@ -1,0 +1,22 @@
+{
+  "text": "There was no conversation provided. Please share the text you would like me to summarize, and I'll be happy to assist.",
+  "content": "USER: [{'type': 'tool_result', 'content': \"The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if it was a file edit, the new_string was NOT written to the file). To tell you how to proceed, the user said:\\nTHAT IS WRIONG\", 'is_error': True, 'tool_use_id': 'toolu_01Wz6PKnE8usX5bHBmbm4eCv'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "c2917c9c-32f3-45db-afb0-553c39fb6eef",
+  "timestamp": "2025-12-29T09:36:12.469961",
+  "keywords": [
+    "tool_use",
+    "reject",
+    "tool rejection",
+    "file edit",
+    "new_string",
+    "user",
+    "proceed"
+  ],
+  "sentiment": {
+    "score": 1,
+    "analysis": "Based on the provided conversation snippet, the sentiment is rated as 1 (very negative). The user's response indicates strong dissatisfaction or frustration as they have rejected the tool's output, describing it as \"wrong.\" This suggests that they expected a different outcome and are likely to continue seeking a solution that meets their expectations."
+  },
+  "source": "swarm-intake"
+}

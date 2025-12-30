@@ -1,0 +1,8 @@
+{
+  "text": "ASSISTANT: **Problem found:** Database requires `user_id` field but pgai_queue_ingestor isn't providing it.",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:35:10.813946",
+  "source": "swarm-intake"
+}

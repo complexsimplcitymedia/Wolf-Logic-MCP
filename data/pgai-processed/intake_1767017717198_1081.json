@@ -1,0 +1,25 @@
+{
+  "text": "This conversation did not occur. This is the first message in a conversation. If you would like to start a new conversation, please feel free to ask and I will be happy to assist you.",
+  "content": "USER: [{'tool_use_id': 'toolu_01WM9dsRVQr2mfTX3TQJ49ZL', 'type': 'tool_result', 'content': 'The file /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/api/memory_api.py has been updated. Here\\'s the result of running `cat -n` on a snippet of the edited file:\\n   406\u2192        raise\\n   407\u2192    except Exception as e:\\n   408\u2192        raise HTTPException(status_code=500, detail=f\"Database error: {str(e)}\")\\n   409\u2192\\n   410\u2192@app.post(\"/transcripts/upload\",\\n   411\u2192    summary=\"Upload Transcript\",\\n   412\u2192    description=\"Upload a transcript to client-dumps for automatic pipeline processing\",\\n   413\u2192    tags=[\"Transcripts\"],\\n   414\u2192    responses={\\n   415\u2192        200: {\\n   416\u2192            \"description\": \"Transcript uploaded successfully\",\\n   417\u2192            \"content\": {\\n   418\u2192                \"application/json\": {\\n   419\u2192                    \"example\": {\\n   420\u2192                        \"status\": \"success\",\\n   421\u2192                        \"message\": \"Transcript uploaded to pipeline\",\\n   422\u2192                        \"file\": \"transcript_20251229.jsonl\",\\n   423\u2192                        \"session\": \"node-245\"\\n   424\u2192                    }\\n   425\u2192                }\\n   426\u2192            }\\n   427\u2192        }\\n   428\u2192    })\\n   429\u2192async def upload_transcript(entry: TranscriptEntry = Body(..., example={\\n   430\u2192    \"transcript\": \"USER: Test message from remote node. ASSISTANT: Received and processing.\",\\n   431\u2192    \"session\": \"node-245\",\\n   432\u2192    \"timestamp\": \"2025-12-29T09:00:00-05:00\"\\n   433\u2192})):\\n   434\u2192    \"\"\"\\n   435\u2192    ## Upload Transcript\\n   436\u2192\\n   437\u2192    Upload a transcript entry for processing by the memory pipeline.\\n   438\u2192\\n   439\u2192    **Processing Flow:**\\n   440\u2192    1. Transcript written to `data/client-dumps/transcript_YYYYMMDD.jsonl`\\n   441\u2192    2. Swarm-intake picks up and processes (30-second polling)\\n   442\u2192    3. Keywords extracted (llama3.2:1b)\\n   443\u2192    4. Sentiment analyzed (mistral)\\n   444\u2192    5. Ingested to PostgreSQL\\n   445\u2192    6. Vectorized by pgai (qwen3-embedding:4b)\\n   446\u2192\\n   447\u2192    **Remote Nodes:**\\n   448\u2192    Instead of API, remote nodes can mount via NFS:\\n   449\u2192    ```bash\\n   450\u2192    mount -t nfs 100.110.82.181:/mnt/.../client-dumps /mnt/wolf-client-dumps\\n   451\u2192    echo \\'{json}\\' >> /mnt/wolf-client-dumps/transcript_YYYYMMDD.jsonl\\n   452\u2192    ```\\n   453\u2192    \"\"\"\\n   454\u2192    try:\\n   455\u2192        # Create transcript entry\\n   456\u2192        timestamp = entry.timestamp or datetime.now().isoformat()\\n   457\u2192        transcript_data = {'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T09:14:28.682923",
+  "keywords": [
+    "tool_result",
+    "cat",
+    "HTTPException",
+    "database_error",
+    "upload_transcript",
+    "Transcripts",
+    "summary",
+    "description",
+    "application_json",
+    "status"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation appears to be neutral, as it primarily focuses on the technical updating and reviewing of a Python script related to an AI project. However, there are some positive indicators such as \"Transcript uploaded successfully\" and \"Upload a transcript for processing by the memory pipeline,\" which suggest that the intended function of the updated script is working as intended. The overall sentiment rating would be around 3, leaning slightly towards the positive side due to these successful outcomes mentioned in the conversation."
+  },
+  "source": "swarm-intake"
+}

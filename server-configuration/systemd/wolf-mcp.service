@@ -1,0 +1,21 @@
+[Unit]
+Description=Complex Logic MCP Server - PostgreSQL Access for AI Agents
+After=network.target postgresql@16-main.service
+
+[Service]
+Type=simple
+User=thewolfwalksalone
+Group=thewolfwalksalone
+WorkingDirectory=/mnt/Wolf-code/Wolf-Ai-Enterptises/mcp-servers
+Environment="PATH=/home/thewolfwalksalone/anaconda3/envs/messiah/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="POSTGRES_HOST=100.110.82.181"
+Environment="POSTGRES_PORT=5433"
+Environment="POSTGRES_USER=wolf"
+Environment="POSTGRES_PASSWORD=wolflogic2024"
+Environment="POSTGRES_DB=wolf_logic"
+ExecStart=/home/thewolfwalksalone/anaconda3/envs/messiah/bin/python /mnt/Wolf-code/Wolf-Ai-Enterptises/mcp-servers/postgres_mcp.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

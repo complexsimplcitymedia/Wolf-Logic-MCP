@@ -1,0 +1,18 @@
+{
+  "text": "This conversation has just started, and there is no text or request to summarize. The first message from the user contains a '[Request interrupted by user]' tag, indicating that the conversation will likely be interrupted by further input from you.",
+  "content": "USER: [{'type': 'text', 'text': '[Request interrupted by user]'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:12:57.179880",
+  "keywords": [
+    "_REQUEST INTERRUPTED BY USER",
+    "KEYWORD EXTRACTION",
+    "CONVERSATION SUMMARY"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "Based on the provided text, it is difficult to determine the exact sentiment as the conversation does not contain any explicit emotional language. However, given that the interruption suggests some form of action or request was being made, I would rate this conversation a 3. This rating indicates a neutral conversation because while the user has interrupted something, there's no clear indication of positivity or negativity in the text provided."
+  },
+  "source": "swarm-intake"
+}

@@ -1,0 +1,19 @@
+{
+  "text": "This conversation has just begun. There is no text to summarize yet.",
+  "content": "USER: [{'type': 'tool_result', 'content': 'Interrupted by user', 'is_error': True, 'tool_use_id': 'toolu_01N4J5xWR5sQYJNyS386G7oQ'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:57.125808",
+  "keywords": [
+    "interrupted by user",
+    "tool use id",
+    "error",
+    "tool result"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "Based on the provided conversation, it appears that the interaction was not successful as the user was interrupted. This could potentially lead to a negative sentiment, so I would rate this conversation a 2, as it indicates a slight negative experience. The interruption may have caused frustration or confusion for the user, but without more context, it's difficult to determine the exact level of negativity."
+  },
+  "source": "swarm-intake"
+}

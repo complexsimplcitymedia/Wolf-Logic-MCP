@@ -1,0 +1,8 @@
+{
+  "text": "ASSISTANT: Scripty IS running (PIDs 234902, 235598) and writing to `camera/dailys/scripty_20251229.jsonl`. Last entry was 10 seconds ago. It's capturing this conversation.\n\nWhat's the issue?",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:19:40.609702",
+  "source": "swarm-intake"
+}

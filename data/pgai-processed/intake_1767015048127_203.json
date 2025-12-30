@@ -1,0 +1,18 @@
+{
+  "text": "This conversation has not started yet, so there is nothing to summarize. This is the first message.",
+  "content": "USER: [{'type': 'tool_result', 'content': 'Interrupted by user', 'is_error': True, 'tool_use_id': 'toolu_01U6mrm5veMXqCem7kTt2M5z'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:57.126744",
+  "keywords": [
+    "interrupted",
+    "user",
+    "tool_u01U6mrm5veMXqCem7kTt2M5z"
+  ],
+  "sentiment": {
+    "score": 2,
+    "analysis": "The sentiment of this conversation is neutral to slightly negative. The user experienced an interruption or error while using a tool, which can be frustrating for the user. However, without additional context, it's difficult to determine if this is a one-time issue or a recurring problem. A rating of 2 could be appropriate as it signifies a minor inconvenience for the user."
+  },
+  "source": "swarm-intake"
+}

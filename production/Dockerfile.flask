@@ -1,0 +1,42 @@
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install Python packages
+COPY requirements_unified.txt requirements.txt
+COPY server/requirements.txt server_requirements.txt
+COPY openmemory/api/requirements.txt api_requirements.txt
+
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir -r server_requirements.txt && \
+    pip install --no-cache-dir -r api_requirements.txt && \
+    pip install --no-cache-dir mem0ai==1.0.1 flask flask-cors requests
+
+# Copy application files
+COPY wolf_logic_app.py .
+COPY control_center/ ./control_center/
+COPY wolf_scripts/ ./wolf_scripts/
+COPY tracking/ ./tracking/
+COPY voice/ ./voice/
+
+# Environment variables
+ENV PYTHONUNBUFFERED=1
+ENV NEO4J_URI=bolt://neo4j:7687
+ENV NEO4J_USERNAME=neo4j
+ENV NEO4J_PASSWORD=mem0graph
+ENV USER_ID=thewolfwalksalone
+ENV OPENMEMORY_API=http://100.110.82.181:8765
+
+# Expose port
+EXPOSE 4500
+
+# Default command - can be overridden in docker-compose
+CMD ["python", "wolf_logic_app.py"]

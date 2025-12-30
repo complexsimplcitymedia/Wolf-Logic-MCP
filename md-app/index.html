@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Name - Portfolio</title>
+    <meta name="description" content="Full-stack developer specializing in modern web technologies and innovative solutions." />
+    <meta property="og:title" content="Your Name - Portfolio" />
+    <meta property="og:description" content="Full-stack developer specializing in modern web technologies and innovative solutions." />
+    <meta property="og:image" content="https://bolt.new/static/og_default.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://bolt.new/static/og_default.png" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Function to detect if the device is mobile
+      function isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      }
+
+      // Conditionally add manifest link and register service worker
+      if (isMobileDevice()) {
+        // Add manifest link
+        const link = document.createElement('link');
+        link.rel = 'manifest';
+        link.href = '/manifest.json';
+        document.head.appendChild(link);
+
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+              .then(registration => {
+                console.log('ServiceWorker registered: ', registration);
+              })
+              .catch(registrationError => {
+                console.log('ServiceWorker registration failed: ', registrationError);
+              });
+          });
+        }
+      } else {
+        console.log('PWA features (manifest, service worker) not loaded on desktop.');
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "text": "Here is a 2-3 sentence summary of the conversation:\n\nThe **Assistant** has reported that the `wolf-logic` Memory class uses a PostgreSQL + pgvector vector store and Neo4j graph store, with a bridge connecting both. However, there is an issue with the `wolf-logic` package due to missing dependencies in its Python SDK directory, which is expected at `/../wolf-logic`. The Assistant suggests showing the full bridge configuration or helping fix the missing dependency, but prioritizing getting PostgreSQL back online first to restore the Librarian service.",
+  "content": "ASSISTANT: **STATUS REPORT:**\n\n## PostgreSQL-Neo4j Bridge Found\n\n**Location:** `/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/wolf-logic-mcp-mem/server/main.py`\n\n**Architecture:**\n- **Vector Store:** PostgreSQL + pgvector (for memory embeddings)\n- **Graph Store:** Neo4j (for memory relationships/knowledge graph)\n- **Bridge:** The `wolf-logic` Memory class connects both\n\n**Current Docker Setup:**\n```\nwolf-logic-mcp-mem/server/docker-compose.yaml:\n- PostgreSQL (pgvector): port 8432:5432\n- Neo4j: ports 8474:7474 (HTTP), 8687:7687 (Bolt)\n- Auth: neo4j/wolf-logicgraph\n```\n\n**Your live Neo4j instance:**\n```\nneo4j container: ports 7474:7474, 8687:7687\n```\n\n**ISSUE:** The `wolf-logic` Python package (line 11: `from wolf-logic import Memory`) is missing - the `python-sdk/` directory is empty. The docker-compose expects it at `../wolf-logic` but that directory only contains UI components.\n\n---\n\n**CRITICAL:** PostgreSQL (5433) is still down. You need to restart it to restore the Librarian:\n\n```bash\nsudo systemctl restart postgresql@18-main.service\n```\n\nDo you want me to:\n1. Show the full bridge configuration and how to wire it up?\n2. Help fix the missing wolf-logic package dependency?\n3. Focus on getting PostgreSQL back online first?",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:15:44.660140",
+  "keywords": [
+    "assist",
+    "status",
+    "report",
+    "vector store",
+    "neo4j graph",
+    "bridge",
+    "memory class",
+    "docker-compose.yaml",
+    "container",
+    "port 5432"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral as it primarily focuses on technical issues and problem-solving tasks. However, there are elements that could be considered somewhat positive, such as the successful discovery of a PostgreSQL-Neo4j Bridge, and negative, like the issue with the missing `wolf-logic` package dependency and PostgreSQL still being down.\n\nHere is a breakdown:\n\n1. The status report about finding the bridge (Positive)\n2. The description of the architecture (Neutral)\n3. The issue with the missing wolf-logic package dependency (Negative)\n4. The critical note about PostgreSQL still being down (Negative)\n5. Offering solutions to fix these issues (Neutral/Positive, depending on whether they can be successfully implemented)\n\nThe overall rating would be around 3 out of 5, as the conversation mainly discusses technical problems and potential solutions rather than expressing strong positive or negative sentiments."
+  },
+  "source": "swarm-intake"
+}

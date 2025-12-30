@@ -1,0 +1,8 @@
+{
+  "text": "ASSISTANT: Copy that. Swarm doesn't call llama3.2 - pgai vectorizer handles embedding with qwen3-embedding:4b.",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:37:10.837180",
+  "source": "swarm-intake"
+}

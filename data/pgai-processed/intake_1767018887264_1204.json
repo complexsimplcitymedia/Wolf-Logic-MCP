@@ -1,0 +1,19 @@
+{
+  "text": "This conversation has started with a tool result message indicating that the conversation was interrupted. The details of this message are not provided in the snippet you provided.",
+  "content": "USER: [{'type': 'tool_result', 'content': 'Interrupted by user', 'is_error': True, 'tool_use_id': 'toolu_01JSHGaUi1u54HhtJpzzJUKD'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "c2917c9c-32f3-45db-afb0-553c39fb6eef",
+  "timestamp": "2025-12-29T09:33:42.442584",
+  "keywords": [
+    "interrupted",
+    "user",
+    "tool_u01",
+    "JSHGaUi1u54HhtJpzzJUKD"
+  ],
+  "sentiment": {
+    "score": 2,
+    "analysis": "The sentiment of this conversation is neutral to slightly negative. The user received an error message from a tool, indicating some level of inconvenience or frustration. However, the error itself does not provide any context about the nature of the interruption, so it's difficult to determine the exact level of dissatisfaction. A rating of 2 seems appropriate for this conversation."
+  },
+  "source": "swarm-intake"
+}

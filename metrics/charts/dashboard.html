@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wolf AI Performance Dashboard</title>
+    <style>
+        body {
+            background: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #00ff88;
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        .timestamp {
+            text-align: center;
+            color: #888;
+            margin-bottom: 40px;
+        }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .chart-card {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .chart-card img {
+            width: 100%;
+            border-radius: 5px;
+        }
+        .chart-title {
+            color: #00ff88;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Wolf AI Performance Dashboard</h1>
+    <div class="timestamp">Generated: 2025-12-19 11:36:55</div>
+
+    <div class="chart-grid">
+        <div class="chart-card">
+            <div class="chart-title">Activity Timeline</div>
+            <img src="timeline_20251219_113654.png" alt="Timeline">
+        </div>
+        <div class="chart-card">
+            <div class="chart-title">Agent Performance</div>
+            <img src="agent_totals_20251219_113655.png" alt="Totals">
+        </div>
+        <div class="chart-card">
+            <div class="chart-title">Namespace Distribution</div>
+            <img src="namespaces_20251219_113655.png" alt="Namespaces">
+        </div>
+        <div class="chart-card">
+            <div class="chart-title">Hourly Activity</div>
+            <img src="hourly_20251219_113655.png" alt="Hourly">
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "text": "This conversation has just begun. There is no previous conversation to summarize. What would you like to talk about regarding a Neo4j bridge? I can provide information and guidance on how to set one up.",
+  "content": "USER: where my neo4j bridge",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T14:29:39.267227",
+  "keywords": [
+    "neo4j",
+    "bridge",
+    "website",
+    "online",
+    "management",
+    "tools",
+    "platform",
+    "software",
+    "management",
+    "configuration"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "Sentiment Rating: 3 (Neutral)\n\nExplanation: The user's message appears to be a question about the location or status of their Neo4j bridge. It does not express any particular emotion, but rather seeks information. This is a neutral sentiment due to its functional nature."
+  },
+  "source": "swarm-intake"
+}

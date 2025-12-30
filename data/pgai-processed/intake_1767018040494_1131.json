@@ -1,0 +1,25 @@
+{
+  "text": "Here is a summary of the conversation in 2-3 sentences:\n\nThis assistant has helped you review a REST API documentation for a project, which includes Swagger UI, ReDoc, and endpoint details such as health checks, pipeline monitoring, search functionality, and CRUD operations. The API also provides CORS enabled support, health monitoring, and information on its total memories across multiple namespaces. Additionally, the project requires an NFS export to be set up, with instructions provided for adding it to the system's exports file and restarting the nfs kernel server.",
+  "content": "ASSISTANT: **REST API with Swagger - COMPLETE** \u2713\n\n## API Available At:\n- **Swagger UI:** http://100.110.82.181:8001/docs\n- **ReDoc:** http://100.110.82.181:8001/redoc\n- **Base URL:** http://100.110.82.181:8001\n\n## Endpoints:\n- **GET** `/health` - Health check (all services healthy)\n- **GET** `/pipeline/status` - Pipeline monitoring\n- **POST** `/memories/query` - Semantic search with qwen3-embedding:4b\n- **GET** `/memories/{id}` - Get specific memory\n- **GET** `/namespaces` - List all namespaces (48K scripty, 16K wolf_story, etc.)\n- **POST** `/transcripts/upload` - Upload transcripts\n- **GET** `/memories/count` - Memory counts (deprecated, use /namespaces)\n\n## Features:\n- Full Swagger documentation with examples\n- CORS enabled\n- Health monitoring\n- 100,974 total memories across 26 namespaces\n\n## NFS Export Needed (181 - requires sudo):\n```bash\n# Add to /etc/exports:\n/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/data/client-dumps 100.110.0.0/16(rw,sync,no_subtree_check,no_root_squash) 100.250.0.0/16(rw,sync,no_subtree_check,no_root_squash)\n\n# Apply:\nsudo exportfs -ra\nsudo systemctl restart nfs-kernel-server\n```\n\nThen 250 can mount and drop transcripts directly.",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T09:20:11.945325",
+  "keywords": [
+    "Here are the 5-10 key topics/keywords from this conversation",
+    "returned in comma-separated keywords:\n\nswagger",
+    "api",
+    "rest",
+    "endpoints",
+    "healthcheck",
+    "pipeline",
+    "semanticsearch",
+    "namespaces",
+    "features"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral to slightly positive. The assistant is providing information about a completed REST API project with Swagger, detailing the available endpoints, features, and instructions for setting up an NFS export. The use of checkmarks (\u2713) and bullet points makes the information easy to understand and organized, which contributes to a clear and professional tone. However, since the conversation is purely informative without any personal interaction or emotional expression, it lacks elements that would typically contribute to a positive sentiment. Therefore, I would rate this conversation as 3.5 out of 5, leaning slightly towards positive due to the informative and organized nature of the content provided."
+  },
+  "source": "swarm-intake"
+}

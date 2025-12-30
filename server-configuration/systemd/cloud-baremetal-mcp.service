@@ -1,0 +1,16 @@
+[Unit]
+Description=Cloud Bare Metal MCP Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=thewolfwalksalone
+WorkingDirectory=/mnt/Wolf-code/Wolf-Ai-Enterptises/mcp-servers
+EnvironmentFile=/mnt/Wolf-code/Wolf-Ai-Enterptises/.env.cloud-baremetal
+ExecStart=/home/thewolfwalksalone/anaconda3/envs/messiah/bin/python cloud_baremetal_mcp.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+{
+  "text": "This conversation has just begun. There is no previous content to summarize.",
+  "content": "USER: [{'type': 'tool_result', 'content': 'Interrupted by user', 'is_error': True, 'tool_use_id': 'toolu_01Ao2CtZXxNGexKYFz2HUSmb'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:57.126765",
+  "keywords": [
+    "Interrupted",
+    "User",
+    "Error",
+    "Tool",
+    "UseId",
+    "Toolu_01Ao2CtZXxNGexKYFz2HUSmb"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation can be rated as 1. This rating is based on the fact that the user's response indicates an interruption or error, which suggests a negative interaction. The tool's result indicates that there was a problem during the interaction, further emphasizing the negative sentiment. However, it's important to note that this rating does not take into account any context outside of the provided conversation."
+  },
+  "source": "swarm-intake"
+}

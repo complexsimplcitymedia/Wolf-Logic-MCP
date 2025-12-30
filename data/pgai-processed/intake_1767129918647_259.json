@@ -1,0 +1,22 @@
+{
+  "text": "This conversation has just started. There is no previous message to summarize. I'm ready to help with any questions or topics you'd like to discuss. What would you like to talk about?",
+  "content": "USER: [{'type': 'tool_result', 'content': 'Exit code 1\\nerror: The following untracked working tree files would be overwritten by checkout:\\n\\tGEMINI.md\\n\\tauthentik/docker-compose.yml\\n\\tscripty/scripty.py\\n\\tserver-configuration/monitoring/grafana/datasources.yml\\n\\tserver-configuration/monitoring/prometheus/prometheus.yml\\nPlease move or remove them before you switch branches.\\nAborting\\nerror: could not detach HEAD\\n\\nSaved working directory and index state On server-scripty: temp stash api/.env', 'is_error': True, 'tool_use_id': 'toolu_01Y2qmgwjFD36ooEZMZRyDpc'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "010ca39e-cf7c-4923-8211-b6e6ba3ac85d",
+  "timestamp": "2025-12-30T16:24:42.343004",
+  "keywords": [
+    "Here are the 5-10 key topics/keywords from this conversation:\n\ngit",
+    "checkout",
+    "untracked files",
+    "switch branches",
+    "error messages",
+    "command prompt",
+    "server-scripty \n\nLet me know if you'd like me to help with anything else."
+  ],
+  "sentiment": {
+    "score": 2,
+    "analysis": "Based on the provided error message, it appears that the user is encountering an issue while switching branches in their Git repository. The files listed as untracked working tree files are about to be overwritten, and the operation has been aborted due to this conflict.\n\nWhile this conversation does not explicitly show positive sentiment, it can be considered neutral as it only describes an error that needs to be resolved. I would rate this conversation a 2 on the sentiment scale (1=very negative, 5=very positive). However, the user may experience frustration or confusion due to the encountered issue and its resolution will affect their overall sentiment."
+  },
+  "source": "swarm-intake"
+}

@@ -1,0 +1,25 @@
+{
+  "text": "Here is a summary of our conversation in 2-3 sentences:\n\nYou are experiencing an issue with two domains, `wolf-hunt.complexsimplicityai.com` and `complexsimplicityai.com`, which appear to be pointing to different ports. You suspect that one of them might also be using port 3333, potentially conflicting with a previous instance of PostgREST.",
+  "content": "ASSISTANT: `api.complexsimplicityai.com` already exists (line 94) pointing to 100.110.82.245:3000. \n\n**Problem:** wolf-hunt.complexsimplicityai.com is also on port 3333 - same as PostgREST now.\n\nLet me check the port situation:",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:56:15.523457",
+  "keywords": [
+    "assistant",
+    "complexsimplicity",
+    "api",
+    "postgrest",
+    "port",
+    "issue",
+    "wolfhunt",
+    "complexsimplicityai",
+    "existing",
+    "pointing"
+  ],
+  "sentiment": {
+    "score": 2,
+    "analysis": "The sentiment in this conversation appears to be neutral, as it is focused on a technical problem rather than expressing positive or negative emotions. The user is reporting an existing API and a potential conflict with another service (wolf-hunt.complexsimplicityai.com) using the same port (3333). However, they also show an intention to investigate and address the issue by checking the port situation.\n\nRating: 2 (Neutral)"
+  },
+  "source": "swarm-intake"
+}

@@ -1,0 +1,24 @@
+{
+  "text": "This conversation has not started yet, so there is no text to summarize. Please provide the text you would like me to summarize, and I'll be happy to assist.",
+  "content": "USER: [{'type': 'tool_result', 'content': 'Exit code 2\\npsql: error: connection to server at \"localhost\" (127.0.0.1), port 5433 failed: Connection refused\\n\\tIs the server running on that host and accepting TCP/IP connections?\\nconnection to server at \"localhost\" (::1), port 5433 failed: Connection refused\\n\\tIs the server running on that host and accepting TCP/IP connections?', 'is_error': True, 'tool_use_id': 'toolu_012p9W7mq8q1eE5syjSXT2tV'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:17:01.839169",
+  "keywords": [
+    "Here are 5-10 key topics/keywords from this conversation",
+    "in comma-separated format:\n\npsql",
+    "connection",
+    "error",
+    "server",
+    "host",
+    "port",
+    "TCP/IP",
+    "refused"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is very negative (1). The user is experiencing an error while trying to connect to a PostgreSQL server on localhost and port 5433. This indicates that the server might not be running or not configured correctly, causing frustration for the user."
+  },
+  "source": "swarm-intake"
+}

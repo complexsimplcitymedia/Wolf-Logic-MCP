@@ -1,0 +1,20 @@
+{
+  "text": "This conversation started with a message from an unknown user containing a PostgreSQL error code 2. The error is related to connecting to the server on localhost or '::1' (indicating the connection was refused). The error is due to the server not being running or accepting TCP/IP connections.",
+  "content": "USER: [{'type': 'tool_result', 'content': 'Exit code 2\\npsql: error: connection to server at \"localhost\" (127.0.0.1), port 5433 failed: Connection refused\\n\\tIs the server running on that host and accepting TCP/IP connections?\\nconnection to server at \"localhost\" (::1), port 5433 failed: Connection refused\\n\\tIs the server running on that host and accepting TCP/IP connections?', 'is_error': True, 'tool_use_id': 'toolu_01H5w6LCuS8DR7mAozv9Noia'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:29:14.923768",
+  "keywords": [
+    "Exit code 2",
+    "psql",
+    "connection refused",
+    "localhost",
+    "port 5433"
+  ],
+  "sentiment": {
+    "score": 1,
+    "analysis": "The sentiment of this conversation is negative. The user is experiencing an error when trying to connect to a PostgreSQL server, as indicated by the \"Exit code 2\" and repeated \"Connection refused\" messages. This issue suggests that either the server is not running or not configured to accept connections from the client, which can be frustrating for the user. Therefore, I would rate this conversation a 1 on the sentiment scale (1=very negative)."
+  },
+  "source": "swarm-intake"
+}

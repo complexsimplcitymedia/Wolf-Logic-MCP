@@ -1,0 +1,25 @@
+{
+  "text": "This conversation has just started, and the first message is a typical \"request interrupted\" message from a user. I'll do my best to summarize our conversation when you're ready to share something.",
+  "content": "USER: [{'type': 'text', 'text': '[Request interrupted by user]'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:57.125872",
+  "keywords": [
+    "User: [{'type': 'text'",
+    "'text': '[Request interrupted by user']}",
+    "{'type': 'object'",
+    "'name': 'ConversationId'",
+    "'value': '12345'}",
+    "{'type': 'object'",
+    "'name': 'LastActivityTimestamp'",
+    "'value': '1643723400'}",
+    "{'type': 'boolean'",
+    "'name': 'HasIncomingMessage'"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "Based on the provided message, it seems that the user has interrupted a request or conversation. This action doesn't necessarily convey a sentiment but rather an intention to terminate or pause the ongoing interaction. Therefore, it would be difficult to rate the sentiment of this conversation. However, if we consider the potential implications for future interactions, the user's action could suggest a level of disengagement or impatience, which might lean slightly towards a neutral sentiment (around 3)."
+  },
+  "source": "swarm-intake"
+}

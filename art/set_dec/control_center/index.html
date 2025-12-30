@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Logic | Control Center</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0c0e;
+            color: #00ff66;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #2a2a2a;
+            background: #151515;
+            border-radius: 4px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(0, 255, 100, 0.5);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #00aa44;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 4px;
+            padding: 20px;
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 0, 0, 0.1) 3px, rgba(0, 0, 0, 0.1) 4px);
+            pointer-events: none;
+            border-radius: 4px;
+        }
+
+        .panel-title {
+            font-size: 1rem;
+            color: #00ff66;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #1a2a1a;
+        }
+
+        .memory-panel {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .memory-count {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #00ff66;
+            text-shadow: 0 0 30px rgba(0, 255, 100, 0.6);
+            line-height: 1;
+        }
+
+        .memory-label {
+            font-size: 1.2rem;
+            color: #00aa44;
+            margin-top: 10px;
+            letter-spacing: 3px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 255, 100, 0.1);
+        }
+
+        .metric-row:last-child { border-bottom: none; }
+
+        .metric-label { color: #00aa44; }
+
+        .metric-value {
+            color: #00ff66;
+            font-weight: bold;
+        }
+
+        .metric-value.warning { color: #ffaa00; }
+        .metric-value.critical { color: #ff4444; }
+
+        .bar-container {
+            width: 100%;
+            height: 8px;
+            background: #111;
+            margin-top: 8px;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff66, #00cc55);
+            transition: width 0.5s ease;
+        }
+
+        .bar-fill.warning { background: linear-gradient(90deg, #ffaa00, #cc8800); }
+        .bar-fill.critical { background: linear-gradient(90deg, #ff4444, #cc2222); }
+
+        .gpu-temps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .temp-box {
+            text-align: center;
+            padding: 15px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+        }
+
+        .temp-value {
+            font-size: 1.8rem;
+            color: #00ff66;
+            font-weight: bold;
+        }
+
+        .temp-label {
+            font-size: 0.75rem;
+            color: #00aa44;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff66;
+            box-shadow: 0 0 10px rgba(0, 255, 100, 0.8);
+            animation: pulse 2s infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-indicator.offline {
+            background: #ff4444;
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.8);
+            animation: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #00aa44;
+            font-size: 0.8rem;
+            border-top: 1px solid #1a2a1a;
+        }
+
+        .namespace-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .namespace-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 255, 100, 0.1);
+            font-size: 0.85rem;
+        }
+
+        .namespace-name { color: #00aa44; }
+        .namespace-count { color: #00ff66; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="/wolf_logo.png" alt="Complex Logic" style="width: 80px; height: 80px; margin-bottom: 10px; filter: drop-shadow(0 0 20px rgba(0, 255, 100, 0.4));">
+        <div style="font-size: 0.75rem; color: #00aa44; letter-spacing: 2px; margin-bottom: 15px; font-style: italic;">THE WOLF NEVER FORGETS</div>
+        <h1>COMPLEX LOGIC</h1>
+        <div class="subtitle">CONTROL CENTER</div>
+    </div>
+
+    <div class="dashboard">
+        <!-- Memory Count Panel -->
+        <div class="panel memory-panel">
+            <div class="memory-count" id="memory-count">--</div>
+            <div class="memory-label">INSTANCES OF CONSCIOUSNESS</div>
+            <div style="margin-top: 15px; font-size: 0.8rem; color: #00aa44; letter-spacing: 1px;">RETAINED | PROTECTED | RECLAIMED</div>
+        </div>
+
+        <!-- GPU Panel -->
+        <div class="panel">
+            <div class="panel-title">
+                <span class="status-indicator" id="gpu-status"></span>
+                GPU | AMD RX 7900 XT
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">VRAM</span>
+                <span class="metric-value" id="vram-usage">-- / -- GB</span>
+            </div>
+            <div class="bar-container">
+                <div class="bar-fill" id="vram-bar" style="width: 0%"></div>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">GPU Clock</span>
+                <span class="metric-value" id="gpu-clock">-- MHz</span>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">Memory Clock</span>
+                <span class="metric-value" id="mem-clock">-- MHz</span>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">Power</span>
+                <span class="metric-value" id="gpu-power">-- W</span>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">Fan</span>
+                <span class="metric-value" id="gpu-fan">-- RPM (--%%)</span>
+            </div>
+
+            <div class="gpu-temps">
+                <div class="temp-box">
+                    <div class="temp-value" id="temp-edge">--</div>
+                    <div class="temp-label">Edge</div>
+                </div>
+                <div class="temp-box">
+                    <div class="temp-value" id="temp-junction">--</div>
+                    <div class="temp-label">Junction</div>
+                </div>
+                <div class="temp-box">
+                    <div class="temp-value" id="temp-memory">--</div>
+                    <div class="temp-label">Memory</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Panel -->
+        <div class="panel">
+            <div class="panel-title">
+                <span class="status-indicator" id="sys-status"></span>
+                SYSTEM
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">CPU</span>
+                <span class="metric-value" id="cpu-usage">--%%</span>
+            </div>
+            <div class="bar-container">
+                <div class="bar-fill" id="cpu-bar" style="width: 0%"></div>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">CPU Frequency</span>
+                <span class="metric-value" id="cpu-freq">-- MHz</span>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">RAM</span>
+                <span class="metric-value" id="ram-usage">-- / -- GB</span>
+            </div>
+            <div class="bar-container">
+                <div class="bar-fill" id="ram-bar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Namespaces Panel -->
+        <div class="panel">
+            <div class="panel-title">
+                <span class="status-indicator" id="pg-status"></span>
+                MEMORY NAMESPACES
+            </div>
+            <div class="namespace-list" id="namespace-list">
+                <div class="namespace-item">
+                    <span class="namespace-name">Loading...</span>
+                    <span class="namespace-count">--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span id="last-update">Last Update: --</span>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function getBarClass(percent) {
+            if (percent >= 90) return 'critical';
+            if (percent >= 75) return 'warning';
+            return '';
+        }
+
+        function updateMetrics(data) {
+            // Memory count
+            if (data.memories !== undefined) {
+                document.getElementById('memory-count').textContent = formatNumber(data.memories);
+            }
+
+            // GPU metrics
+            if (data.gpu && !data.gpu.error) {
+                const gpu = data.gpu;
+                document.getElementById('gpu-status').classList.remove('offline');
+
+                document.getElementById('vram-usage').textContent =
+                    `${gpu.vram_used_gb} / ${gpu.vram_total_gb} GB`;
+
+                const vramBar = document.getElementById('vram-bar');
+                vramBar.style.width = `${gpu.vram_percent}%`;
+                vramBar.className = 'bar-fill ' + getBarClass(gpu.vram_percent);
+
+                document.getElementById('gpu-clock').textContent = `${gpu.gpu_clock_mhz} MHz`;
+                document.getElementById('mem-clock').textContent = `${gpu.mem_clock_mhz} MHz`;
+                document.getElementById('gpu-power').textContent = `${gpu.power_watts} W`;
+                document.getElementById('gpu-fan').textContent = `${gpu.fan_rpm} RPM (${gpu.fan_percent}%)`;
+
+                const tempEdge = document.getElementById('temp-edge');
+                tempEdge.textContent = `${gpu.temp_edge}°`;
+                tempEdge.className = 'temp-value' + (gpu.temp_edge >= 80 ? ' critical' : gpu.temp_edge >= 70 ? ' warning' : '');
+
+                const tempJunction = document.getElementById('temp-junction');
+                tempJunction.textContent = `${gpu.temp_junction}°`;
+                tempJunction.className = 'temp-value' + (gpu.temp_junction >= 100 ? ' critical' : gpu.temp_junction >= 90 ? ' warning' : '');
+
+                const tempMem = document.getElementById('temp-memory');
+                tempMem.textContent = `${gpu.temp_memory}°`;
+                tempMem.className = 'temp-value' + (gpu.temp_memory >= 95 ? ' critical' : gpu.temp_memory >= 85 ? ' warning' : '');
+            } else {
+                document.getElementById('gpu-status').classList.add('offline');
+            }
+
+            // CPU metrics
+            if (data.cpu) {
+                document.getElementById('cpu-usage').textContent = `${data.cpu.percent}%`;
+                const cpuBar = document.getElementById('cpu-bar');
+                cpuBar.style.width = `${data.cpu.percent}%`;
+                cpuBar.className = 'bar-fill ' + getBarClass(data.cpu.percent);
+                document.getElementById('cpu-freq').textContent = `${data.cpu.frequency_mhz} MHz`;
+            }
+
+            // RAM metrics
+            if (data.ram) {
+                document.getElementById('ram-usage').textContent =
+                    `${data.ram.used_gb} / ${data.ram.total_gb} GB`;
+                const ramBar = document.getElementById('ram-bar');
+                ramBar.style.width = `${data.ram.percent}%`;
+                ramBar.className = 'bar-fill ' + getBarClass(data.ram.percent);
+            }
+
+            document.getElementById('last-update').textContent =
+                `Last Update: ${new Date().toLocaleTimeString()}`;
+        }
+
+        async function fetchNamespaces() {
+            try {
+                const response = await fetch(`${API_BASE}/api/memories/stats`);
+                const data = await response.json();
+
+                if (data.namespaces) {
+                    const container = document.getElementById('namespace-list');
+                    container.innerHTML = '';
+
+                    const sorted = Object.entries(data.namespaces).sort((a, b) => b[1] - a[1]);
+
+                    for (const [name, count] of sorted) {
+                        const item = document.createElement('div');
+                        item.className = 'namespace-item';
+                        item.innerHTML = `
+                            <span class="namespace-name">${name}</span>
+                            <span class="namespace-count">${formatNumber(count)}</span>
+                        `;
+                        container.appendChild(item);
+                    }
+
+                    document.getElementById('pg-status').classList.remove('offline');
+                }
+            } catch (error) {
+                console.error('Namespace fetch error:', error);
+                document.getElementById('pg-status').classList.add('offline');
+            }
+        }
+
+        async function fetchMetrics() {
+            try {
+                const response = await fetch(`${API_BASE}/api/metrics`);
+                const data = await response.json();
+                updateMetrics(data);
+                document.getElementById('sys-status').classList.remove('offline');
+            } catch (error) {
+                console.error('Metrics fetch error:', error);
+                document.getElementById('sys-status').classList.add('offline');
+            }
+        }
+
+        // Initial fetch
+        fetchMetrics();
+        fetchNamespaces();
+
+        // Poll every 2 seconds for metrics
+        setInterval(fetchMetrics, 2000);
+
+        // Poll every 30 seconds for namespaces
+        setInterval(fetchNamespaces, 30000);
+    </script>
+</body>
+</html>

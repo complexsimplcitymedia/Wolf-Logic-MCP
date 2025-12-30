@@ -1,0 +1,25 @@
+{
+  "text": "This conversation did not take place, as there was no initial message provided to summarize. However, I can provide a summary of the conversation in 2-3 sentences:\n\nThe conversation describes how PostgREST is running and provides examples of test queries for various endpoints, including listing tables, querying memories, searching content with embeddings, and counting memories. These tests are likely used to verify that the PostgREST server is functioning correctly. Librarian has been enabled as a result of these tests.",
+  "content": "ASSISTANT: Sandbox blocking my curl. But PostgREST is running. Test from your terminal:\n\n```bash\n# List tables\ncurl http://100.110.82.181:3333/\n\n# Query memories (first 5)\ncurl \"http://100.110.82.181:3333/memories?limit=5\"\n\n# Query by namespace\ncurl \"http://100.110.82.181:3333/memories?namespace=eq.core_identity\"\n\n# Search content (contains)\ncurl \"http://100.110.82.181:3333/memories?content=ilike.*wolf*&limit=10\"\n\n# Count memories\ncurl \"http://100.110.82.181:3333/memories?select=count\"\n```\n\n**PostgREST endpoints:**\n- http://100.110.82.181:3333/memories - query memories table\n- http://100.110.82.181:3333/memories_embedding - query with embeddings\n\n**Librarian now has a REST API.**",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T14:29:39.266843",
+  "keywords": [
+    "Here are 5-10 key topics/keywords from this conversation",
+    "comma-separated:\n\ncurl",
+    "PostgREST",
+    "Sandbox blocking",
+    "memory queries",
+    "namespace",
+    "search",
+    "count",
+    "endpoints",
+    "librarian"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of the conversation seems to be neutral, as it is focused on technical issues and instructions rather than expressing positive or negative emotions. However, if we rate the sentiment based on the context, I would rate it as 3 out of 5 because the user is asking for help with an issue (the sandbox blocking curl requests), but there is no clear indication of frustration or disappointment in the message. The user is providing helpful instructions and endpoints for testing PostgREST, which can be seen as a positive contribution to the conversation."
+  },
+  "source": "swarm-intake"
+}

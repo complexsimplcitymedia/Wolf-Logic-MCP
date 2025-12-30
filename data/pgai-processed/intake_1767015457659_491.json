@@ -1,0 +1,8 @@
+{
+  "text": "USER: [{'tool_use_id': 'toolu_01DRYs6TE2SSKMZQ861oCTdy', 'type': 'tool_result', 'content': ' content \\n---------\\n(0 rows)', 'is_error': False}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:21:27.429470",
+  "source": "swarm-intake"
+}

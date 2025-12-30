@@ -1,0 +1,18 @@
+{
+  "text": "This conversation has just started, so there is nothing to summarize yet. I'm happy to chat with you and provide a summary at the end if you'd like. What would you like to talk about?",
+  "content": "USER: run that yourslef",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:37:15.121823",
+  "keywords": [
+    "Here are the extracted keywords in a comma-separated list:\n\nrun",
+    "yourself",
+    "alone"
+  ],
+  "sentiment": {
+    "score": 1,
+    "analysis": "Sentiment Rating: 1 (Very Negative)\nExplanation: The user's message is brief and lacks positivity. They are instructing the other party to perform a task, which can be perceived as demanding or impatient, contributing to a negative sentiment."
+  },
+  "source": "swarm-intake"
+}

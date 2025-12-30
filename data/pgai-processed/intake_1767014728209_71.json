@@ -1,0 +1,19 @@
+{
+  "text": "This conversation has not started yet. The provided message is a tool result indicating that the user was interrupted. There is no summary to provide as this is the first message in the conversation.",
+  "content": "USER: [{'type': 'tool_result', 'content': 'Interrupted by user', 'is_error': True, 'tool_use_id': 'toolu_01U6mrm5veMXqCem7kTt2M5z'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:40.407144",
+  "keywords": [
+    "interrupted",
+    "user",
+    "tool_u",
+    "1U6mrm5veMXqCem7kTt2M5z"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of the conversation is neutral to slightly negative. The user's message indicates an issue or problem (interrupted by user), which typically leans towards a negative sentiment. However, since it does not express strong emotions and is a factual statement about an error, it is rated as neutral to slightly negative (2 on a scale of 1-5)."
+  },
+  "source": "swarm-intake"
+}

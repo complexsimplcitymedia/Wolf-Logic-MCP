@@ -1,0 +1,25 @@
+{
+  "text": "This conversation has not been initiated yet. Please provide the text you would like me to summarize, and I will be happy to assist you.",
+  "content": "USER: [{'tool_use_id': 'toolu_0135pQx78zuToTBQiSyZeZM2', 'type': 'tool_result', 'content': '# Standardized Scripty (Edge-First)\\n\\nSame scripty on every device. Captures text, optionally summarizes/embeds locally via Ollama, and forwards to 181 via a gateway (preferred) or inserts to Postgres (optional). Uniform inputs, uniform outputs.\\n\\n## Install\\n```bash\\n# From repo root\\ncd Wolf-Logic-MCP/writers\\nchmod +x install_scripty.sh\\n./install_scripty.sh\\n```\\n\\nEdit /opt/scripty/.env (minimum):\\n- `GATEWAY_URL` and `SCRIPTY_AUTH_TOKEN` if using gateway\\n- or set `DIRECT_PG=true` and configure PG* (only if approved)\\n- ensure `SCRIPTY_INPUT_DIR` exists (default /var/log/scripty)\\n\\nStart service:\\n```bash\\nsudo systemctl start scripty.service\\nsudo systemctl status scripty.service\\n```\\n\\n## Send a Test Event\\n```bash\\necho \"hello from scripty $(date -Is)\" > /var/log/scripty/test.$(date +%s).txt\\n```\\nCheck logs:\\n```bash\\ntail -n 200 /var/log/scripty/scripty.out.log\\n```\\nExpected: `[scripty] delivered via gateway` or `[scripty] inserted directly into Postgres`.\\n\\n## Environment Reference\\n- `SCRIPTY_MODE=edge|hub` (edge = summarize+embed locally; hub = raw only)\\n- `OLLAMA_HOST=http://localhost:11434`\\n- `SCRIPTY_EMBED_MODEL=qwen3-embedding:4b`\\n- `SCRIPTY_SUMMARY_MODEL=llama3.2:1b`\\n- `GATEWAY_URL=http://100.110.82.181:8000/memory`\\n- `SCRIPTY_AUTH_TOKEN=`\\n- `DIRECT_PG=false` (enable only if allowed)\\n- `PGHOST=100.110.82.181 PGPORT=5433 PGDATABASE=wolf_logic PGUSER=... PGPASSWORD=...`\\n- `SCRIPTY_INPUT_DIR=/var/log/scripty`\\n- `SCRIPTY_SPOOL_DIR=~/.scripty_spool`\\n\\n## Gateway Contract (POST)\\nURL: `${GATEWAY_URL}`\\nPayload (JSON):\\n```json\\n{\\n  \"namespace\": \"scripty\",\\n  \"content\": \"raw text...\",\\n  \"embedding\": [0.01, 0.02],\\n  \"meta\": {\"device\": \"hostname\", \"created_at\": \"iso\", \"summary\": \"...\", \"dimensions\": 2560}\\n}\\n```\\nNotes:\\n- `embedding` may be null; server can vectorize\\n- Include `Authorization: Bearer ${SCRIPTY_AUTH_TOKEN}` if required\\n\\n## Models on Client\\n```bash\\nollama pull qwen3-embedding:4b\\nollama pull llama3.2:1b\\n```\\n\\n## CLI Usage (ad-hoc runs)\\n```bash\\n/opt/scripty/venv/bin/python /opt/scripty/scripty_agent.py --stdin <<\\'EOF\\'\\nThis is a one-off snippet to capture.\\nEOF\\n\\n/opt/scripty/venv/bin/python /opt/scripty/scripty_agent.py --file /var/log/scripty/test.txt\\n\\n/opt/scripty/venv/bin/python /opt/scripty/scripty_agent.py --watch /var/log/scripty\\n```\\n\\n## Troubleshooting\\n- Gateway 4xx/5xx \u2192 check `GATEWAY_URL`/token, network/Tailscale\\n- `DIRECT_PG=true` errors \u2192 verify PG* env, connectivity, and pg_hba rules on 181\\n- No events \u2192 confirm `SCRIPTY_INPUT_DIR` exists and service is active\\n- Watch mode requires `watchdog` in `/opt/scripty/venv`', 'is_error': False}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "c2917c9c-32f3-45db-afb0-553c39fb6eef",
+  "timestamp": "2025-12-29T09:48:29.646615",
+  "keywords": [
+    "Here are 5-10 key topics/keywords from this conversation",
+    "returned in comma-separated keywords:\n\nstandardized scripty",
+    "edge-first",
+    "gateway",
+    "scripty",
+    "ollama",
+    "summary",
+    "embeds",
+    "postgres",
+    "pguser"
+  ],
+  "sentiment": {
+    "score": 4,
+    "analysis": "The sentiment of this conversation is neutral, as it primarily provides instructions and technical details about setting up a script or program (scripty) on a device. However, the tone is informative and professional, suggesting a positive intent to share useful information for others.\n\nThe content mainly focuses on installation instructions, environment variables, and usage examples of the scripty tool. The author provides detailed steps, which shows their dedication to clarity and helping users understand the setup process. This could be beneficial for those who are interested in using or contributing to this project. Therefore, I would rate the sentiment as 4 out of 5, leaning towards the positive side due to its helpful and informative nature."
+  },
+  "source": "swarm-intake"
+}

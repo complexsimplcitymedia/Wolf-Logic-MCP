@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WOLF Memory Control Dashboard</title>
+    <link rel="stylesheet" href="/static/css/lcd-dashboard.css">
+    <link rel="stylesheet" href="/static/css/wolf-boot.css">
+</head>
+<body>
+    <!-- Boot Animation Screen -->
+    <div class="boot-screen" id="bootScreen">
+        <div class="wolf-logo">
+                    ██╗    ██╗ ██████╗ ██╗     ███████╗
+                    ██║    ██║██╔═══██╗██║     ██╔════╝
+                    ██║ █╗ ██║██║   ██║██║     █████╗  
+                    ██║███╗██║██║   ██║██║     ██╔══╝  
+                    ╚███╔███╔╝╚██████╔╝███████╗██║     
+                     ╚══╝╚══╝  ╚═════╝ ╚══════╝╚═╝     
+                                                        
+            ███╗   ███╗ ██████╗██████╗                 
+            ████╗ ████║██╔════╝██╔══██╗                
+            ██╔████╔██║██║     ██████╔╝                
+            ██║╚██╔╝██║██║     ██╔═══╝                 
+            ██║ ╚═╝ ██║╚██████╗██║                     
+            ╚═╝     ╚═╝ ╚═════╝╚═╝                     
+        </div>
+        <div class="boot-text">INITIALIZING MEMORY CONTROL PROTOCOL...</div>
+        <div class="boot-progress">
+            <div class="boot-progress-bar"></div>
+        </div>
+        <div class="boot-version">WOLF MCP v1.0 | THEWO LFWALKSALONE | 2024-2025</div>
+    </div>
+    <div class="dashboard-container">
+        <!-- Header LCD Panel -->
+        <div class="lcd-panel header-panel">
+            <div class="lcd-screen">
+                <div class="lcd-header" style="justify-content: center;">
+                    <div class="logo-section" style="justify-content: center;">
+                        <img src="/static/wolf-logo.png" alt="WOLF" class="wolf-head-logo" style="height: 150px; margin-right: 25px;">
+                        <div style="display: flex; flex-direction: column; justify-content: center;">
+                            <div class="lcd-logo" style="font-size: 64px; line-height: 1; letter-spacing: 8px;">COMPLEX LOGIC</div>
+                            <div class="lcd-subtitle" style="font-size: 16px; margin-top: 12px; letter-spacing: 4px;">AI Memory Control Center</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-indicators" style="margin-top: 20px; justify-content: center;">
+                    <div class="indicator" id="backend-status">
+                        <span class="led offline"></span>
+                        <span class="label">Backend</span>
+                    </div>
+                    <div class="indicator" id="mariadb-status">
+                        <span class="led offline"></span>
+                        <span class="label">MariaDB</span>
+                    </div>
+                    <div class="indicator" id="qdrant-status">
+                        <span class="led offline"></span>
+                        <span class="label">Qdrant</span>
+                    </div>
+                    <div class="indicator" id="neo4j-status">
+                        <span class="led offline"></span>
+                        <span class="label">Neo4j</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Memory Statistics LCD -->
+            <div class="lcd-panel memory-stats">
+                <div class="lcd-screen">
+                    <div class="panel-header">
+                        <span class="panel-title">MEMORY BANK</span>
+                        <span class="panel-status" id="memory-timestamp">--:--:--</span>
+                    </div>
+                    <div class="lcd-content">
+                        <div class="stat-row">
+                            <span class="stat-label">TOTAL MEMORIES</span>
+                            <span class="stat-value lcd-digits" id="total-memories">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">VECTOR EMBEDDINGS</span>
+                            <span class="stat-value lcd-digits" id="total-vectors">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">GRAPH RELATIONS</span>
+                            <span class="stat-value lcd-digits" id="total-relations">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">APPLICATIONS</span>
+                            <span class="stat-value lcd-digits" id="total-apps">0</span>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="memory-progress"></div>
+                        </div>
+                        <span class="progress-label">SYNC STATUS: <span id="sync-status">IDLE</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GPU Metrics LCD -->
+            <div class="lcd-panel gpu-metrics">
+                <div class="lcd-screen">
+                    <div class="panel-header">
+                        <span class="panel-title">AMD GPU METRICS</span>
+                        <span class="panel-status" id="gpu-timestamp">--:--:--</span>
+                    </div>
+                    <div class="lcd-content">
+                        <div class="stat-row">
+                            <span class="stat-label">GPU LOAD</span>
+                            <span class="stat-value lcd-digits" id="gpu-load">0%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">TEMPERATURE</span>
+                            <span class="stat-value lcd-digits temp-warning" id="gpu-temp">0°C</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">VRAM USAGE</span>
+                            <span class="stat-value lcd-digits" id="vram-usage">0/0 MB</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">POWER DRAW</span>
+                            <span class="stat-value lcd-digits" id="power-draw">0W</span>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="bar-graph" id="gpu-graph">
+                            <div class="bar" style="height: 0%"></div>
+                            <div class="bar" style="height: 0%"></div>
+                            <div class="bar" style="height: 0%"></div>
+                            <div class="bar" style="height: 0%"></div>
+                            <div class="bar" style="height: 0%"></div>
+                            <div class="bar" style="height: 0%"></div>
+                            <div class="bar" style="height: 0%"></div>
+                            <div class="bar" style="height: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent Status LCD -->
+            <div class="lcd-panel agent-status">
+                <div class="lcd-screen">
+                    <div class="panel-header">
+                        <span class="panel-title">AGENT STATUS</span>
+                        <span class="panel-status" id="agent-timestamp">--:--:--</span>
+                    </div>
+                    <div class="lcd-content">
+                        <div class="agent-row">
+                            <span class="agent-name">EMBEDDER AGENT</span>
+                            <span class="agent-state" id="embedder-state">OFFLINE</span>
+                            <span class="led offline" id="embedder-led"></span>
+                        </div>
+                        <div class="agent-row">
+                            <span class="agent-name">CATEGORIZATION</span>
+                            <span class="agent-state" id="categorization-state">OFFLINE</span>
+                            <span class="led offline" id="categorization-led"></span>
+                        </div>
+                        <div class="agent-row">
+                            <span class="agent-name">AMETHYST 13B</span>
+                            <span class="agent-state" id="amethyst-state">OFFLINE</span>
+                            <span class="led offline" id="amethyst-led"></span>
+                        </div>
+                        <div class="agent-row">
+                            <span class="agent-name">QWEN3 EMBED</span>
+                            <span class="agent-state" id="qwen3embed-state">OFFLINE</span>
+                            <span class="led offline" id="qwen3embed-led"></span>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <span class="footer-label">QUEUE SIZE: <span class="lcd-digits" id="queue-size">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LM Studio Status LCD -->
+            <div class="lcd-panel lm-studio">
+                <div class="lcd-screen">
+                    <div class="panel-header">
+                        <span class="panel-title">LM STUDIO</span>
+                        <span class="panel-status" id="lm-timestamp">--:--:--</span>
+                    </div>
+                    <div class="lcd-content">
+                        <div class="model-row">
+                            <span class="model-type">CHAT MODEL</span>
+                            <span class="model-name" id="chat-model">Amethyst 13B Mistral</span>
+                        </div>
+                        <div class="model-row">
+                            <span class="model-type">EMBEDDING</span>
+                            <span class="model-name" id="embed-model">Qwen3 4B</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">ENDPOINT</span>
+                            <span class="stat-value" id="lm-endpoint">localhost:1234</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">STATUS</span>
+                            <span class="stat-value" id="lm-status">CHECKING...</span>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <!-- Bottom Control Buttons -->
+        <div class="lcd-panel control-panel">
+            <div class="lcd-screen">
+                <div class="panel-header">
+                    <span class="panel-title">⚡ CONTROL CENTER</span>
+                </div>
+                <div class="lcd-content control-grid">
+                    <button class="lcd-button" onclick="dashboard.initSystem()">
+                        <span class="button-icon">⚡</span>
+                        <span class="button-label">INIT SYSTEM</span>
+                    </button>
+                    <button class="lcd-button" onclick="dashboard.syncPipeline()">
+                        <span class="button-icon">🔗</span>
+                        <span class="button-label">SYNC PIPELINE</span>
+                    </button>
+                    <button class="lcd-button" onclick="dashboard.searchMemories()">
+                        <span class="button-icon">🔍</span>
+                        <span class="button-label">SEARCH</span>
+                    </button>
+                    <button class="lcd-button" onclick="dashboard.startEmbedder()">
+                        <span class="button-icon">🔄</span>
+                        <span class="button-label">START EMBEDDER</span>
+                    </button>
+                    <button class="lcd-button" onclick="dashboard.refreshAll()">
+                        <span class="button-icon">🔃</span>
+                        <span class="button-label">REFRESH ALL</span>
+                    </button>
+                    <button class="lcd-button" onclick="dashboard.viewLogs()">
+                        <span class="button-icon">📋</span>
+                        <span class="button-label">VIEW LOGS</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer LCD -->
+        <div class="lcd-panel footer-panel">
+            <div class="lcd-screen">
+                <div class="footer-content">
+                    <span class="footer-item">UPTIME: <span class="lcd-digits" id="uptime">00:00:00</span></span>
+                    <span class="footer-item">LAST UPDATE: <span class="lcd-digits" id="last-update">--:--:--</span></span>
+                    <span class="footer-item">WOLF MCP v1.0 | <span id="system-load">0%</span> CPU</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

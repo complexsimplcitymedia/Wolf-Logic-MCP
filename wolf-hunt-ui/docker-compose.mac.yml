@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  wolf-hunt-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: wolf-hunt-api
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=100.110.82.181
+      - DB_PORT=5433
+      - DB_USER=wolf
+      - DB_PASSWORD=wolflogic2024
+      - DB_NAME=wolf_logic
+    restart: unless-stopped
+    networks:
+      - wolf-network
+
+  wolf-hunt-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wolf-hunt-ui
+    ports:
+      - "8033:3333"
+    restart: unless-stopped
+    depends_on:
+      - wolf-hunt-api
+    networks:
+      - wolf-network
+
+networks:
+  wolf-network:
+    driver: bridge

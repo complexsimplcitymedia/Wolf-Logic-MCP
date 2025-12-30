@@ -1,0 +1,20 @@
+{
+  "text": "This conversation has just begun. You've only asked \"where my Neo4j bridge\", and I haven't responded yet because there's no context or information to provide about a Neo4j bridge. Would you like to start fresh and ask a question?",
+  "content": "USER: where my neo4j bridge",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T12:19:16.169725",
+  "keywords": [
+    "Here are the extracted keywords in a comma-separated list:\n\nneo4j bridge",
+    "java",
+    "graph database",
+    "data integration",
+    "api connection"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral as it does not contain any expressive emotional language or expressions. However, the user is asking a question about a Neo4j bridge, which implies they may be seeking assistance or information. This could potentially indicate a mild level of frustration if the user is experiencing issues and needs help to find their Neo4j bridge.\n\nRating: 3 (Neutral)"
+  },
+  "source": "swarm-intake"
+}

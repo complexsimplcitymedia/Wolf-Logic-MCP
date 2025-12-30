@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wolf AI Control Center</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            overflow-x: hidden;
+        }
+        .header {
+            background: linear-gradient(90deg, #001100 0%, #003300 100%);
+            border-bottom: 3px solid #00ff00;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .pulse {
+            width: 12px;
+            height: 12px;
+            background: #00ff00;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            height: calc(100vh - 80px);
+        }
+        .sidebar {
+            background: #0d0d0d;
+            border-right: 2px solid #003300;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .main-content {
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .nav-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #111;
+            border: 1px solid #003300;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: #003300;
+            border-color: #00ff00;
+            transform: translateX(5px);
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #111 0%, #0a0a0a 100%);
+            border: 2px solid #00ff00;
+            padding: 25px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .metric-value {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 10px 0;
+            text-shadow: 0 0 20px #00ff00;
+        }
+        .metric-label {
+            color: #00aa00;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        .metric-change {
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        .chart-container {
+            background: #111;
+            border: 2px solid #003300;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .namespace-item {
+            background: #111;
+            border-left: 4px solid #00ff00;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .namespace-bar {
+            height: 30px;
+            background: linear-gradient(90deg, #003300, #00ff00);
+            border-radius: 4px;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .namespace-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .control-panel {
+            background: #111;
+            border: 2px solid #00ff00;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: #003300;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 12px 24px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        .btn:hover {
+            background: #00ff00;
+            color: #0a0a0a;
+            transform: scale(1.05);
+        }
+        .search-box {
+            width: 100%;
+            background: #0a0a0a;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        .results-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .result-item {
+            background: #111;
+            border-left: 3px solid #00ff00;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .agent-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #111;
+            border: 1px solid #003300;
+            margin-bottom: 15px;
+        }
+        .agent-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        .agent-indicator.inactive {
+            background: #333;
+            box-shadow: none;
+        }
+        .log-console {
+            background: #000;
+            border: 2px solid #003300;
+            padding: 15px;
+            font-size: 0.9rem;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+        }
+        .log-entry.info { color: #00ff00; }
+        .log-entry.warning { color: #ffaa00; }
+        .log-entry.error { color: #ff0000; }
+        .upload-zone {
+            border: 3px dashed #003300;
+            padding: 60px;
+            text-align: center;
+            background: #0d0d0d;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-zone:hover {
+            border-color: #00ff00;
+            background: #111;
+        }
+        .progress-bar {
+            height: 20px;
+            background: #003300;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #00aa00);
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">⚡ WOLF AI CONTROL CENTER</div>
+        <div class="status-indicator">
+            <div class="pulse"></div>
+            <span>SYSTEM ONLINE</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="nav-item active" onclick="showSection('overview')">📊 Overview</div>
+            <div class="nav-item" onclick="showSection('agents')">🤖 Agents</div>
+            <div class="nav-item" onclick="showSection('memories')">🧠 Memories</div>
+            <div class="nav-item" onclick="showSection('ingest')">📥 Ingest</div>
+            <div class="nav-item" onclick="showSection('search')">🔍 Search</div>
+            <div class="nav-item" onclick="showSection('logs')">📝 Logs</div>
+        </div>
+
+        <div class="main-content">
+            <!-- OVERVIEW SECTION -->
+            <div id="overview" class="section active">
+                <h1 style="margin-bottom: 30px;">System Overview</h1>
+
+                <div class="metrics-grid" id="metricsGrid">
+                    <div class="metric-card">
+                        <div class="metric-label">Total Memories</div>
+                        <div class="metric-value" id="totalMemories">...</div>
+                        <div class="metric-change">↑ Growing</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Namespaces</div>
+                        <div class="metric-value" id="namespaceCount">...</div>
+                        <div class="metric-change">Active</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Vector Dimensions</div>
+                        <div class="metric-value">768</div>
+                        <div class="metric-change">nomic-v1.5</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">System Status</div>
+                        <div class="metric-value" style="font-size: 2rem;">LIVE</div>
+                        <div class="metric-change">PostgreSQL + pgai</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h2 style="margin-bottom: 20px;">Memory Distribution by Namespace</h2>
+                    <div id="namespaceChart"></div>
+                </div>
+            </div>
+
+            <!-- AGENTS SECTION -->
+            <div id="agents" class="section">
+                <h1 style="margin-bottom: 30px;">Agent Management</h1>
+
+                <div class="control-panel">
+                    <h2 style="margin-bottom: 15px;">Active Agents</h2>
+                    <div id="agentsList">
+                        <div class="agent-status">
+                            <div class="agent-indicator"></div>
+                            <div style="flex: 1;">
+                                <strong>Stenographer</strong><br>
+                                <small>Session capture every 5min</small>
+                            </div>
+                            <button class="btn" onclick="controlAgent('stenographer', 'restart')">Restart</button>
+                        </div>
+                        <div class="agent-status">
+                            <div class="agent-indicator"></div>
+                            <div style="flex: 1;">
+                                <strong>Ingest Agent</strong><br>
+                                <small>File ingestion to pgai</small>
+                            </div>
+                            <button class="btn" onclick="controlAgent('ingest', 'restart')">Restart</button>
+                        </div>
+                        <div class="agent-status">
+                            <div class="agent-indicator"></div>
+                            <div style="flex: 1;">
+                                <strong>Session Logger</strong><br>
+                                <small>Dailys output every 60sec</small>
+                            </div>
+                            <button class="btn" onclick="controlAgent('logger', 'restart')">Restart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MEMORIES SECTION -->
+            <div id="memories" class="section">
+                <h1 style="margin-bottom: 30px;">Memory Namespaces</h1>
+                <div id="namespacesDetail"></div>
+            </div>
+
+            <!-- INGEST SECTION -->
+            <div id="ingest" class="section">
+                <h1 style="margin-bottom: 30px;">Ingest Data</h1>
+
+                <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+                    <h2>📁 Drop files here or click to browse</h2>
+                    <p style="color: #00aa00; margin-top: 10px;">Supports: TXT, PDF, MD, JSON</p>
+                    <input type="file" id="fileInput" style="display: none;" multiple onchange="handleFileUpload(event)">
+                </div>
+
+                <div class="control-panel">
+                    <h2 style="margin-bottom: 15px;">Manual Ingest Controls</h2>
+
+                    <label style="color: #00ff00; display: block; margin-bottom: 5px;">File Path</label>
+                    <input type="text" class="search-box" id="ingestPath" placeholder="Enter file path: /path/to/file.txt">
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                        <div>
+                            <label style="color: #00ff00; display: block; margin-bottom: 5px;">Time Frame Start</label>
+                            <input type="datetime-local" id="timeFrameStart" class="search-box" style="padding: 10px;">
+                        </div>
+                        <div>
+                            <label style="color: #00ff00; display: block; margin-bottom: 5px;">Time Frame End</label>
+                            <input type="datetime-local" id="timeFrameEnd" class="search-box" style="padding: 10px;">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                        <div>
+                            <label style="color: #00ff00; display: block; margin-bottom: 5px;">Max Tokens</label>
+                            <input type="number" id="maxTokens" class="search-box" placeholder="100000" value="100000" min="1000" max="1000000" step="1000">
+                        </div>
+                        <div>
+                            <label style="color: #00ff00; display: block; margin-bottom: 5px;">Namespace</label>
+                            <select id="ingestNamespace" class="search-box">
+                                <option value="general">general</option>
+                                <option value="core_identity">core_identity</option>
+                                <option value="session_dump">session_dump</option>
+                                <option value="dailys">dailys</option>
+                                <option value="constitution">constitution</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 15px;">
+                        <label style="color: #00ff00; display: block; margin-bottom: 5px;">Chunk Size (tokens per memory)</label>
+                        <input type="number" id="chunkSize" class="search-box" placeholder="2000" value="2000" min="500" max="10000" step="100">
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button class="btn" onclick="ingestFile()">Ingest File</button>
+                        <button class="btn" onclick="ingestDump()">Ingest Memory Dump</button>
+                        <button class="btn" onclick="ingestSessionRange()">Ingest Session Range</button>
+                    </div>
+
+                    <div class="progress-bar" id="ingestProgress" style="display: none; margin-top: 15px;">
+                        <div class="progress-fill" id="ingestProgressFill" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div id="ingestLog" class="log-console" style="height: 300px;"></div>
+            </div>
+
+            <!-- SEARCH SECTION -->
+            <div id="search" class="section">
+                <h1 style="margin-bottom: 30px;">Search Memories</h1>
+
+                <input type="text" class="search-box" id="searchQuery" placeholder="Enter search query...">
+                <select class="search-box" id="namespaceFilter" style="margin-bottom: 10px;">
+                    <option value="">All Namespaces</option>
+                </select>
+                <button class="btn" onclick="searchMemories()">Search</button>
+
+                <div class="results-list" id="searchResults"></div>
+            </div>
+
+            <!-- LOGS SECTION -->
+            <div id="logs" class="section">
+                <h1 style="margin-bottom: 30px;">System Logs</h1>
+                <div class="log-console" id="systemLogs"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let systemData = null;
+
+        // Initialize
+        async function init() {
+            await loadSystemStats();
+            await loadNamespaces();
+            startLogStream();
+        }
+
+        // Load system statistics
+        async function loadSystemStats() {
+            try {
+                const response = await fetch('/api/stats');
+                systemData = await response.json();
+
+                document.getElementById('totalMemories').textContent = systemData.total_memories.toLocaleString();
+                document.getElementById('namespaceCount').textContent = systemData.namespaces.length;
+
+                renderNamespaceChart();
+                populateNamespaceFilter();
+                addLog('System stats loaded successfully', 'info');
+            } catch (error) {
+                addLog('Failed to load system stats: ' + error.message, 'error');
+            }
+        }
+
+        // Render namespace chart
+        function renderNamespaceChart() {
+            const chart = document.getElementById('namespaceChart');
+            chart.innerHTML = '';
+
+            const maxCount = Math.max(...systemData.namespaces.map(ns => ns.count));
+
+            systemData.namespaces.forEach(ns => {
+                const percentage = (ns.count / maxCount) * 100;
+                const item = document.createElement('div');
+                item.className = 'namespace-item';
+                item.innerHTML = `
+                    <div>
+                        <strong>${ns.namespace}</strong><br>
+                        <small>${ns.count.toLocaleString()} memories</small>
+                    </div>
+                    <div style="flex: 1; margin-left: 20px;">
+                        <div class="namespace-bar" style="width: ${percentage}%"></div>
+                    </div>
+                `;
+                chart.appendChild(item);
+            });
+        }
+
+        // Show section
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+
+            if (sectionId === 'memories') {
+                loadNamespaceDetails();
+            }
+        }
+
+        // Load namespace details
+        async function loadNamespaceDetails() {
+            const container = document.getElementById('namespacesDetail');
+            container.innerHTML = '';
+
+            systemData.namespaces.forEach(ns => {
+                const card = document.createElement('div');
+                card.className = 'namespace-item';
+                card.innerHTML = `
+                    <div style="flex: 1;">
+                        <h3>${ns.namespace}</h3>
+                        <p style="color: #00aa00; margin-top: 10px;">
+                            ${ns.count.toLocaleString()} memories<br>
+                            Last updated: ${new Date(ns.last_updated).toLocaleString()}
+                        </p>
+                    </div>
+                    <button class="btn" onclick="viewNamespace('${ns.namespace}')">View</button>
+                    <button class="btn" onclick="exportNamespace('${ns.namespace}')">Export</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Populate namespace filter
+        function populateNamespaceFilter() {
+            const select = document.getElementById('namespaceFilter');
+            select.innerHTML = '<option value="">All Namespaces</option>';
+
+            systemData.namespaces.forEach(ns => {
+                const option = document.createElement('option');
+                option.value = ns.namespace;
+                option.textContent = `${ns.namespace} (${ns.count.toLocaleString()})`;
+                select.appendChild(option);
+            });
+        }
+
+        // Search memories
+        async function searchMemories() {
+            const query = document.getElementById('searchQuery').value;
+            const namespace = document.getElementById('namespaceFilter').value;
+            const resultsContainer = document.getElementById('searchResults');
+
+            if (!query) {
+                alert('Please enter a search query');
+                return;
+            }
+
+            resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center;">Searching...</div>';
+
+            try {
+                const url = `/api/search?q=${encodeURIComponent(query)}&namespace=${namespace}&limit=50`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                resultsContainer.innerHTML = '';
+
+                if (data.results.length === 0) {
+                    resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center;">No results found</div>';
+                    return;
+                }
+
+                data.results.forEach(result => {
+                    const item = document.createElement('div');
+                    item.className = 'result-item';
+
+                    const preview = result.content.length > 300
+                        ? result.content.substring(0, 300) + '...'
+                        : result.content;
+
+                    item.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span style="background: #003300; padding: 5px 10px; border-radius: 3px;">${result.namespace}</span>
+                            <small>${new Date(result.created_at).toLocaleString()}</small>
+                        </div>
+                        <div>${preview}</div>
+                    `;
+                    resultsContainer.appendChild(item);
+                });
+
+                addLog(`Search completed: ${data.results.length} results found`, 'info');
+            } catch (error) {
+                resultsContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #ff0000;">Search failed</div>';
+                addLog('Search failed: ' + error.message, 'error');
+            }
+        }
+
+        // Ingest file
+        function ingestFile() {
+            const path = document.getElementById('ingestPath').value;
+            const maxTokens = document.getElementById('maxTokens').value;
+            const namespace = document.getElementById('ingestNamespace').value;
+            const chunkSize = document.getElementById('chunkSize').value;
+
+            if (!path) {
+                alert('Please enter a file path');
+                return;
+            }
+
+            addLog(`Ingesting: ${path}`, 'info');
+            addLog(`Parameters: namespace=${namespace}, maxTokens=${maxTokens}, chunkSize=${chunkSize}`, 'info');
+            addLog(`Command: python /mnt/Wolf-code/Wolf-Ai-Enterptises/writers/ingest_agent.py "${path}" --namespace ${namespace} --max-tokens ${maxTokens} --chunk-size ${chunkSize}`, 'info');
+            addLog('Execute this command in terminal or integrate with backend API', 'warning');
+        }
+
+        // Ingest memory dump
+        function ingestDump() {
+            const timeStart = document.getElementById('timeFrameStart').value;
+            const timeEnd = document.getElementById('timeFrameEnd').value;
+            const maxTokens = document.getElementById('maxTokens').value;
+            const namespace = document.getElementById('ingestNamespace').value;
+
+            if (!timeStart || !timeEnd) {
+                alert('Please specify time frame');
+                return;
+            }
+
+            addLog(`Ingesting memory dumps from ${timeStart} to ${timeEnd}`, 'info');
+            addLog(`Parameters: namespace=${namespace}, maxTokens=${maxTokens}`, 'info');
+            addLog(`Path: /mnt/Wolf-code/Wolf-Ai-Enterptises/data/memory-dumps/`, 'info');
+            addLog('Filter dumps by timestamp and ingest with specified parameters', 'warning');
+        }
+
+        // Ingest session range
+        function ingestSessionRange() {
+            const timeStart = document.getElementById('timeFrameStart').value;
+            const timeEnd = document.getElementById('timeFrameEnd').value;
+            const maxTokens = document.getElementById('maxTokens').value;
+            const namespace = document.getElementById('ingestNamespace').value;
+            const chunkSize = document.getElementById('chunkSize').value;
+
+            if (!timeStart || !timeEnd) {
+                alert('Please specify time frame');
+                return;
+            }
+
+            addLog(`Ingesting session data from ${timeStart} to ${timeEnd}`, 'info');
+            addLog(`Parameters: namespace=${namespace}, maxTokens=${maxTokens}, chunkSize=${chunkSize}`, 'info');
+            addLog(`Paths: camera/dailys/ and data/memory-dumps/`, 'info');
+            addLog('Backend should filter files by timestamp and batch ingest', 'warning');
+        }
+
+        // Handle file upload
+        function handleFileUpload(event) {
+            const files = event.target.files;
+            addLog(`Selected ${files.length} file(s) for upload`, 'info');
+            addLog('Upload functionality requires backend integration', 'warning');
+        }
+
+        // Control agent
+        function controlAgent(agent, action) {
+            addLog(`${action} ${agent} agent`, 'info');
+            addLog('Agent control requires backend integration', 'warning');
+        }
+
+        // View namespace
+        function viewNamespace(namespace) {
+            document.getElementById('namespaceFilter').value = namespace;
+            showSection('search');
+        }
+
+        // Export namespace
+        function exportNamespace(namespace) {
+            addLog(`Exporting namespace: ${namespace}`, 'info');
+            addLog('Export functionality requires backend integration', 'warning');
+        }
+
+        // Add log entry
+        function addLog(message, type = 'info') {
+            const logConsoles = ['ingestLog', 'systemLogs'];
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = `<div class="log-entry ${type}">[${timestamp}] ${message}</div>`;
+
+            logConsoles.forEach(id => {
+                const console = document.getElementById(id);
+                if (console) {
+                    console.innerHTML += entry;
+                    console.scrollTop = console.scrollHeight;
+                }
+            });
+        }
+
+        // Start log stream
+        function startLogStream() {
+            setInterval(() => {
+                // Simulate system activity
+                if (Math.random() > 0.7) {
+                    const activities = [
+                        'Memory sync completed',
+                        'Embedding vectorization in progress',
+                        'Database checkpoint completed',
+                        'Session capture saved'
+                    ];
+                    const activity = activities[Math.floor(Math.random() * activities.length)];
+                    addLog(activity, 'info');
+                }
+            }, 5000);
+        }
+
+        // Enter key for search
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('searchQuery').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') searchMemories();
+            });
+
+            init();
+        });
+    </script>
+</body>
+</html>

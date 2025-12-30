@@ -1,0 +1,22 @@
+{
+  "text": "Here is a summary of the conversation in 2-3 sentences:\n\nThe assistant provided commands to troubleshoot a PostgreSQL service issue and suggested running a hard stop/start of the service. If that didn't resolve the problem, they recommended checking what's blocking the connection on port 5433 by using `lsof`.",
+  "content": "ASSISTANT: Config is correct (`listen_addresses = '*'`, `port = 5433`). Service shows active but TCP not binding. This needs a hard stop/start:\n\n```bash\nsudo pg_ctlcluster 18 main stop && sleep 2 && sudo pg_ctlcluster 18 main start && sleep 3 && ss -tlnp | grep 5433\n```\n\nIf that still shows nothing, check what's blocking:\n```bash\nsudo lsof -i :5433\n```",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T14:29:39.265123",
+  "keywords": [
+    "Here are the 7 key topics/keywords from your conversation:\n\nPG_ctlcluster",
+    "listen_addresses",
+    "port",
+    "TCP",
+    "stop",
+    "start",
+    "ss"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of the conversation is neutral to slightly negative. The assistant is providing a solution to a problem (TCP not binding) and instructing the user on how to address it. However, the issue persists and the assistant suggests further troubleshooting steps, indicating that the problem has not been fully resolved yet.\n\nThe assistant's tone is informative and helpful, but the lack of progress may lead the user to feel frustrated or concerned about the situation. Overall, I would rate the sentiment as a 3 out of 5, as the assistant is trying to help, but the issue has not been fully resolved yet."
+  },
+  "source": "swarm-intake"
+}

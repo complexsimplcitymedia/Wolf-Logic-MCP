@@ -1,0 +1,18 @@
+{
+  "text": "This conversation has just started, and there is no previous text to summarize. The first message from the user is a JSON object containing an event type of \"text\" with the value \"[Request interrupted by user]\".\n\nHere's a summary of our start:\n\n* No previous conversation or messages were received.\n* A new JSON object was sent by the user indicating that their request was interrupted.",
+  "content": "USER: [{'type': 'text', 'text': '[Request interrupted by user]'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "622206dd-d4fe-4c2b-9c6a-800259ceed55",
+  "timestamp": "2025-12-30T14:55:40.664573",
+  "keywords": [
+    "Here are the extracted keywords",
+    "comma-separated:\n\nrequest",
+    "interrupted"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is neutral, as it does not contain any explicit positive or negative statements. However, the context suggests a pause or interruption in the ongoing conversation due to the user requesting it to be stopped. A rating of 3 seems appropriate for this interaction as it does not convey any strong emotions, but rather signifies a momentary break in communication."
+  },
+  "source": "swarm-intake"
+}

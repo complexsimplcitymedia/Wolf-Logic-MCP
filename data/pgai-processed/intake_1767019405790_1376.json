@@ -1,0 +1,20 @@
+{
+  "text": "This conversation has just begun, so there is nothing to summarize. What would you like to talk about or ask? I can provide information on available options if you need help.",
+  "content": "USER: which one is avaiable ",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "c2917c9c-32f3-45db-afb0-553c39fb6eef",
+  "timestamp": "2025-12-29T09:42:29.529563",
+  "keywords": [
+    "AVAILABILITY",
+    "CONVERSATION",
+    "KEYTOPICS",
+    "RETURN",
+    "USER"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment in this conversation is neutral, rated 3. The user is asking a question about availability, which does not inherently contain positive or negative emotions. However, the response to this question would determine the overall sentiment of the interaction."
+  },
+  "source": "swarm-intake"
+}

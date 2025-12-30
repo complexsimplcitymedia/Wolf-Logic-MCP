@@ -1,0 +1,25 @@
+{
+  "text": "This conversation has not begun, so there is nothing to summarize. Please provide more context or information about the topic you would like me to summarize, and I will be happy to assist.",
+  "content": "USER: [{'tool_use_id': 'toolu_015WWBkBXeW8ZnKmuWCgxgB8', 'type': 'tool_result', 'content': 'The file /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/api/memory_api.py has been updated. Here\\'s the result of running `cat -n` on a snippet of the edited file:\\n     1\u2192#!/usr/bin/env python3\\n     2\u2192\"\"\"\\n     3\u2192Wolf Logic Memory API - REST API for Memory Ingestion Pipeline\\n     4\u2192Swagger UI: http://100.110.82.181:8001/docs\\n     5\u2192ReDoc: http://100.110.82.181:8001/redoc\\n     6\u2192\"\"\"\\n     7\u2192import os\\n     8\u2192import json\\n     9\u2192import time\\n    10\u2192import psycopg2\\n    11\u2192from datetime import datetime\\n    12\u2192from pathlib import Path\\n    13\u2192from typing import List, Optional, Dict, Any\\n    14\u2192from fastapi import FastAPI, HTTPException, UploadFile, File, Query, Body\\n    15\u2192from fastapi.responses import JSONResponse\\n    16\u2192from fastapi.middleware.cors import CORSMiddleware\\n    17\u2192from pydantic import BaseModel, Field\\n    18\u2192\\n    19\u2192# Initialize FastAPI\\n    20\u2192app = FastAPI(\\n    21\u2192    title=\"Wolf Logic Memory API\",\\n    22\u2192    description=\"\"\"\\n    23\u2192# Wolf Logic Memory Ingestion Pipeline API\\n    24\u2192\\n    25\u2192Complete REST API for memory ingestion, semantic search, and pipeline monitoring.\\n    26\u2192\\n    27\u2192## Features\\n    28\u2192- **Semantic Search**: Query memories using qwen3-embedding:4b\\n    29\u2192- **Upload Transcripts**: Drop transcripts to client-dumps for auto-processing\\n    30\u2192- **Pipeline Monitoring**: Real-time status of all services\\n    31\u2192- **Multi-namespace Support**: Query across scripty, wolf_hunt, core_identity, etc.\\n    32\u2192\\n    33\u2192## Pipeline Flow\\n    34\u21921. Remote nodes upload to `/transcripts/upload`\\n    35\u21922. Swarm processes with llama3.2:1b (keywords/summary) + mistral (sentiment)\\n    36\u21923. PGAI queue ingests to PostgreSQL\\n    37\u21924. pgai vectorizer embeds with qwen3-embedding:4b\\n    38\u2192\\n    39\u2192## Network\\n    40\u2192- **Tailscale mesh**: 100.110.0.0/16, 100.250.0.0/16\\n    41\u2192- **NFS mount**: Available for direct file drops\\n    42\u2192    \"\"\",\\n    43\u2192    version=\"1.0.0\",\\n    44\u2192    contact={\\n    45\u2192        \"name\": \"Wolf AI Enterprises\",\\n    46\u2192        \"url\": \"https://complexsimplicityai.com\"\\n    47\u2192    }\\n    48\u2192)\\n    49\u2192\\n    50\u2192# CORS middleware\\n    51\u2192app.add_middleware(\\n    52\u2192    CORSMiddleware,\\n    53\u2192    allow_origins=[\"*\"],\\n    54\u2192    allow_credentials=True,\\n    55\u2192    allow_methods=[\"*\"],\\n    56\u2192    allow_headers=[\"*\"],\\n    57\u2192)\\n    58\u2192\\n    59\u2192# Database config\\n    60\u2192DB_CONFIG = {\\n    61\u2192    \"host\": os.getenv(\"PGHOST\", \"100.110.82.181\"),'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T09:14:11.793869",
+  "keywords": [
+    "Here are the 5-10 key topics/keywords extracted from this conversation:\n\ndfndrtool",
+    "fastapi",
+    "swagger ui",
+    "pydantic",
+    "jsonresponse",
+    "uploadfile",
+    "query",
+    "body",
+    "memory api",
+    "ingestion pipeline"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is mostly neutral to positive. The user has provided an update regarding the modification of a Python script and shared the contents of the edited file, which suggests productivity and progress in the project. However, the conversation itself lacks emotional content that would indicate strong positivity or negativity. I would rate it as 4, leaning slightly towards positive due to the informative nature of the user's message."
+  },
+  "source": "swarm-intake"
+}

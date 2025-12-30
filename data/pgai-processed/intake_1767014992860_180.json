@@ -1,0 +1,23 @@
+{
+  "text": "Here is a summary of the conversation in 2-3 sentences:\n\nThe Scripty namespace has been reduced from approximately 8,319 memories per day to around 1 memory per day. A script named after a specific date (\"Dec 4\") has dropped from over 8,000 to just one instance per day since December 19. You have two options: check the script's configuration in this repository or query Librarian for more information about what broke it.",
+  "content": "ASSISTANT: **PROBLEM IDENTIFIED:**\n\nScripty namespace dropped from **8,319 memories/day (Dec 4)** to **1 memory/day (Dec 29)**. Memory growth flat-lined after Dec 19.\n\nScripty directory exists here: `./scripty/`\n\nWhat do you want me to do - check scripty config in this repo or query Librarian for what broke it?",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:57.126051",
+  "keywords": [
+    "assistant**\n\nproblem",
+    "assistant",
+    "scripty",
+    "namespace",
+    "directory",
+    "config",
+    "librarian",
+    "broken"
+  ],
+  "sentiment": {
+    "score": 1,
+    "analysis": "The sentiment of the conversation appears to be neutral as it is primarily focused on presenting a problem and seeking a solution, without showing any strong emotional responses. However, it can be interpreted as slightly negative because it reports a decline in performance (drop from 8,319 memories/day to 1 memory/day).\n\nThe assistant is informing the user about an issue related to Scripty namespace and memory growth that has occurred between December 4th and December 29th. The issue seems to have started after December 19th. The assistant also provides the location of the Scripty directory and suggests two possible courses of action: checking the scripty config within this repository or querying Librarian (possibly a system or tool) for what caused the problem.\n\nOverall, this conversation sets the stage for troubleshooting and problem resolution, which usually requires a more analytical approach rather than emotional involvement. The rating would be around 3, reflecting a neutral sentiment with a touch of negativity due to the performance issue mentioned."
+  },
+  "source": "swarm-intake"
+}

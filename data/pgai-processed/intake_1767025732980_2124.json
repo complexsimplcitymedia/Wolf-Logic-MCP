@@ -1,0 +1,23 @@
+{
+  "text": "The conversation started with an error message from a PostgreSQL command-line tool, indicating that it couldn't establish a connection to the server at localhost (127.0.0.1) on port 5433 due to being refused by the server itself.",
+  "content": "USER: [{'type': 'tool_result', 'content': 'Exit code 2\\npsql: error: connection to server at \"localhost\" (127.0.0.1), port 5433 failed: Connection refused\\n\\tIs the server running on that host and accepting TCP/IP connections?\\nconnection to server at \"localhost\" (::1), port 5433 failed: Connection refused\\n\\tIs the server running on that host and accepting TCP/IP connections?', 'is_error': True, 'tool_use_id': 'toolu_01St8poPp73LQtsSZGxvAU8Y'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:28:14.891626",
+  "keywords": [
+    "Exit code 2",
+    "psql",
+    "error connection refused",
+    "localhost",
+    "port 5433",
+    "connection to server",
+    "is_error",
+    "tool_result"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is negative (around 1.5). The user is experiencing an issue with connecting to a PostgreSQL server, as indicated by the error message \"Connection refused\". This suggests frustration or confusion, as the user is unable to perform the intended task due to a technical problem."
+  },
+  "source": "swarm-intake"
+}

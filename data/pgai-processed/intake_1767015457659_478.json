@@ -1,0 +1,8 @@
+{
+  "text": "ASSISTANT: **Problem found:**\n\n1. **Scripty is running** - writing to `camera/dailys/`\n2. **Swarm-intake & pgai-queue processors are MISSING** - not in `writers/` directory\n3. **Memories stuck at 99,370** - latest is 07:05:51, over an hour ago\n\nThe pipeline is broken because the processors that read from dailys and write to PostgreSQL don't exist in this repo.\n\nSetting up git remote first:",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:20:57.423640",
+  "source": "swarm-intake"
+}

@@ -1,0 +1,42 @@
+{
+  "Comment": "DNS records for complexsimplicity.org",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "complexsimplicity.org",
+        "Type": "NS",
+        "TTL": 172800,
+        "ResourceRecords": [
+          { "Value": "ns-2023.awsdns-60.co.uk." },
+          { "Value": "ns-1257.awsdns-29.org." },
+          { "Value": "ns-383.awsdns-47.com." },
+          { "Value": "ns-936.awsdns-53.net." }
+        ]
+      }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "complexsimplicity.org",
+        "Type": "A",
+        "AliasTarget": {
+          "HostedZoneId": "Z02740683KP2RG209A02T",
+          "DNSName": "dns-apex.netlify.com",
+          "EvaluateTargetHealth": false
+        }
+      }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "www.complexsimplicity.org",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [
+          { "Value": "complexsimplicity.netlify.app" }
+        ]
+      }
+    }
+  ]
+}

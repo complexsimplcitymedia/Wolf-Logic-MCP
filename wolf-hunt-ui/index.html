@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wolf Hunt - Job Search Command Center</title>
+    <link rel="stylesheet" href="/static/css/hunt.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="hunt-header">
+            <h1>🐺 WOLF HUNT</h1>
+            <div class="stats">
+                <span class="stat">Jobs Found: <strong id="jobs-count">0</strong></span>
+                <span class="stat">Applied: <strong id="applied-count">0</strong></span>
+                <span class="stat">Active Searches: <strong id="active-searches">0</strong></span>
+            </div>
+        </header>
+
+        <!-- Search Panel -->
+        <section class="search-panel">
+            <h2>Search All Boards</h2>
+            <div class="search-controls">
+                <input type="text" id="search-query" placeholder="Job title or keywords..." value="software engineer">
+                <input type="text" id="search-location" placeholder="Location (or 'remote')" value="Atlanta, GA">
+                <select id="candidate-filter">
+                    <option value="">All Candidates</option>
+                    <option value="David Adams">David Adams</option>
+                    <option value="Brice Wilson">Brice Wilson</option>
+                </select>
+                <button id="search-btn" class="btn-primary">HUNT</button>
+            </div>
+
+            <!-- Board Selection -->
+            <div class="board-toggles">
+                <label><input type="checkbox" class="board-toggle" data-board="ziprecruiter" checked> ZipRecruiter</label>
+                <label><input type="checkbox" class="board-toggle" data-board="indeed" checked> Indeed</label>
+                <label><input type="checkbox" class="board-toggle" data-board="remotive" checked> Remotive</label>
+                <label><input type="checkbox" class="board-toggle" data-board="graphql-jobs" checked> GraphQL Jobs</label>
+                <label><input type="checkbox" class="board-toggle" data-board="gamebrain"> GameBrain</label>
+                <label><input type="checkbox" class="board-toggle" data-board="fantastic-jobs"> Fantastic Jobs</label>
+                <label><input type="checkbox" class="board-toggle" data-board="whatjobs"> WhatJobs</label>
+            </div>
+        </section>
+
+        <!-- Results Grid -->
+        <section class="results-section">
+            <div class="results-header">
+                <h2>Hunt Results</h2>
+                <div class="filters">
+                    <select id="sort-by">
+                        <option value="date">Sort by Date</option>
+                        <option value="source">Sort by Source</option>
+                        <option value="title">Sort by Title</option>
+                    </select>
+                    <button id="export-csv" class="btn-secondary">Export CSV</button>
+                </div>
+            </div>
+
+            <div id="results-container" class="results-grid">
+                <!-- Job cards populated by JS -->
+                <div class="empty-state">
+                    <p>Click HUNT to start searching...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions Sidebar -->
+        <aside class="actions-sidebar">
+            <h3>Quick Actions</h3>
+
+            <div class="action-section">
+                <h4>Resume Generator</h4>
+                <input type="text" id="resume-job-title" placeholder="Target job title">
+                <button id="generate-resume" class="btn-action">Generate Resume</button>
+            </div>
+
+            <div class="action-section">
+                <h4>Bulk Apply</h4>
+                <p class="small">Selected: <strong id="selected-count">0</strong> jobs</p>
+                <button id="bulk-apply" class="btn-action" disabled>Apply to Selected</button>
+            </div>
+
+            <div class="action-section">
+                <h4>Application Tracker</h4>
+                <button id="view-tracker" class="btn-action">View All Applications</button>
+            </div>
+
+            <div class="action-section">
+                <h4>Campaign Status</h4>
+                <div class="status-indicator">
+                    <span class="status-dot offline"></span>
+                    <span>Voice: Offline</span>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot offline"></span>
+                    <span>Email: Offline</span>
+                </div>
+                <button id="launch-campaign" class="btn-action">Launch Campaign</button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Job Detail Modal -->
+    <div id="job-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <div id="job-detail"></div>
+        </div>
+    </div>
+
+    <script src="/static/js/hunt.js"></script>
+</body>
+</html>

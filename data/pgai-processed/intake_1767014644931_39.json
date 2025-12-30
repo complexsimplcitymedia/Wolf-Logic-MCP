@@ -1,0 +1,17 @@
+{
+  "text": "This conversation has started with a tool result indicating that the user was interrupted.",
+  "content": "USER: [{'type': 'tool_result', 'content': 'Interrupted by user', 'is_error': True, 'tool_use_id': 'toolu_01MdFaqGFPSpSV3K4nwx6T5Y'}]",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:40.406757",
+  "keywords": [
+    "interrupted",
+    "user"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is negative, rated 2. This is due to the error message \"Interrupted by user\" that was returned, indicating a problem or interruption in the intended process."
+  },
+  "source": "swarm-intake"
+}

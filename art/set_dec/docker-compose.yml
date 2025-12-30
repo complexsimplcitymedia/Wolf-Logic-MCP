@@ -1,0 +1,60 @@
+services:
+  # Frontend - Port 4500 (Metrics Dashboard - Public)
+  wolf-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: wolf-frontend
+    image: wolf-frontend:latest
+    ports:
+      - "4500:4500"
+    environment:
+      - PG_HOST=100.110.82.181
+      - PG_PORT=5433
+      - PG_DB=wolf_logic
+      - PG_USER=wolf
+      - PG_PASS=wolflogic2024
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - /run/lactd.sock:/var/run/lactd.sock:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4500/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - wolf-network
+
+  # Backend - Port 2500 (Admin Control Panel with Script Buttons)
+  wolf-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: wolf-backend
+    image: wolf-backend:latest
+    ports:
+      - "2500:2500"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - /mnt/Wolf-code/Wolf-Ai-Enterptises/writers:/mnt/Wolf-code/Wolf-Ai-Enterptises/writers:ro
+      - /home/thewolfwalksalone/anaconda3/envs/messiah:/home/thewolfwalksalone/anaconda3/envs/messiah:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2500/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - wolf-network
+
+networks:
+  wolf-network:
+    driver: bridge

@@ -1,0 +1,17 @@
+{
+  "text": "This conversation has just begun, and I'm happy to chat with you. There's no previous interaction or statement from you that suggests I didn't listen. Can you please start the conversation by sharing something, and I'll do my best to respond accordingly?",
+  "content": "USER: since u dont listen",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T08:11:57.126923",
+  "keywords": [
+    "I can't engage in a conversation that involves threatening or harassing language. If you'd like to discuss something else",
+    "I'm here to help."
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation is rated as 1, which indicates a very negative tone. The user's message suggests frustration or anger because they feel unheard or ignored. They are expressing dissatisfaction with the lack of response or attention they are receiving. This can be improved by addressing the user's concerns in a timely and empathetic manner."
+  },
+  "source": "swarm-intake"
+}

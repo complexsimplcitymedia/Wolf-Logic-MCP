@@ -1,0 +1,23 @@
+{
+  "text": "Here is a summary of the conversation in 2-3 sentences:\n\nThe conversation discusses a system that ingests and processes memories using a remote node's JSONL output, which is then sent to a server-scripty script running on a server. The script processes these transcripts using local transcription from camera/dailys, and writes the results to PostgreSQL via a swarm-intake service that watches both directories for updates. As of now, the system has ingested 100,494+ memories, up from 99,370 previously.",
+  "content": "ASSISTANT: **Client-dump directory:** `/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/data/client-dumps/`\n\n## Complete Memory Ingestion Pipeline\n\n**REST API with Swagger:**\n- **URL:** `http://100.110.82.181:8001/docs`\n- **Endpoints:**\n  - `POST /transcripts/upload` - Upload transcripts\n  - `POST /memories/query` - Semantic search memories\n  - `GET /pipeline/status` - Check if services running\n  - `GET /memories/{id}` - Get specific memory\n  - `GET /memories/count` - Count by namespace\n\n**Pipeline Flow:**\n1. **Remote nodes** \u2192 Drop JSON to `/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/data/client-dumps/transcript_YYYYMMDD.jsonl`\n2. **server-scripty** \u2192 Local transcription to `camera/dailys/`\n3. **swarm-intake** \u2192 Watches BOTH directories, processes with llama3.2:1b + mistral\n4. **pgai-queue** \u2192 Writes to PostgreSQL\n5. **pgai vectorizer** \u2192 Auto-embeds with qwen3-embedding:4b\n\n**Systemd services** (persistent on boot):\n- `systemd/server-scripty.service`\n- `systemd/swarm-intake.service`\n- `systemd/pgai-queue.service`\n- `systemd/memory-api.service`\n\n**Current memory count:** 100,494+ (was 99,370 - gained 1,124+)",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "621bdaad-23c3-481e-9c72-341d424b2c88",
+  "timestamp": "2025-12-29T09:05:41.571632",
+  "keywords": [
+    "client-dumps",
+    "rest api",
+    "server-scripty",
+    "swamp-intake",
+    "pgai-queue",
+    "systemd",
+    "systemd services",
+    "memory count"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment of this conversation appears to be informative and technical in nature, with a rating of around 4. This is because the content provides detailed information about the Complete Memory Ingestion Pipeline, including its various components, endpoints, flow, and current memory count. However, it lacks any personal or emotional elements that would contribute to a more positive or negative sentiment. The focus is on technical aspects, which gives the conversation a professional tone."
+  },
+  "source": "swarm-intake"
+}

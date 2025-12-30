@@ -1,0 +1,23 @@
+{
+  "text": "Here is a summary of the conversation in 3 sentences:\n\nA user discovered that their Tailscale interface was not visible due to a restriction on localhost and an IP address. The issue was resolved by changing the PostgreSQL configuration to listen on all available network interfaces instead of localhost, which required setting `listen_addresses` to `'*'`.",
+  "content": "ASSISTANT: **ROOT CAUSE FOUND:**\n\nTailscale interface isn't visible (sandbox restriction or Tailscale is down). PostgreSQL config requires `100.110.82.181` to bind TCP - if that IP isn't available at startup, **TCP binding fails entirely**.\n\n**THE FIX:** Change `listen_addresses` from `'localhost,100.110.82.181'` to `'*'` (listen on all interfaces).",
+  "namespace": "scripty",
+  "username": "wolf",
+  "session": "399a007e-72f9-443d-b3a6-480c54db5f4d",
+  "timestamp": "2025-12-29T11:17:31.843959",
+  "keywords": [
+    "Tailscale",
+    "PostgreSQL",
+    "interface",
+    "TCP binding",
+    "sandbox restriction",
+    "Tailscale down",
+    "fix",
+    "listen addresses"
+  ],
+  "sentiment": {
+    "score": 3,
+    "analysis": "The sentiment in this conversation is neutral as it is purely informational and focused on technical problem-solving. However, it can be considered slightly positive because the root cause of the issue has been identified and a solution proposed.\n\nThe assistant provides clear explanations for the problem (Tailscale interface not visible or down, TCP binding failure due to unavailable IP at startup) and offers a solution to resolve the issue (changing `listen_addresses` from `'localhost,100.110.82.181'` to `'*'`).\n\nThe assistant's response does not contain any negative or positive emotions, but rather focuses on providing helpful technical assistance. I would rate the sentiment as a 3 out of 5 because it is informative and problem-focused without expressing strong positive or negative sentiments."
+  },
+  "source": "swarm-intake"
+}

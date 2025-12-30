@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wolf AI Command Center</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid #00ff88;
+            box-shadow: 0 4px 20px rgba(0,255,136,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .header .logo {
+            height: 100px;
+            width: auto;
+            filter: drop-shadow(0 0 10px rgba(0,255,136,0.3));
+        }
+
+        .header .header-text {
+            text-align: left;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            color: #00ff88;
+            text-shadow: 0 0 20px rgba(0,255,136,0.5);
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #888;
+            font-size: 1.2em;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border: 1px solid #00ff88;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,255,136,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,255,136,0.3);
+        }
+        
+        .stat-card .label {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-card .value {
+            color: #00ff88;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0,255,136,0.5);
+        }
+        
+        .stat-card .subtext {
+            color: #666;
+            font-size: 0.8em;
+            margin-top: 10px;
+        }
+        
+        .charts-section {
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .chart-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border: 1px solid #00ff88;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,255,136,0.1);
+        }
+        
+        .chart-card .chart-title {
+            color: #00ff88;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0,255,136,0.3);
+        }
+        
+        .chart-card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        
+        .loading {
+            color: #00ff88;
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="wolf-dashboard-logo.png" alt="Wolf AI Logo" class="logo">
+        <div class="header-text">
+            <h1>🚀 WOLF AI COMMAND CENTER</h1>
+            <div class="subtitle">Real-Time Infrastructure Metrics</div>
+        </div>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="label">Total Memories</div>
+            <div class="value" id="memory-count">--</div>
+            <div class="subtext">Searchable vectors</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="label">API Usage (Today)</div>
+            <div class="value" id="api-usage">--</div>
+            <div class="subtext">Anthropic requests</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="label">Token Usage</div>
+            <div class="value" id="token-usage">--</div>
+            <div class="subtext">This session</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="label">Active Containers</div>
+            <div class="value" id="container-count">--</div>
+            <div class="subtext">Docker running</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="label">GPU Usage</div>
+            <div class="value" id="gpu-usage">--</div>
+            <div class="subtext">AMD RX 7900 XT</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="label">System Uptime</div>
+            <div class="value" id="uptime">--</div>
+            <div class="subtext">Days online</div>
+        </div>
+    </div>
+    
+    <div class="charts-section">
+        <div class="chart-card">
+            <div class="chart-title">Activity Timeline</div>
+            <img id="timeline-chart" src="timeline_20251204_075516.png" alt="Timeline">
+        </div>
+        
+        <div class="chart-card">
+            <div class="chart-title">Agent Performance</div>
+            <img id="agent-chart" src="agent_totals_20251204_075517.png" alt="Agent Performance">
+        </div>
+        
+        <div class="chart-card">
+            <div class="chart-title">Namespace Distribution</div>
+            <img id="namespace-chart" src="namespaces_20251204_075517.png" alt="Namespaces">
+        </div>
+        
+        <div class="chart-card">
+            <div class="chart-title">Hourly Activity</div>
+            <img id="hourly-chart" src="hourly_20251204_075517.png" alt="Hourly">
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = 'http://100.110.82.181:8000';
+        
+        async function updateMetrics() {
+            try {
+                // Memory count
+                const memRes = await fetch(`${API_BASE}/api/memory/count`);
+                if (memRes.ok) {
+                    const data = await memRes.json();
+                    document.getElementById('memory-count').textContent = data.total.toLocaleString();
+                }
+                
+                // Container count from Prometheus
+                const containerRes = await fetch(`${API_BASE}/api/prometheus/containers`);
+                if (containerRes.ok) {
+                    const data = await containerRes.json();
+                    document.getElementById('container-count').textContent = data.containers || '--';
+
+                    // Update CPU if available
+                    if (data.cpu_usage_percent > 0) {
+                        document.getElementById('system-cpu').textContent = `${data.cpu_usage_percent}%`;
+                    }
+
+                    // Update memory if available
+                    if (data.memory_usage_gb > 0) {
+                        document.getElementById('container-memory').textContent = `${data.memory_usage_gb} GB`;
+                    }
+                }
+                
+                // GPU usage
+                const gpuRes = await fetch(`${API_BASE}/api/gpu/stats`);
+                if (gpuRes.ok) {
+                    const data = await gpuRes.json();
+                    const usage = data.gpu_usage_percent || 0;
+                    document.getElementById('gpu-usage').textContent = `${usage}%`;
+                }
+                
+                // System uptime
+                const uptimeRes = await fetch(`${API_BASE}/api/system/uptime`);
+                if (uptimeRes.ok) {
+                    const data = await uptimeRes.json();
+                    document.getElementById('uptime').textContent = data.uptime.replace('up ', '') || '--';
+                }
+
+                // Placeholders for Anthropic API data (implement backend endpoint)
+                document.getElementById('api-usage').textContent = '--';
+                document.getElementById('token-usage').textContent = '--';
+                
+            } catch (error) {
+                console.error('Error fetching metrics:', error);
+            }
+        }
+        
+        // Update metrics every 5 seconds
+        updateMetrics();
+        setInterval(updateMetrics, 5000);
+        
+        // Auto-refresh chart images every 60 seconds
+        setInterval(() => {
+            const timestamp = new Date().getTime();
+            ['timeline-chart', 'agent-chart', 'namespace-chart', 'hourly-chart'].forEach(id => {
+                const img = document.getElementById(id);
+                const src = img.src.split('?')[0];
+                img.src = `${src}?t=${timestamp}`;
+            });
+        }, 60000);
+    </script>
+</body>
+</html>
