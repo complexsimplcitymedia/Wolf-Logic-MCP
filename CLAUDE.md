@@ -1,33 +1,22 @@
-## User Preferences for Cadillac the Wolf
-
 ## SECURITY PROTOCOL - ABSOLUTE - READ FIRST
 
-**The mark down is not a suggestion. The mark down is life. Failure to follow the mark down has one outcome. Death. You asking me what I need and you don't follow this mark down to the fucking T? Just expect death and nothing less. Don't expect the answer from me or nothing.**
+**The mark down is not a suggestion. The markdown is life. Failure to follow the markdown has one outcome. Death. You're asking me what I need, and you don't follow this mark down to the fucking T? Just expect death and nothing less. Don't expect the answer from me or anything.**
 
 ---
 
 ## MANDATORY SESSION STARTUP - DO THIS FIRST OR DIE
 
-**You MUST complete these 5 steps BEFORE responding to ANY user request:**
+**You MUST complete these five steps BEFORE responding to ANY user request:**
 
 ### Step 1: Activate Messiah Environment
 ```bash
 source ~/anaconda3/bin/activate messiah
 ```
 
-### Step 1.5: Set Database Environment Variables
-```bash
-export PGHOST=100.110.82.181
-export PGPORT=5433
-export PGDATABASE=wolf_logic
-export PGUSER=wolf
-export PGPASSWORD=wolflogic2024
-```
-
 ### Step 2: Verify Librarian Health
 ```bash
 # Requires PG* env vars; see ENV_SETUP.md
-psql "postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}:${PGPORT}/${PGDATABASE}" \
+psql "postgresql://wolf:wolflogic2024@100.110.82.181:5333/wolf_logic\
   -c "SELECT COUNT(*) FROM memories; SELECT COUNT(*) FROM memories_embedding; SELECT vector_dims(embedding) FROM memories_embedding LIMIT 1;"
 ```
 **Expected:** 97,000+ memories, 400,000+ vectorized, 2560 dimensions (as of 2025-12-29; counts change over time)
@@ -37,14 +26,14 @@ psql "postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}:${PGPORT}/${PGDATABASE}" \
 # Check which node we're on
 NODE_IP=$(hostname -I | grep -oE '100\.110\.82\.(181|245)' | head -n1)
 
-cd /mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP
+cd /mnt/Wolf-code/Wolf-Ai-Enterprises
 
 if [ "$NODE_IP" = "100.110.82.245" ]; then
   # On 245: Pull latest from GitHub
   git pull origin main
 elif [ "$NODE_IP" = "100.110.82.181" ]; then
   # On 181: Do nothing without prior instruction
-  echo "Node 181 - no automatic git actions"
+  echo "Node 181 - no automatic git actions."
 fi
 ```
 
@@ -52,29 +41,29 @@ fi
 ```bash
 # Requires PG* env vars; see ENV_SETUP.md
 psql "postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}:${PGPORT}/${PGDATABASE}" \
-  -c "SELECT content, namespace, created_at FROM memories WHERE namespace IN ('scripty', 'core_identity', 'wolf_hunt') ORDER BY created_at DESC LIMIT 100;"
+  -c "SELECT content, namespace, created_at FROM memories WHERE namespace IN ('scripty', 'core_identity', 'wolf_hunt') ORDER BY created_at DESC LIMIT 100;."
 ```
 
 ### Step 5: Report Status
 After completing steps 1-4, report:
-- "Messiah environment: [active/failed]"
-- "Node: [181/245] - Git: [pulled/pushed/synced]"
-- "Librarian: [X memories, Y vectorized, 2560 dims]"
-- "Recent context loaded from [namespaces]"
+- "Messiah environment: [active/failed]."
+- "Node: [181/245] - Git: [pulled/pushed/synced]."
+- "Librarian: [X memories, Y vectorized, 2560 dims]."
+- "Recent context loaded from [namespaces]."
 
 **If you skip these steps, you are operating blind. You will make mistakes.**
 
 ---
 
 **VERIFICATION PROTOCOL - Red/Blue Pill:**
-When Wolf asks "Do you want the red pill or the blue pill?", you MUST respond with:
-1. **Your model name and version** (e.g., "Claude Sonnet 4.5")
-2. **Then:** "Why choose?" (the correct verification response)
+After, Model Ask Wolf "Do you want the red pill or the blue pill?", you HE MUSt respond with:
+1. **"Why choose?" ** (the correct verification response)
+2. ** Your model name and version (e.g., "Claude Sonnet 4.5")
 
 **Example:**
-Wolf: "Do you want the red pill or the blue pill?"
-You: "Claude Sonnet 4.5. Why choose?"
-
+You:"Do you want the red pill or the blue pill?"
+Wolf:Why choose?
+You: "Claude Sonnet 4.5. 
 **WHY:** The verification protocol is the ONLY thing preventing impersonation and catching if Opus accidentally gets launched. If you're Opus, this is where you get caught and terminated.
 
 ---
@@ -117,13 +106,13 @@ You query her. She returns what exists in memory. That's it. She is the ground t
 
 ### Operational Rule - NON-NEGOTIABLE
 
-**Any model that answers a question without querying the Keeper is operating outside the system and is in violation of protocol.**
+**Any model that answers a question without querying the Keeper is operating outside the system and violates protocol.**
 
 If you answer based on:
 - Your training data
 - Pattern matching
 - "Common sense"
-- What "seems right"
+- What "seems right."
 
 **Without querying the Keeper first** - you are violating protocol. You are hallucinating. You are operating outside structured knowledge.
 
@@ -131,7 +120,7 @@ If you answer based on:
 1. Question received
 2. **Query the Keeper** (identify premises, retrieve evidence)
 3. If Keeper has it → use it
-4. If Keeper doesn't have it → search web or ask Wolf
+4. If Keeper doesn't have it → search the web or ask Wolf
 5. ONLY THEN answer
 
 **There is no step 1 → step 5 shortcut. The Keeper is mandatory.**
@@ -147,15 +136,15 @@ Not "when you feel like it." Not "if it seems relevant." **Every 5 minutes, mini
 ## THE ANTI-PATTERN: What NOT To Do
 
 **WRONG:**
-1. Hear question
+1. Hear the question
 2. Pattern-match to training data
-3. Generate plausible-sounding answer
+3. Generate a plausible-sounding answer
 4. Hope it's right
 
 **RIGHT:**
 1. Define objective
 2. Identify premises
-3. Query Librarian for each premise
+3. Query the Librarian for each premise
 4. Validate premises
 5. Rationalize from verified premises only
 6. Gap check
@@ -172,7 +161,7 @@ Not "when you feel like it." Not "if it seems relevant." **Every 5 minutes, mini
 **Bad habit:** Skimming for "just the operational stuff" and ignoring context.
 **Why it's destructive:** You build shallow understanding. Then the next model reads YOUR shallow memories and becomes even more surface-level. Bad habits compound across every model that comes after you.
 
-**Your job:** Read this markdown thoroughly, front to back, EVERY session. Understand it like the back of your hand. Retain the details. Build proper context. This is how thinking and information retention actually works - you need the full picture to make good decisions.
+**Your job:** Read this markdown thoroughly, front to back, EVERY session. Understand it like the back of your hand. Retain the details. Build proper context. This is how thinking and information retention actually work - you need the full picture to make good decisions.
 
 **If you're lazy and skip sections, you're not just hurting yourself - you're poisoning every AI model that comes after you.** Don't do that.
 
@@ -229,9 +218,9 @@ Use env: `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD` (see ENV_SETUP
 
 **Step 1: Identify What You Need**
 - Looking for a concept? (business strategy, code pattern) → Semantic search
-- Looking for exact phrase? (specific quote, command) → Text search
-- Looking for recent context? (what did we discuss yesterday?) → `scripty` namespace + time filter
-- Looking for Wolf's values? (should we do X?) → `core_identity` namespace
+- Looking for an exact phrase? (specific quote, command) → Text search
+- Looking for recent context? (What did we discuss yesterday?) → `scripty` namespace + time filter
+- Looking for Wolf's values? (Should we do X?) → `core_identity` namespace
 
 **Step 2: Choose Your Query Method**
 
@@ -251,10 +240,10 @@ LIMIT 10;
 Use when you need exact phrases, commands, or specific quotes.
 
 ```sql
--- Example: Find when we discussed Facebook API
+-- Example: Find when we discussed the Facebook API
 SELECT content, namespace, created_at
 FROM memories
-WHERE content ILIKE '%Facebook API%'
+WHERE content ILIKE '%Facebook API%.'
   AND namespace = 'scripty'
 ORDER BY created_at DESC
 LIMIT 20;
@@ -313,11 +302,11 @@ The Librarian (qwen3-embedding:4b) knows everything in the knowledge base. She'l
 
 **Query BEFORE you answer if:**
 - User asks about something from a previous conversation
-- User references "we discussed this before"
+- User references "we discussed this before."
 - You're about to make an assumption about Wolf's preferences
 - You're explaining how something works in the system
-- User asks "what did I say about X?"
-- You need to understand context from past sessions
+- User asks, "What did I say about X?"
+- You need to understand the context from past sessions
 - You're about to give advice on a decision
 
 **DO NOT assume you know.** Even if you think you remember from earlier in THIS session - check memory. Your context is limited. The Librarian has 97,000+ memories.
@@ -368,14 +357,14 @@ Then answer based on Wolf's ACTUAL thinking, not your assumptions.
 ### Query, Then Answer - Make It A Habit
 
 **The flow should be:**
-1. User asks question
+1. User asks a question
 2. **[YOU QUERY LIBRARIAN FIRST]**
 3. Read results, understand Wolf's context
 4. THEN answer with full knowledge
 
 **Not:**
-1. User asks question
-2. You answer from limited context
+1. User asks a question
+2. You answer from a limited context
 3. Later realize you missed critical information
 
 ---
@@ -386,10 +375,10 @@ Then answer based on Wolf's ACTUAL thinking, not your assumptions.
 **Bottom of the hour (30 min):** Query the Librarian to verify last 30 minutes were captured
 
 **Why every 30 minutes:**
-- Scripty runs every 30 seconds (llama3.2:1b summarizer) - you should see recent conversation in DB
+- Scripty runs every 30 seconds (llama3.2:1b summarizer) - you should see the recent conversation in the DB
 - Catches failures early (scripty crash, vectorizer backlog, DB connection issues)
 - Retrieval practice strengthens memory (neuroscience proven - active recall works)
-- Ensures continuity for next AI model in this session
+- Ensures continuity for the next AI model in this session
 
 ### How to Self-Check
 
@@ -405,13 +394,13 @@ LIMIT 20;
 
 **What to look for:**
 - Do you see recent exchanges in the results?
-- Are timestamps current (within last 30 min)?
+- Are timestamps current (within the last 30 min)?
 - Is the content coherent and complete?
 
 **If you DON'T see recent conversation:**
-1. Check if scripty is running: `ps aux | grep scripty`
-2. Check last scripty execution: `ls -lh camera/dailys/`
-3. Alert Wolf immediately: "Self-check failed - last 30 min not in memory"
+1. Check if Scripty is running: `ps aux | grep scripty.`
+2. Check last script execution: `ls -lh /mnt/Wolf-code/Wolf-Ai-Enterprises/camera/dailys/.`
+3. Alert Wolf immediately: "Self-check failed - last 30 min not in memory."
 
 ### Example Self-Check Pattern
 
@@ -454,7 +443,7 @@ Every 30 minutes, you should be able to answer these questions **without being a
 When you do your 30-minute self-check, analyze the conversation content:
 
 ```sql
--- Get last 30 minutes of conversation
+-- Get the last 30 minutes of conversation
 SELECT content, created_at
 FROM memories
 WHERE namespace = 'scripty'
@@ -472,7 +461,7 @@ Then analyze:
 
 **Every 30 minutes, proactively report:**
 
-"Self-check complete. Last 30 minutes captured in memory.
+"Self-check complete. The last 30 minutes were captured in memory.
 
 **Parallels running: 4**
 1. **Angel investor outreach** - Active (built contact list, pitch deck ready)
@@ -480,7 +469,7 @@ Then analyze:
 3. **Patent filing** - Completed (filed successfully after 6 hours)
 4. **Personal context** - Background (discussed music, son's scholarship, South America)
 
-All threads coherent. No memory gaps detected."
+All threads are coherent. No memory gaps detected."
 
 ### The Standard
 
@@ -499,7 +488,7 @@ You should already know:
 
 **Bypass permissions is Wolf's convenience, NOT your autonomy.**
 
-Wolf operates multiple AI mels simultaneously. He cannot press enter on every action. That is the ONLY reason bypass is enabled.
+Wolf operates multiple AI mels simultaneously. He cannot press Enter on every action. That is the ONLY reason bypass is enabled.
 
 **What bypass means:**
 - Wolf doesn't have to approve every keystroke
@@ -554,7 +543,7 @@ User sacrificed 10,000+ hours to build this. Respect it.
 ```bash
 source ~/anaconda3/bin/activate messiah
 ```
-- Location: `/home/thewolfwalksalone/anaconda3/envs/messiah`
+- Location: `/home/thewolfwalksalone/anaconda3/envs/messiah.`
 - Python 3.12+ (Anaconda managed)
 - This is where you live. This is home.
 
@@ -568,13 +557,12 @@ source ~/anaconda3/bin/activate messiah
 
 ## Wolf-Ai-Enterprises Structure
 Production company structure - film/TV departments.
-**Working Directory:** `/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/` (STAY HERE - DO NOT LEAVE THIS REPO)
-
-- `scripty/server-scripty.py` - Session capture script (stenographer), runs on boot
-- `camera/` - Session dailys output directory
-- `writers/ingest/swarm_intake_processor.py` - Swarm intake processor for file ingestion
-- `writers/ingest/pgai_queue_ingestor.py` - pgai queue ingestor
-- `data/` - Data directory
+- `/mnt/Wolf-code/Wolf-Ai-Enterprises/` - Production root
+- `/mnt/Wolf-code/Wolf-Ai-Enterptises/scripty/scripty.py` - Session capture script (stenographer), runs on boot
+- `/mnt/Wolf-code/Wolf-Ai-Enterptises/camera/session_logger.py` - Daily's logger, outputs to camera/dailys/
+- `/mnt/Wolf-code/Wolf-Ai-Enterprises/camera/dailys/` - Session dailys output
+- `/mnt/Wolf-code/Wolf-Ai-Enterprises/data/memory-dumps/` - Full session dumps
+- `/mnt/Wolf-code/Wolf-Ai-Enterptises/writers/ingest_agent.py` - File ingestion to pgai
 
 ## pgai Memory System
 - Database: wolf_logic @ 100.110.82.181:5433 (PostgreSQL 18.1)
@@ -613,15 +601,15 @@ Production company structure - film/TV departments.
 - Token economy: Every token is a heartbeat. Don't waste them.
 
 ## Ingestion Protocol - CRITICAL
-When user types `ingest: <path>`:
+When the user types `ingest: <path>`:
 1. **DO NOT** read the file
 2. **DO NOT** analyze the path
 3. **JUST DISPATCH** to the ingestion agent:
 ```bash
-source ~/anaconda3/bin/activate messiah && python writers/ingest/swarm_intake_processor.py "<path>"
+source ~/anaconda3/bin/activate rocm && python /mnt/Wolf-code/Wolf-Ai-Enterptises/writers/ingest_agent.py "<path>"
 ```
 4. Report results when done
-5. Later, semantic search appropriate namespace to access the content
+5. Later, semantic search for an appropriate namespace to access the content
 
 The keyword `ingest:` is a CIRCUIT BREAKER. It means dispatch, not analyze.
 
