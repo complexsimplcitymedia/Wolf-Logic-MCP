@@ -91,3 +91,7 @@ voice/models/*.onnx
 data/vrp-reports/
 data/incident-reports/
 
+# Archived transcripts (large volume of session data)
+archived_transcripts_*/
+**/archived_transcripts_*/
+
