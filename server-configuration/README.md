@@ -68,6 +68,35 @@ systemctl status server-scripty
 - **Services:** PostgreSQL (wolf_logic:5433), Ollama (host)
 - **Bridge Network:** wolf_network
 
+## PostgREST API Configuration
+
+PostgREST provides a RESTful API interface to the PostgreSQL database.
+
+### JWT Configuration
+
+| Variable | Value | Notes |
+|----------|-------|-------|
+| `PGRST_JWT_SECRET` | `ipC5Xi04TlDcuBArsdFfn17bJIOMNEgEnxF6pRtPbG4` | JWT Secret Key |
+| `POSTGREST_API_TOKEN` | See below | Valid for 1 year, **expires 2026-12-29** |
+
+**API Token:**
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoid29sZiIsInN1YiI6IndvbGYtYXBpLWNsaWVudCIsImlhdCI6MTc2NzA2NDIxOCwiZXhwIjoxNzk4NjAwMjE4fQ.QbYeODx2MCQf8xQ0AQ_cuQtunsFG0ekS6JoPNjaZX44
+```
+
+### Usage Example
+
+```bash
+curl -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoid29sZiIsInN1YiI6IndvbGYtYXBpLWNsaWVudCIsImlhdCI6MTc2NzA2NDIxOCwiZXhwIjoxNzk4NjAwMjE4fQ.QbYeODx2MCQf8xQ0AQ_cuQtunsFG0ekS6JoPNjaZX44' \
+  https://api.complexsimplicityai.com/memories?limit=1
+```
+
+### Token Details
+- **Role:** `wolf`
+- **Subject:** `wolf-api-client`
+- **Issued:** 2025-12-29 (iat: 1767064218)
+- **Expires:** 2026-12-29 (exp: 1798600218)
+
 ## Notes
 - Ollama runs on host (NOT containerized) - required for server-scripty
 - All services connect via wolf_network bridge
