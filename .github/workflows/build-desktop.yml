@@ -1,0 +1,194 @@
+name: Build Desktop Apps
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0)'
+        required: false
+        default: '1.0.0'
+
+jobs:
+  build-desktop:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: desktop-client/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: desktop-client
+        run: npm ci
+      
+      - name: Build TypeScript
+        working-directory: desktop-client
+        run: npm run build
+      
+      - name: Package for Linux
+        if: runner.os == 'Linux'
+        working-directory: desktop-client
+        run: npm run package:linux
+      
+      - name: Package for macOS
+        if: runner.os == 'macOS'
+        working-directory: desktop-client
+        run: npm run package:mac
+        env:
+          # For code signing (if configured)
+          CSC_LINK: ${{ secrets.MAC_CERTIFICATE }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+      
+      - name: Package for Windows
+        if: runner.os == 'Windows'
+        working-directory: desktop-client
+        run: npm run package:win
+        env:
+          # For code signing (if configured)
+          CSC_LINK: ${{ secrets.WIN_CERTIFICATE }}
+          CSC_KEY_PASSWORD: ${{ secrets.WIN_CERTIFICATE_PASSWORD }}
+      
+      - name: Upload Linux artifacts
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: wolf-logic-desktop-linux
+          path: |
+            desktop-client/release/*.AppImage
+            desktop-client/release/*.deb
+            desktop-client/release/*.rpm
+          retention-days: 30
+      
+      - name: Upload macOS artifacts
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: wolf-logic-desktop-macos
+          path: |
+            desktop-client/release/*.dmg
+            desktop-client/release/*.zip
+          retention-days: 30
+      
+      - name: Upload Windows artifacts
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: wolf-logic-desktop-windows
+          path: |
+            desktop-client/release/*.exe
+          retention-days: 30
+      
+      - name: Generate checksums (Linux)
+        if: runner.os == 'Linux'
+        working-directory: desktop-client/release
+        run: |
+          for file in *.{AppImage,deb,rpm}; do
+            [ -f "$file" ] && sha256sum "$file" > "$file.sha256"
+          done
+      
+      - name: Generate checksums (macOS)
+        if: runner.os == 'macOS'
+        working-directory: desktop-client/release
+        run: |
+          for file in *.{dmg,zip}; do
+            [ -f "$file" ] && shasum -a 256 "$file" > "$file.sha256"
+          done
+      
+      - name: Generate checksums (Windows)
+        if: runner.os == 'Windows'
+        working-directory: desktop-client/release
+        shell: pwsh
+        run: |
+          Get-ChildItem -Filter *.exe | ForEach-Object {
+            $hash = Get-FileHash $_.Name -Algorithm SHA256
+            "$($hash.Hash.ToLower())  $($_.Name)" | Out-File "$($_.Name).sha256"
+          }
+
+  create-release:
+    needs: build-desktop
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Wolf Logic Desktop ${{ github.ref_name }}
+          body: |
+            ## Wolf Logic Desktop ${{ github.ref_name }}
+            
+            Cross-platform desktop client for Wolf Logic MCP.
+            
+            ### Downloads
+            
+            **Windows**
+            - `Wolf-Logic-MCP-Setup-*.exe` - Installer (recommended)
+            - `Wolf-Logic-MCP-*-portable.exe` - Portable version
+            
+            **macOS**
+            - `Wolf-Logic-MCP-*.dmg` - Disk image (recommended)
+            - `Wolf-Logic-MCP-*-mac.zip` - Zip archive
+            
+            **Linux**
+            - `Wolf-Logic-MCP-*.AppImage` - Universal (recommended)
+            - `wolf-logic-mcp_*_amd64.deb` - Debian/Ubuntu
+            - `wolf-logic-mcp-*.x86_64.rpm` - RHEL/Fedora
+            
+            ### Installation
+            
+            See [desktop-client/README.md](https://github.com/complexsimplcitymedia/Wolf-Logic-MCP/blob/main/desktop-client/README.md) for installation instructions.
+            
+            ### Checksums
+            
+            SHA256 checksums are provided for all downloads. Verify with:
+            - **Linux/macOS**: `sha256sum -c file.sha256`
+            - **Windows**: `Get-FileHash file.exe -Algorithm SHA256`
+          files: |
+            artifacts/**/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  notify:
+    needs: [build-desktop, create-release]
+    if: always()
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Build Status
+        run: |
+          echo "Build completed!"
+          echo "Desktop build status: ${{ needs.build-desktop.result }}"
+          if [ "${{ needs.create-release.result }}" != "skipped" ]; then
+            echo "Release status: ${{ needs.create-release.result }}"
+          fi

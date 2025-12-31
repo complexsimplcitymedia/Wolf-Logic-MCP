@@ -1,0 +1,246 @@
+name: Build Android App
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.0.0)'
+        required: false
+        default: '1.0.0'
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: md-app/package-lock.json
+      
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      
+      - name: Install Android SDK components
+        run: |
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+      
+      - name: Install app dependencies
+        working-directory: md-app
+        run: npm ci
+      
+      - name: Build web assets
+        working-directory: md-app
+        run: npm run build
+      
+      - name: Sync Capacitor
+        working-directory: md-app
+        run: |
+          npx cap sync android
+      
+      - name: Decode release keystore
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > release.keystore
+      
+      - name: Build debug APK
+        if: "!startsWith(github.ref, 'refs/tags/v')"
+        working-directory: md-app/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      
+      - name: Build release APK and AAB
+        if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: md-app/android
+        env:
+          KEYSTORE_PATH: ../../release.keystore
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          
+          # Create signing config
+          cat >> app/build.gradle << EOF
+          android {
+              signingConfigs {
+                  release {
+                      storeFile file('$KEYSTORE_PATH')
+                      storePassword '$STORE_PASSWORD'
+                      keyAlias '$KEY_ALIAS'
+                      keyPassword '$KEY_PASSWORD'
+                  }
+              }
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.release
+                  }
+              }
+          }
+          EOF
+          
+          # Build APK and AAB
+          ./gradlew assembleRelease
+          ./gradlew bundleRelease
+      
+      - name: Generate checksums
+        run: |
+          cd md-app/android/app/build/outputs/apk/
+          find . -name "*.apk" -exec sh -c 'sha256sum "$1" > "$1.sha256"' _ {} \;
+          
+          cd ../../bundle/
+          find . -name "*.aab" -exec sh -c 'sha256sum "$1" > "$1.sha256"' _ {} \;
+      
+      - name: Upload debug APK
+        if: "!startsWith(github.ref, 'refs/tags/v')"
+        uses: actions/upload-artifact@v4
+        with:
+          name: wolf-logic-android-debug
+          path: |
+            md-app/android/app/build/outputs/apk/debug/*.apk
+          retention-days: 30
+      
+      - name: Upload release APK
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: wolf-logic-android-release-apk
+          path: |
+            md-app/android/app/build/outputs/apk/release/*.apk
+            md-app/android/app/build/outputs/apk/release/*.sha256
+          retention-days: 90
+      
+      - name: Upload release AAB
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: wolf-logic-android-release-aab
+          path: |
+            md-app/android/app/build/outputs/bundle/release/*.aab
+            md-app/android/app/build/outputs/bundle/release/*.sha256
+          retention-days: 90
+
+  create-release:
+    needs: build-android
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download APK artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: wolf-logic-android-release-apk
+          path: artifacts/apk
+      
+      - name: Download AAB artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: wolf-logic-android-release-aab
+          path: artifacts/aab
+      
+      - name: Organize release files
+        run: |
+          mkdir -p release
+          
+          # Find and rename APK
+          find artifacts/apk -name "*.apk" ! -name "*-unsigned.apk" -exec cp {} release/wolf-logic-${{ github.ref_name }}.apk \;
+          
+          # Find and rename AAB
+          find artifacts/aab -name "*.aab" -exec cp {} release/wolf-logic-${{ github.ref_name }}.aab \;
+          
+          # Generate checksums
+          cd release
+          for file in *.{apk,aab}; do
+            [ -f "$file" ] && sha256sum "$file" > "$file.sha256"
+          done
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Wolf Logic Android ${{ github.ref_name }}
+          body: |
+            ## Wolf Logic Android ${{ github.ref_name }}
+            
+            Android application for Wolf Logic MCP.
+            
+            ### Downloads
+            
+            **APK (Sideloading)**
+            - `wolf-logic-${{ github.ref_name }}.apk` - Universal APK for sideloading
+            
+            **AAB (Google Play Store)**
+            - `wolf-logic-${{ github.ref_name }}.aab` - Android App Bundle for Play Store
+            
+            ### Installation (APK)
+            
+            1. Enable "Unknown Sources" in Android settings
+            2. Download the APK to your device
+            3. Open and install
+            
+            Or via ADB:
+            ```bash
+            adb install wolf-logic-${{ github.ref_name }}.apk
+            ```
+            
+            ### Requirements
+            
+            - Android 8.0+ (API 26+)
+            - ARM64 device (most modern Android phones)
+            - Network access to Wolf Logic server
+            
+            ### Checksums
+            
+            SHA256 checksums are provided. Verify with:
+            ```bash
+            sha256sum -c wolf-logic-${{ github.ref_name }}.apk.sha256
+            ```
+            
+            ### Server Configuration
+            
+            Default server: `http://100.110.82.181:8002`
+            
+            Configure in app settings after installation.
+          files: |
+            release/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  notify:
+    needs: [build-android, create-release]
+    if: always()
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Build Status
+        run: |
+          echo "Build completed!"
+          echo "Android build status: ${{ needs.build-android.result }}"
+          if [ "${{ needs.create-release.result }}" != "skipped" ]; then
+            echo "Release status: ${{ needs.create-release.result }}"
+          fi
