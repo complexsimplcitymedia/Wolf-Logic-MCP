@@ -91,3 +91,15 @@ voice/models/*.onnx
 data/vrp-reports/
 data/incident-reports/
 
+# Android build outputs
+android-package/releases/
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# Desktop build outputs
+desktop-client/dist/
+desktop-client/release/
+desktop-client/node_modules/
+

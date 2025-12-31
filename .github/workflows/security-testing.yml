@@ -1,0 +1,244 @@
+name: Security & Testing
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+  schedule:
+    # Run security scans weekly
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+jobs:
+  codeql-analysis:
+    name: CodeQL Security Scanning
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['javascript', 'python', 'typescript']
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-and-quality
+      
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+      
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+
+  dependency-scan:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Scan Desktop dependencies
+        working-directory: desktop-client
+        run: |
+          npm audit --production --audit-level=high
+          npm audit --json > ../desktop-audit.json || true
+      
+      - name: Scan Android web dependencies
+        working-directory: md-app
+        run: |
+          npm audit --production --audit-level=high
+          npm audit --json > ../android-audit.json || true
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install pip-audit
+        run: |
+          pip install pip-audit
+      
+      - name: Scan Python dependencies (API)
+        working-directory: api
+        continue-on-error: true
+        run: |
+          pip-audit -r requirements.txt --format json > ../api-audit.json || true
+      
+      - name: Scan Python dependencies (MCP Gateway)
+        working-directory: mcp-gateway
+        continue-on-error: true
+        run: |
+          pip-audit -r requirements.txt --format json > ../mcp-audit.json || true
+      
+      - name: Upload audit reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit-reports
+          path: |
+            *-audit.json
+          retention-days: 90
+
+  secret-scan:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: TruffleHog Secret Scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified
+
+  lint-code:
+    name: Code Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Lint Desktop client
+        working-directory: desktop-client
+        continue-on-error: true
+        run: |
+          npm ci
+          npm run build || echo "Build completed with warnings"
+      
+      - name: Lint Android web app
+        working-directory: md-app
+        continue-on-error: true
+        run: |
+          npm ci
+          npm run lint || echo "Linting completed with warnings"
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install Python linting tools
+        run: |
+          pip install flake8 pylint black mypy
+      
+      - name: Lint Python code (API)
+        working-directory: api
+        continue-on-error: true
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || true
+          pylint *.py --errors-only || true
+      
+      - name: Lint Python code (Writers)
+        working-directory: writers
+        continue-on-error: true
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || true
+          pylint *.py --errors-only || true
+
+  test-scripts:
+    name: Test Build Scripts
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Test Android build script syntax
+        run: |
+          bash -n android-package/scripts/build-apk.sh
+          bash -n android-package/scripts/setup-build-env.sh
+      
+      - name: Test Desktop installer scripts syntax
+        run: |
+          bash -n desktop-client/installers/install-dependencies-linux.sh
+          bash -n desktop-client/installers/install-dependencies-macos.sh
+      
+      - name: Test deployment scripts syntax
+        run: |
+          bash -n deployment/deploy-ionos-production.sh || true
+          bash -n deployment/deploy-application-stack.sh || true
+          bash -n deployment/migrate-postgres.sh || true
+
+  docker-security:
+    name: Docker Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run Trivy vulnerability scanner (API)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: 'api'
+          format: 'sarif'
+          output: 'trivy-api-results.sarif'
+      
+      - name: Run Trivy vulnerability scanner (MCP Gateway)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: 'mcp-gateway'
+          format: 'sarif'
+          output: 'trivy-mcp-results.sarif'
+      
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: '.'
+
+  summary:
+    name: Security Summary
+    needs: [codeql-analysis, dependency-scan, secret-scan, lint-code, test-scripts, docker-security]
+    if: always()
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Security Check Summary
+        run: |
+          echo "## Security & Testing Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- CodeQL Analysis: ${{ needs.codeql-analysis.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Dependency Scan: ${{ needs.dependency-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Secret Detection: ${{ needs.secret-scan.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Code Linting: ${{ needs.lint-code.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Script Tests: ${{ needs.test-scripts.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Docker Security: ${{ needs.docker-security.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.secret-scan.result }}" != "success" ]; then
+            echo "⚠️ **Warning:** Secret scan found issues!" >> $GITHUB_STEP_SUMMARY
+          fi

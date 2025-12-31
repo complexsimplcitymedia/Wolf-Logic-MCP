@@ -1,0 +1,81 @@
+{
+  "name": "wolf-logic-desktop",
+  "productName": "Wolf Logic MCP",
+  "version": "1.0.0",
+  "description": "Desktop client for Wolf Logic Memory & Context Protocol system",
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "concurrently \"npm run build:watch\" \"wait-on dist/main.js && electron .\"",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "package": "electron-builder build --publish never",
+    "package:win": "electron-builder build --win --publish never",
+    "package:mac": "electron-builder build --mac --publish never",
+    "package:linux": "electron-builder build --linux --publish never",
+    "package:all": "electron-builder build --win --mac --linux --publish never",
+    "test": "echo \"Tests not yet implemented\" && exit 0"
+  },
+  "keywords": [
+    "wolf-logic",
+    "mcp",
+    "memory",
+    "ai"
+  ],
+  "author": "Complex Simplicity Media",
+  "license": "MIT",
+  "dependencies": {
+    "electron-store": "^8.1.0",
+    "electron-updater": "^6.1.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "concurrently": "^8.2.2",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "typescript": "^5.3.3",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.complexsimplicity.wolflogic",
+    "productName": "Wolf Logic MCP",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm"
+      ],
+      "icon": "assets/icon.png",
+      "category": "Utility"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

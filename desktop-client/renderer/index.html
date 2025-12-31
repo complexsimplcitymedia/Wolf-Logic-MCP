@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
+  <title>Wolf Logic MCP</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #e0e0e0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #4a9eff;
+      margin-bottom: 30px;
+      text-align: center;
+      padding: 10px;
+      background: rgba(74, 158, 255, 0.1);
+      border-radius: 8px;
+    }
+
+    .nav-item {
+      padding: 12px 16px;
+      margin: 5px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-item:hover {
+      background: rgba(74, 158, 255, 0.2);
+    }
+
+    .nav-item.active {
+      background: rgba(74, 158, 255, 0.3);
+      border-left: 3px solid #4a9eff;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #4a9eff;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 16px;
+      color: #4a9eff;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .status-badge.connected {
+      background: rgba(0, 255, 0, 0.2);
+      color: #00ff00;
+    }
+
+    .status-badge.disconnected {
+      background: rgba(255, 0, 0, 0.2);
+      color: #ff4444;
+    }
+
+    .btn {
+      background: #4a9eff;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn:hover {
+      background: #3a8eef;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(74, 158, 255, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn.secondary {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #b0b0b0;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="url"] {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #e0e0e0;
+      font-size: 14px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #4a9eff;
+      box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.2);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .info-item {
+      background: rgba(74, 158, 255, 0.1);
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .info-label {
+      font-size: 12px;
+      color: #b0b0b0;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .info-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: #4a9eff;
+    }
+
+    .footer {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      font-size: 12px;
+      color: #808080;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .alert.info {
+      background: rgba(74, 158, 255, 0.2);
+      border-left: 4px solid #4a9eff;
+    }
+
+    .alert.success {
+      background: rgba(0, 255, 0, 0.2);
+      border-left: 4px solid #00ff00;
+    }
+
+    .alert.error {
+      background: rgba(255, 0, 0, 0.2);
+      border-left: 4px solid #ff4444;
+    }
+
+    .dependency-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .dependency-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .dependency-status {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .dependency-status.installed {
+      background: rgba(0, 255, 0, 0.2);
+      color: #00ff00;
+    }
+
+    .dependency-status.missing {
+      background: rgba(255, 165, 0, 0.2);
+      color: #ffa500;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <div class="logo">🐺 Wolf Logic</div>
+      
+      <nav>
+        <div class="nav-item active" data-page="dashboard">
+          <span>📊</span> Dashboard
+        </div>
+        <div class="nav-item" data-page="settings">
+          <span>⚙️</span> Settings
+        </div>
+        <div class="nav-item" data-page="dependencies">
+          <span>📦</span> Dependencies
+        </div>
+        <div class="nav-item" data-page="about">
+          <span>ℹ️</span> About
+        </div>
+      </nav>
+
+      <div class="footer">
+        <div>Version <span id="app-version">1.0.0</span></div>
+        <div style="margin-top: 8px;">© 2025 Complex Simplicity Media</div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <!-- Dashboard Page -->
+      <div id="dashboard" class="page active">
+        <h1>Dashboard <span class="status-badge disconnected" id="connection-status">Disconnected</span></h1>
+        
+        <div class="card">
+          <h2>Quick Actions</h2>
+          <button class="btn" onclick="testConnection()">Test Server Connection</button>
+          <button class="btn secondary" onclick="openSettings()" style="margin-left: 10px;">Configure</button>
+        </div>
+
+        <div class="card">
+          <h2>System Information</h2>
+          <div class="info-grid" id="system-info">
+            <div class="info-item">
+              <div class="info-label">Platform</div>
+              <div class="info-value" id="info-platform">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Architecture</div>
+              <div class="info-value" id="info-arch">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Hostname</div>
+              <div class="info-value" id="info-hostname">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Electron</div>
+              <div class="info-value" id="info-electron">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Page -->
+      <div id="settings" class="page">
+        <h1>Settings</h1>
+        
+        <div class="card">
+          <h2>Server Configuration</h2>
+          <div class="form-group">
+            <label for="serverUrl">Server URL</label>
+            <input type="url" id="serverUrl" placeholder="http://100.110.82.181:8002">
+          </div>
+          <div class="form-group">
+            <label for="authentikUrl">Authentik URL</label>
+            <input type="url" id="authentikUrl" placeholder="http://100.110.82.181:9001">
+          </div>
+          <div class="form-group">
+            <label for="apiKey">API Key</label>
+            <input type="password" id="apiKey" placeholder="Enter your API key">
+          </div>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter your username">
+          </div>
+          <button class="btn" onclick="saveSettings()">Save Settings</button>
+        </div>
+      </div>
+
+      <!-- Dependencies Page -->
+      <div id="dependencies" class="page">
+        <h1>Dependencies</h1>
+        
+        <div class="alert info">
+          Wolf Logic requires several dependencies to function properly. Check the status below.
+        </div>
+
+        <div class="card">
+          <h2>Required Dependencies</h2>
+          <ul class="dependency-list">
+            <li class="dependency-item">
+              <span>
+                <strong>Python 3.12+</strong>
+                <div style="font-size: 12px; color: #808080;">Required for backend processing</div>
+              </span>
+              <span class="dependency-status missing">Not Checked</span>
+            </li>
+            <li class="dependency-item">
+              <span>
+                <strong>Anaconda/Miniconda</strong>
+                <div style="font-size: 12px; color: #808080;">Messiah environment manager</div>
+              </span>
+              <span class="dependency-status missing">Not Checked</span>
+            </li>
+            <li class="dependency-item">
+              <span>
+                <strong>Ollama</strong>
+                <div style="font-size: 12px; color: #808080;">Local LLM runtime</div>
+              </span>
+              <span class="dependency-status missing">Not Checked</span>
+            </li>
+            <li class="dependency-item">
+              <span>
+                <strong>PostgreSQL Client</strong>
+                <div style="font-size: 12px; color: #808080;">Database connectivity</div>
+              </span>
+              <span class="dependency-status missing">Not Checked</span>
+            </li>
+            <li class="dependency-item">
+              <span>
+                <strong>Tailscale</strong>
+                <div style="font-size: 12px; color: #808080;">VPN for secure server access</div>
+              </span>
+              <span class="dependency-status missing">Not Checked</span>
+            </li>
+          </ul>
+          <div style="margin-top: 20px;">
+            <button class="btn" onclick="checkDependencies()">Check All</button>
+            <button class="btn secondary" onclick="installDependencies()" style="margin-left: 10px;">Install Missing</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- About Page -->
+      <div id="about" class="page">
+        <h1>About Wolf Logic MCP</h1>
+        
+        <div class="card">
+          <h2>Wolf Logic Memory & Context Protocol</h2>
+          <p style="margin-bottom: 16px; line-height: 1.6;">
+            Wolf Logic MCP is a comprehensive memory and context management system designed for AI agents and applications. 
+            It provides semantic memory storage, retrieval, and context management across distributed systems.
+          </p>
+          <p style="line-height: 1.6;">
+            This desktop application provides a native interface for interacting with your Wolf Logic server, 
+            managing memories, and configuring system settings.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2>Features</h2>
+          <ul style="list-style-position: inside; line-height: 2;">
+            <li>Semantic memory storage and retrieval</li>
+            <li>OAuth 2.0 authentication via Authentik</li>
+            <li>Real-time synchronization with server</li>
+            <li>Local caching for offline access</li>
+            <li>Cross-platform support (Windows, macOS, Linux)</li>
+            <li>Auto-update functionality</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>Links</h2>
+          <button class="btn secondary" onclick="window.open('https://github.com/complexsimplcitymedia/Wolf-Logic-MCP')">
+            📚 Documentation
+          </button>
+          <button class="btn secondary" onclick="window.open('https://github.com/complexsimplcitymedia/Wolf-Logic-MCP/issues')" style="margin-left: 10px;">
+            🐛 Report Issue
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const page = item.dataset.page;
+        showPage(page);
+      });
+    });
+
+    function showPage(pageName) {
+      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      
+      document.getElementById(pageName).classList.add('active');
+      document.querySelector(`[data-page="${pageName}"]`).classList.add('active');
+    }
+
+    function openSettings() {
+      showPage('settings');
+    }
+
+    // Load system info on startup
+    async function loadSystemInfo() {
+      const info = await window.electronAPI.getSystemInfo();
+      document.getElementById('info-platform').textContent = info.platform;
+      document.getElementById('info-arch').textContent = info.arch;
+      document.getElementById('info-hostname').textContent = info.hostname;
+      document.getElementById('info-electron').textContent = info.electronVersion;
+      document.getElementById('app-version').textContent = info.version;
+    }
+
+    // Load settings
+    async function loadSettings() {
+      const config = await window.electronAPI.getAllConfig();
+      document.getElementById('serverUrl').value = config.serverUrl || '';
+      document.getElementById('authentikUrl').value = config.authentikUrl || '';
+      document.getElementById('apiKey').value = config.apiKey || '';
+      document.getElementById('username').value = config.username || '';
+    }
+
+    // Save settings
+    async function saveSettings() {
+      const serverUrl = document.getElementById('serverUrl').value;
+      const authentikUrl = document.getElementById('authentikUrl').value;
+      const apiKey = document.getElementById('apiKey').value;
+      const username = document.getElementById('username').value;
+
+      await window.electronAPI.setConfig('serverUrl', serverUrl);
+      await window.electronAPI.setConfig('authentikUrl', authentikUrl);
+      await window.electronAPI.setConfig('apiKey', apiKey);
+      await window.electronAPI.setConfig('username', username);
+
+      alert('Settings saved successfully!');
+    }
+
+    // Test connection
+    async function testConnection() {
+      const serverUrl = await window.electronAPI.getConfig('serverUrl');
+      const result = await window.electronAPI.healthCheck(serverUrl);
+      
+      if (result.success) {
+        document.getElementById('connection-status').textContent = 'Connected';
+        document.getElementById('connection-status').className = 'status-badge connected';
+        alert('Connection successful!');
+      } else {
+        alert('Connection failed: ' + result.error);
+      }
+    }
+
+    // Check dependencies
+    function checkDependencies() {
+      alert('Dependency checking not yet implemented. This will check for Python, Ollama, etc.');
+    }
+
+    // Install dependencies
+    async function installDependencies() {
+      const result = await window.electronAPI.installDependencies();
+      alert(result.message);
+    }
+
+    // Listen for navigation events from main process
+    window.electronAPI.onNavigateTo((page) => {
+      showPage(page);
+    });
+
+    window.electronAPI.onShowAbout(() => {
+      showPage('about');
+    });
+
+    window.electronAPI.onUpdateAvailable(() => {
+      alert('A new update is available! It will be downloaded in the background.');
+    });
+
+    window.electronAPI.onUpdateDownloaded(() => {
+      if (confirm('Update downloaded. Restart to install?')) {
+        // Restart app
+        location.reload();
+      }
+    });
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSystemInfo();
+      loadSettings();
+    });
+  </script>
+</body>
+</html>
