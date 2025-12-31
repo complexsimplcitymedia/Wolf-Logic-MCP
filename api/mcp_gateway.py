@@ -125,6 +125,10 @@ async def verify_oauth_token(credentials: HTTPAuthorizationCredentials = Depends
 INTAKE_DIR = Path("/mnt/Wolf-code/Wolf-Ai-Enterptises/data/client_dump")
 INTAKE_DIR.mkdir(parents=True, exist_ok=True)
 
+# Conversations directory
+CONVERSATION_DIR = Path("/mnt/Wolf-code/Wolf-Ai-Enterptises/data/conversations")
+CONVERSATION_DIR.mkdir(parents=True, exist_ok=True)
+
 # ============================================================================
 # REQUEST/RESPONSE MODELS
 # ============================================================================
@@ -172,6 +176,12 @@ class IntakeRequest(BaseModel):
     text: str = Field(..., description="Text content to ingest")
     metadata: Optional[Dict[str, Any]] = Field(None, description="Optional metadata")
 
+class ConversationThread(BaseModel):
+    title: Optional[str] = Field(None, description="Conversation title/summary")
+    messages: List[Dict[str, Any]] = Field(..., description="Array of conversation messages")
+    metadata: Optional[Dict[str, Any]] = Field(None, description="Conversation metadata (source, app, etc)")
+    source: str = Field(..., description="Client source (android, ios, web, desktop)")
+
 # ============================================================================
 # HEALTH & ROOT
 # ============================================================================
@@ -189,7 +199,8 @@ async def root():
             "postgres": "/mcp/postgres/*",
             "email": "/mcp/email/*",
             "wordpress": "/mcp/wordpress/*",
-            "intake": "/mcp/intake/*"
+            "intake": "/mcp/intake/*",
+            "conversations": "/mcp/conversations/*"
         }
     }
 
@@ -680,6 +691,215 @@ async def intake_stats():
         
     except Exception as e:
         logger.error(f"Intake stats error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================================================
+# CONVERSATION THREADS
+# ============================================================================
+
+@app.post("/mcp/conversations/submit",
+          response_model=StandardResponse,
+          summary="Submit Conversation Thread",
+          description="Submit full conversation thread for ingestion and analysis")
+async def submit_conversation_thread(
+    request: ConversationThread,
+    user_info: dict = Depends(verify_oauth_token)
+):
+    """
+    Submit a full conversation thread from any client
+    - Validates message structure
+    - Stores with rich metadata
+    - Queues for ingestion agent processing
+    """
+    try:
+        username = user_info.get("preferred_username", user_info.get("sub", "unknown"))
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        thread_id = str(uuid.uuid4())[:8]
+        
+        # Build filename: conversation_{source}_{username}_{timestamp}_{id}.json
+        filename = f"conversation_{request.source}_{username}_{timestamp}_{thread_id}.json"
+        filepath = CONVERSATION_DIR / filename
+        
+        # Validate messages structure
+        if not request.messages or len(request.messages) == 0:
+            raise HTTPException(status_code=400, detail="Conversation must contain at least one message")
+        
+        # Build conversation data
+        conversation_data = {
+            "thread_id": thread_id,
+            "username": username,
+            "user_email": user_info.get("email"),
+            "source": request.source,
+            "title": request.title or f"Conversation {timestamp}",
+            "messages": request.messages,
+            "message_count": len(request.messages),
+            "metadata": request.metadata or {},
+            "submitted_at": datetime.now().isoformat(),
+            "status": "queued"
+        }
+        
+        # Write to conversation directory
+        with open(filepath, 'w') as f:
+            json.dump(conversation_data, f, indent=2)
+        
+        logger.info(f"[CONVERSATION] {username} ({request.source}): {len(request.messages)} messages -> {filename}")
+        
+        return StandardResponse(
+            success=True,
+            message=f"Conversation thread accepted - {len(request.messages)} messages queued for processing",
+            data={
+                "thread_id": thread_id,
+                "filename": filename,
+                "username": username,
+                "source": request.source,
+                "message_count": len(request.messages),
+                "queue_path": str(filepath)
+            }
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Conversation submission error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/conversations/list",
+         response_model=StandardResponse,
+         summary="List User Conversations",
+         description="List conversation threads for authenticated user")
+async def list_user_conversations(
+    user_info: dict = Depends(verify_oauth_token),
+    limit: int = Query(20, description="Maximum conversations to return")
+):
+    """List conversations for the authenticated user"""
+    try:
+        username = user_info.get("preferred_username", user_info.get("sub", "unknown"))
+        
+        # Find all conversations for this user (pattern: conversation_{source}_{username}_*.json)
+        pattern = f"conversation_*_{username}_*.json"
+        user_conversations = list(CONVERSATION_DIR.glob(pattern))
+        user_conversations.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+        user_conversations = user_conversations[:limit]
+        
+        # Load conversation metadata
+        conversations = []
+        for conv_file in user_conversations:
+            try:
+                with open(conv_file, 'r') as f:
+                    conv_data = json.load(f)
+                    conversations.append({
+                        "thread_id": conv_data.get("thread_id"),
+                        "title": conv_data.get("title"),
+                        "source": conv_data.get("source"),
+                        "message_count": conv_data.get("message_count"),
+                        "submitted_at": conv_data.get("submitted_at"),
+                        "status": conv_data.get("status", "unknown"),
+                        "filename": conv_file.name
+                    })
+            except Exception as e:
+                logger.warning(f"Failed to load {conv_file}: {e}")
+                continue
+        
+        return StandardResponse(
+            success=True,
+            message=f"Found {len(conversations)} conversations for {username}",
+            data={
+                "username": username,
+                "conversations": conversations,
+                "count": len(conversations)
+            }
+        )
+        
+    except Exception as e:
+        logger.error(f"List conversations error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/conversations/{thread_id}",
+         response_model=StandardResponse,
+         summary="Get Conversation Thread",
+         description="Retrieve full conversation thread by ID")
+async def get_conversation_thread(
+    thread_id: str,
+    user_info: dict = Depends(verify_oauth_token)
+):
+    """Get full conversation thread by thread_id"""
+    try:
+        username = user_info.get("preferred_username", user_info.get("sub", "unknown"))
+        
+        # Find conversation file with this thread_id
+        pattern = f"conversation_*_{username}_*_{thread_id}.json"
+        matches = list(CONVERSATION_DIR.glob(pattern))
+        
+        if not matches:
+            raise HTTPException(status_code=404, detail=f"Conversation {thread_id} not found")
+        
+        # Load conversation data
+        with open(matches[0], 'r') as f:
+            conversation = json.load(f)
+        
+        # Verify ownership
+        if conversation.get("username") != username:
+            raise HTTPException(status_code=403, detail="Access denied to this conversation")
+        
+        return StandardResponse(
+            success=True,
+            message=f"Retrieved conversation {thread_id}",
+            data={"conversation": conversation}
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Get conversation error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/conversations/stats",
+         response_model=StandardResponse,
+         summary="Conversation Statistics",
+         description="Get conversation intake statistics")
+async def conversation_stats():
+    """Get conversation statistics across all users"""
+    try:
+        files = list(CONVERSATION_DIR.glob("conversation_*.json"))
+        
+        # Count by user and source
+        by_user = {}
+        by_source = {}
+        total_messages = 0
+        
+        for conv_file in files:
+            try:
+                with open(conv_file, 'r') as f:
+                    data = json.load(f)
+                    username = data.get("username", "unknown")
+                    source = data.get("source", "unknown")
+                    msg_count = data.get("message_count", 0)
+                    
+                    by_user[username] = by_user.get(username, 0) + 1
+                    by_source[source] = by_source.get(source, 0) + 1
+                    total_messages += msg_count
+            except:
+                continue
+        
+        # Recent conversations (last 24h)
+        day_ago = datetime.now().timestamp() - 86400
+        recent = [f for f in files if f.stat().st_mtime > day_ago]
+        
+        return StandardResponse(
+            success=True,
+            message="Conversation statistics retrieved",
+            data={
+                "total_conversations": len(files),
+                "total_messages": total_messages,
+                "last_24h": len(recent),
+                "by_user": by_user,
+                "by_source": by_source,
+                "queue_path": str(CONVERSATION_DIR)
+            }
+        )
+        
+    except Exception as e:
+        logger.error(f"Conversation stats error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # ============================================================================

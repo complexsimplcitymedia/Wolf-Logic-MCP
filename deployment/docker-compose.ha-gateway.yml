@@ -1,0 +1,236 @@
+version: '3.8'
+
+# Wolf MCP Gateway - High Availability Deployment
+# Server A (Primary) + Server B (Secondary) with geographic load balancing
+
+services:
+  # ============================================================================
+  # SERVER A - PRIMARY (Port 8001)
+  # ============================================================================
+  
+  wolf-gateway-a:
+    build:
+      context: .
+      dockerfile: Dockerfile.mcp-gateway
+    container_name: wolf-gateway-server-a
+    hostname: gateway-a
+    ports:
+      - "8001:8001"
+    environment:
+      # Server identity
+      SERVER_NAME: "Server-A-Primary"
+      SERVER_REGION: "us-east"
+      GATEWAY_PORT: 8001
+      
+      # Database
+      POSTGRES_HOST: 100.110.82.181
+      POSTGRES_PORT: 5433
+      POSTGRES_USER: wolf
+      POSTGRES_PASSWORD: wolflogic2024
+      POSTGRES_DB: wolf_logic
+      
+      # OAuth
+      AUTHENTIK_URL: http://100.110.82.181:9000
+      
+      # Email
+      EMAIL_FROM: ${EMAIL_FROM}
+      SMTP_SERVER: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      
+      # WordPress
+      WORDPRESS_URL: http://100.110.82.181:8082
+      WORDPRESS_USER: ${WP_USER}
+      WORDPRESS_PASSWORD: ${WP_PASSWORD}
+      
+      # Storage paths
+      INTAKE_DIR: /data/intake
+      CONVERSATION_DIR: /data/conversations
+    
+    volumes:
+      - ./mcp_gateway.py:/app/mcp_gateway.py
+      - /mnt/Wolf-code/Wolf-Ai-Enterptises/data:/data
+      - gateway-a-logs:/var/log/wolf
+    
+    networks:
+      - wolf-ha-network
+    
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    
+    labels:
+      - "wolf.service=mcp-gateway"
+      - "wolf.server=a"
+      - "wolf.priority=1"
+      - "wolf.region=us-east"
+
+  # ============================================================================
+  # SERVER B - SECONDARY (Port 8002)
+  # ============================================================================
+  
+  wolf-gateway-b:
+    build:
+      context: .
+      dockerfile: Dockerfile.mcp-gateway
+    container_name: wolf-gateway-server-b
+    hostname: gateway-b
+    ports:
+      - "8002:8002"
+    environment:
+      # Server identity
+      SERVER_NAME: "Server-B-Secondary"
+      SERVER_REGION: "us-west"
+      GATEWAY_PORT: 8002
+      
+      # Database (same as Server A - shared storage)
+      POSTGRES_HOST: 100.110.82.181
+      POSTGRES_PORT: 5433
+      POSTGRES_USER: wolf
+      POSTGRES_PASSWORD: wolflogic2024
+      POSTGRES_DB: wolf_logic
+      
+      # OAuth (same)
+      AUTHENTIK_URL: http://100.110.82.181:9000
+      
+      # Email (same)
+      EMAIL_FROM: ${EMAIL_FROM}
+      SMTP_SERVER: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      
+      # WordPress (same)
+      WORDPRESS_URL: http://100.110.82.181:8082
+      WORDPRESS_USER: ${WP_USER}
+      WORDPRESS_PASSWORD: ${WP_PASSWORD}
+      
+      # Storage paths (shared NFS mount)
+      INTAKE_DIR: /data/intake
+      CONVERSATION_DIR: /data/conversations
+    
+    volumes:
+      - ./mcp_gateway.py:/app/mcp_gateway.py
+      - /mnt/Wolf-code/Wolf-Ai-Enterptises/data:/data
+      - gateway-b-logs:/var/log/wolf
+    
+    networks:
+      - wolf-ha-network
+    
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    
+    labels:
+      - "wolf.service=mcp-gateway"
+      - "wolf.server=b"
+      - "wolf.priority=2"
+      - "wolf.region=us-west"
+
+  # ============================================================================
+  # OPTIONAL: HAProxy Load Balancer (Port 8000)
+  # Automatically routes to healthy servers
+  # ============================================================================
+  
+  wolf-loadbalancer:
+    image: haproxy:2.9-alpine
+    container_name: wolf-loadbalancer
+    ports:
+      - "8000:8000"  # Load balancer entry point
+      - "9090:9090"  # HAProxy stats page
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    networks:
+      - wolf-ha-network
+    depends_on:
+      - wolf-gateway-a
+      - wolf-gateway-b
+    restart: unless-stopped
+    
+    labels:
+      - "wolf.service=loadbalancer"
+      - "wolf.type=haproxy"
+
+  # ============================================================================
+  # OPTIONAL: Prometheus + Grafana Monitoring
+  # ============================================================================
+  
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: wolf-prometheus
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - wolf-ha-network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: wolf-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - wolf-ha-network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+# ============================================================================
+# VOLUMES
+# ============================================================================
+
+volumes:
+  gateway-a-logs:
+    driver: local
+  gateway-b-logs:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+
+# ============================================================================
+# NETWORKS
+# ============================================================================
+
+networks:
+  wolf-ha-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

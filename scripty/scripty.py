@@ -10,8 +10,10 @@ import ollama
 from datetime import datetime
 from pathlib import Path
 
-# Configuration
-DAILYS_DIR = Path("/mnt/Wolf-code/Wolf-Ai-Enterptises/Wolf-Logic-MCP/camera/dailys")
+# Configuration - relative to project root
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
+DAILYS_DIR = PROJECT_ROOT / "data" / "client-dumps(scripty global)"
 MODEL = "llama3.2:1b"
 POLL_INTERVAL = 30  # seconds
 

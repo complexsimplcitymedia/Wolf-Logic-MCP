@@ -51,6 +51,70 @@ api.complexsimplicityai.com {
 	}
 }
 
+# Wolf MCP Gateway - Conversation intake endpoint
+wolf-logic-mcp.complexsimplicityai.com {
+	reverse_proxy {
+		# Primary backend
+		to localhost:8002
+
+		# Active health checks every 5s
+		health_uri /health
+		health_interval 5s
+		health_timeout 3s
+		health_status 200
+
+		# Mark unhealthy after 2 failures
+		fail_duration 30s
+		max_fails 2
+	}
+
+	# Compression
+	encode gzip zstd
+
+	# CORS for all clients
+	header {
+		Access-Control-Allow-Origin *
+		Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+		Access-Control-Allow-Headers "Content-Type, Authorization"
+	}
+
+	# Logging
+	log {
+		output file /var/log/caddy/wolf-mcp-gateway.log
+		format json
+		level INFO
+	}
+}
+
+# Backup MCP Gateway (optional separate subdomain for Server B)
+wolf-logic-mcp-backup.complexsimplicityai.com {
+	reverse_proxy {
+		to localhost:8001
+
+		health_uri /health
+		health_interval 5s
+		health_timeout 3s
+		health_status 200
+
+		fail_duration 30s
+		max_fails 2
+	}
+
+	encode gzip zstd
+
+	header {
+		Access-Control-Allow-Origin *
+		Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+		Access-Control-Allow-Headers "Content-Type, Authorization"
+	}
+
+	log {
+		output file /var/log/caddy/wolf-mcp-backup.log
+		format json
+		level INFO
+	}
+}
+
 # Local development endpoint (no domain)
 :8000 {
 	reverse_proxy {
