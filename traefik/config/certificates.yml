@@ -1,9 +1,0 @@
-tls:
-  certificates:
-    - certFile: /certs/fullchain_wildcard.complexsimplicityai.com.pem
-      keyFile: /certs/wildcard.complexsimplicityai.com.key
-  stores:
-    default:
-      defaultCertificate:
-        certFile: /certs/fullchain_wildcard.complexsimplicityai.com.pem
-        keyFile: /certs/wildcard.complexsimplicityai.com.key
