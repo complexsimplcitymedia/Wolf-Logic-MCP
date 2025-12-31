@@ -61,13 +61,13 @@ jobs:
       - name: Scan Desktop dependencies
         working-directory: desktop-client
         run: |
-          npm audit --production --audit-level=moderate || true
+          npm audit --production --audit-level=high
           npm audit --json > ../desktop-audit.json || true
       
       - name: Scan Android web dependencies
         working-directory: md-app
         run: |
-          npm audit --production --audit-level=moderate || true
+          npm audit --production --audit-level=high
           npm audit --json > ../android-audit.json || true
       
       - name: Setup Python

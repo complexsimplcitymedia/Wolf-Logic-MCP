@@ -101,7 +101,13 @@ sync_capacitor() {
 update_version() {
     log_info "Updating version to $VERSION..."
     
-    local VERSION_CODE=$(echo "$VERSION" | tr -d '.' | sed 's/^0*//')
+    # Calculate version code properly for semantic versioning
+    # Format: MAJOR * 10000 + MINOR * 100 + PATCH
+    # Example: 1.2.3 -> 10203, 10.5.2 -> 100502
+    local MAJOR=$(echo "$VERSION" | cut -d. -f1)
+    local MINOR=$(echo "$VERSION" | cut -d. -f2)
+    local PATCH=$(echo "$VERSION" | cut -d. -f3)
+    local VERSION_CODE=$((MAJOR * 10000 + MINOR * 100 + PATCH))
     
     # Update build.gradle
     cd "$APP_DIR/android/app"

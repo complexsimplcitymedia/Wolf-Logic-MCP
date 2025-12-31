@@ -200,18 +200,26 @@ generate_keystore() {
     log_info "Generating release keystore..."
     mkdir -p "$HOME/.android"
     
+    # Prompt for password or use environment variable
+    local STORE_PASS="${ANDROID_KEYSTORE_PASSWORD:-}"
+    if [ -z "$STORE_PASS" ]; then
+        log_warn "ANDROID_KEYSTORE_PASSWORD not set, using prompted password"
+        read -sp "Enter keystore password: " STORE_PASS
+        echo ""
+    fi
+    
     keytool -genkey -v \
         -keystore "$KEYSTORE_PATH" \
         -alias wolf-logic \
         -keyalg RSA \
         -keysize 2048 \
         -validity 10000 \
-        -storepass "wolf-logic-2024" \
-        -keypass "wolf-logic-2024" \
+        -storepass "$STORE_PASS" \
+        -keypass "$STORE_PASS" \
         -dname "CN=Wolf Logic, OU=Development, O=Complex Simplicity Media, L=City, ST=State, C=US"
     
     log_success "Release keystore generated at $KEYSTORE_PATH"
-    log_warn "Store password: wolf-logic-2024 (Change for production!)"
+    log_warn "Store your password securely! Set ANDROID_KEYSTORE_PASSWORD env var to avoid prompts."
 }
 
 # Install Capacitor
