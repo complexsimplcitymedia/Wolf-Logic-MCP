@@ -65,10 +65,15 @@ def read_session_entries(session_file):
                 if line.strip():
                     try:
                         entries.append(json.loads(line))
-                    except json.JSONDecodeError:
+                    except json.JSONDecodeError as e:
+                        print(f"[{datetime.now()}] Skipping malformed JSON: {str(e)[:50]}")
                         continue
-    except Exception:
-        pass
+    except FileNotFoundError:
+        print(f"[{datetime.now()}] Session file not found: {session_file}")
+    except PermissionError as e:
+        print(f"[{datetime.now()}] Permission denied reading session: {e}")
+    except IOError as e:
+        print(f"[{datetime.now()}] I/O error reading session: {e}")
     return entries
 
 def summarize_chunk(text_chunk):
@@ -82,8 +87,17 @@ def summarize_chunk(text_chunk):
             {'role': 'user', 'content': prompt}
         ])
         return response['message']['content'].strip()
+    except ollama.ResponseError as e:
+        print(f"[{datetime.now()}] Ollama response error: {e}")
+        return None
+    except ConnectionError as e:
+        print(f"[{datetime.now()}] Cannot connect to Ollama: {e}")
+        return None
+    except KeyError as e:
+        print(f"[{datetime.now()}] Unexpected response format from Ollama: missing {e}")
+        return None
     except Exception as e:
-        print(f"[{datetime.now()}] Summarization error: {e}")
+        print(f"[{datetime.now()}] Summarization error ({type(e).__name__}): {e}")
         return None
 
 def watch_session():
@@ -172,8 +186,14 @@ def watch_session():
         except KeyboardInterrupt:
             print(f"\n[{datetime.now()}] Stopping scripty")
             break
+        except PermissionError as e:
+            print(f"[{datetime.now()}] Permission error: {e}")
+            time.sleep(5)
+        except IOError as e:
+            print(f"[{datetime.now()}] I/O error: {e}")
+            time.sleep(5)
         except Exception as e:
-            print(f"[{datetime.now()}] Error: {e}")
+            print(f"[{datetime.now()}] Unexpected error ({type(e).__name__}): {e}")
             time.sleep(5)
 
 if __name__ == "__main__":

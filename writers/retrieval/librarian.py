@@ -71,18 +71,29 @@ def extract_memories(dump_content: str) -> list:
 
     prompt = EXTRACT_PROMPT.format(dump_content=dump_content)
 
-    response = requests.post(
-        f"{OLLAMA_URL}/api/generate",
-        json={
-            "model": LLM_MODEL,
-            "prompt": prompt,
-            "stream": False,
-            "options": {"temperature": 0.1}
-        }
-    )
+    try:
+        response = requests.post(
+            f"{OLLAMA_URL}/api/generate",
+            json={
+                "model": LLM_MODEL,
+                "prompt": prompt,
+                "stream": False,
+                "options": {"temperature": 0.1}
+            },
+            timeout=60  # LLM inference can take a while
+        )
+    except requests.exceptions.Timeout:
+        print(f"[Librarian] LLM request timed out after 60s")
+        return []
+    except requests.exceptions.ConnectionError as e:
+        print(f"[Librarian] Cannot connect to Ollama at {OLLAMA_URL}: {e}")
+        return []
+    except requests.exceptions.RequestException as e:
+        print(f"[Librarian] Request error: {type(e).__name__}: {e}")
+        return []
 
     if response.status_code != 200:
-        print(f"LLM error: {response.status_code}")
+        print(f"[Librarian] LLM error: HTTP {response.status_code}")
         return []
 
     result = response.json().get("response", "")
@@ -132,8 +143,20 @@ def store_memory(conn, memory: dict, source_file: str):
             ))
         conn.commit()
         return True
-    except Exception as e:
-        print(f"DB error: {e}")
+    except psycopg2.IntegrityError as e:
+        print(f"[Librarian] Duplicate memory or constraint violation: {e}")
+        conn.rollback()
+        return False
+    except psycopg2.OperationalError as e:
+        print(f"[Librarian] DB connection error: {e}")
+        conn.rollback()
+        return False
+    except psycopg2.ProgrammingError as e:
+        print(f"[Librarian] SQL error (check schema): {e}")
+        conn.rollback()
+        return False
+    except psycopg2.Error as e:
+        print(f"[Librarian] Database error ({type(e).__name__}): {e}")
         conn.rollback()
         return False
 
@@ -164,9 +187,12 @@ def process_dump(filepath: str):
 
     # Connect to database
     try:
-        conn = psycopg2.connect(**PG_CONFIG)
-    except Exception as e:
-        print(f"Database connection failed: {e}")
+        conn = psycopg2.connect(**PG_CONFIG, connect_timeout=10)
+    except psycopg2.OperationalError as e:
+        print(f"[Librarian] Database connection failed: {e}")
+        return
+    except psycopg2.Error as e:
+        print(f"[Librarian] Database error ({type(e).__name__}): {e}")
         return
 
     # Store each memory

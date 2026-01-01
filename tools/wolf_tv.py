@@ -84,7 +84,9 @@ def run_pipeline(url, target_fps, state, output_queue):
             if "frames total" in line:
                 try:
                     state.total_frames = int(line.split("~")[1].split("frames")[0].strip())
-                except: pass
+                except (IndexError, ValueError) as e:
+                    # Unable to parse frame count from output, continue with default
+                    pass
         
         elif "[SOUND]" in line:
             msg = line.split("[SOUND]")[-1].strip()

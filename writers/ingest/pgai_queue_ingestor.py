@@ -26,15 +26,37 @@ DB_CONFIG = {
     "password": os.getenv("PGPASSWORD", "wolflogic2024")
 }
 
-def get_db_connection():
-    """Get PostgreSQL connection"""
-    return psycopg2.connect(**DB_CONFIG)
+def get_db_connection(max_retries=3, retry_delay=2):
+    """Get PostgreSQL connection with retry logic"""
+    last_error = None
+    for attempt in range(max_retries):
+        try:
+            return psycopg2.connect(**DB_CONFIG)
+        except psycopg2.OperationalError as e:
+            last_error = e
+            if attempt < max_retries - 1:
+                print(f"[{datetime.now()}] DB connection failed (attempt {attempt + 1}/{max_retries}): {e}")
+                time.sleep(retry_delay * (attempt + 1))  # Exponential backoff
+            else:
+                print(f"[{datetime.now()}] DB connection failed after {max_retries} attempts: {e}")
+                raise
+        except psycopg2.Error as e:
+            print(f"[{datetime.now()}] Database error: {type(e).__name__}: {e}")
+            raise
 
 def ingest_to_pgai(data):
     """Ingest data to PostgreSQL memories table"""
+    conn = None
+    cur = None
     try:
         conn = get_db_connection()
         cur = conn.cursor()
+
+        # Validate required data
+        content = data.get('text', data.get('content', ''))
+        if not content:
+            print(f"[{datetime.now()}] Skipping empty content")
+            return False
 
         # Insert into memories table
         cur.execute("""
@@ -42,7 +64,7 @@ def ingest_to_pgai(data):
             VALUES (%s, %s, %s, %s, NOW())
         """, (
             data.get('username', 'wolf'),
-            data.get('text', data.get('content', '')),
+            content,
             data.get('namespace', 'scripty'),
             json.dumps({
                 "session": data.get('session'),
@@ -54,13 +76,31 @@ def ingest_to_pgai(data):
         ))
 
         conn.commit()
-        cur.close()
-        conn.close()
         return True
 
-    except Exception as e:
-        print(f"[{datetime.now()}] DB error: {e}")
+    except psycopg2.IntegrityError as e:
+        print(f"[{datetime.now()}] Duplicate or constraint violation: {e}")
+        if conn:
+            conn.rollback()
         return False
+    except psycopg2.OperationalError as e:
+        print(f"[{datetime.now()}] DB connection error during ingest: {e}")
+        if conn:
+            conn.rollback()
+        return False
+    except psycopg2.Error as e:
+        print(f"[{datetime.now()}] Database error ({type(e).__name__}): {e}")
+        if conn:
+            conn.rollback()
+        return False
+    except json.JSONDecodeError as e:
+        print(f"[{datetime.now()}] JSON encoding error in metadata: {e}")
+        return False
+    finally:
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()
 
 def watch_queue():
     """Watch pgai-queue and ingest files"""
@@ -87,8 +127,14 @@ def watch_queue():
                         print(f"[{datetime.now()}] Failed: {queue_file.name}")
                         time.sleep(1)
 
-                except Exception as e:
-                    print(f"[{datetime.now()}] Error processing {queue_file.name}: {e}")
+                except json.JSONDecodeError as e:
+                    print(f"[{datetime.now()}] Invalid JSON in {queue_file.name}: {e}")
+                except PermissionError as e:
+                    print(f"[{datetime.now()}] Permission denied for {queue_file.name}: {e}")
+                except FileNotFoundError:
+                    print(f"[{datetime.now()}] File disappeared: {queue_file.name}")
+                except OSError as e:
+                    print(f"[{datetime.now()}] OS error processing {queue_file.name}: {e}")
 
             time.sleep(10)
 

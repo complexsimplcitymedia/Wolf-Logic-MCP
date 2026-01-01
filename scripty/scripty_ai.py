@@ -42,7 +42,8 @@ def get_recent_exchanges(session_file, last_position=0):
                 if line.strip():
                     try:
                         entries.append(json.loads(line))
-                    except:
+                    except json.JSONDecodeError as e:
+                        print(f"[SCRIPTY] Skipping malformed JSON line: {str(e)[:50]}")
                         continue
 
         if len(entries) <= last_position:
@@ -72,8 +73,14 @@ def get_recent_exchanges(session_file, last_position=0):
 
         return len(entries), exchanges
 
-    except Exception as e:
-        print(f"[SCRIPTY] Error reading session: {e}")
+    except FileNotFoundError:
+        print(f"[SCRIPTY] Session file not found: {session_file}")
+        return last_position, []
+    except PermissionError as e:
+        print(f"[SCRIPTY] Permission denied reading session file: {e}")
+        return last_position, []
+    except IOError as e:
+        print(f"[SCRIPTY] I/O error reading session: {e}")
         return last_position, []
 
 
@@ -105,8 +112,14 @@ def transcribe_exchange(exchange):
         else:
             return f"USER: {exchange['user']}\n\nASSISTANT: {exchange['assistant']}"
 
-    except Exception as e:
-        # Fallback to raw exchange
+    except requests.exceptions.Timeout:
+        print("[SCRIPTY] Ollama request timed out, using raw exchange")
+        return f"USER: {exchange['user']}\n\nASSISTANT: {exchange['assistant']}"
+    except requests.exceptions.ConnectionError as e:
+        print(f"[SCRIPTY] Cannot connect to Ollama at {OLLAMA_URL}: {e}")
+        return f"USER: {exchange['user']}\n\nASSISTANT: {exchange['assistant']}"
+    except requests.exceptions.RequestException as e:
+        print(f"[SCRIPTY] Request error during transcription: {e}")
         return f"USER: {exchange['user']}\n\nASSISTANT: {exchange['assistant']}"
 
 
@@ -126,8 +139,14 @@ def write_to_file(transcript, session_name):
             f.write(json.dumps(entry) + '\n')
 
         return True
-    except Exception as e:
-        print(f"[SCRIPTY] Write error: {e}")
+    except PermissionError as e:
+        print(f"[SCRIPTY] Permission denied writing to {output_file}: {e}")
+        return False
+    except OSError as e:
+        print(f"[SCRIPTY] OS error writing transcript (disk full?): {e}")
+        return False
+    except IOError as e:
+        print(f"[SCRIPTY] I/O error writing transcript: {e}")
         return False
 
 
