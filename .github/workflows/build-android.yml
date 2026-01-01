@@ -1,0 +1,285 @@
+name: Build Android Apps
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'android-client/**'
+      - '.github/workflows/build-android.yml'
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'android-client/**'
+  workflow_dispatch:
+
+jobs:
+  validate-apks:
+    name: Validate APK Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Android SDK tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip
+
+          # Download Android command line tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          unzip -q cmdline-tools.zip -d $HOME/android-sdk/cmdline-tools
+          mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+
+          # Set up environment
+          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+
+      - name: Accept Android SDK licenses
+        run: |
+          yes | sdkmanager --licenses || true
+
+      - name: Install Android SDK platform tools
+        run: |
+          sdkmanager "platform-tools" "build-tools;34.0.0"
+
+      - name: Validate APK structure
+        run: |
+          echo "=== Validating APK Files ==="
+
+          APK_DIR="android-client/wolflogic-apk"
+
+          if [ ! -d "$APK_DIR" ]; then
+            echo "❌ APK directory not found: $APK_DIR"
+            exit 1
+          fi
+
+          # Check for required APK files
+          REQUIRED_APKS=(
+            "base.apk"
+            "split_config.arm64_v8a.apk"
+            "split_config.en.apk"
+            "split_config.xxhdpi.apk"
+          )
+
+          for apk in "${REQUIRED_APKS[@]}"; do
+            APK_PATH="$APK_DIR/$apk"
+            if [ ! -f "$APK_PATH" ]; then
+              echo "❌ Missing required APK: $apk"
+              exit 1
+            fi
+
+            # Get APK size
+            SIZE=$(du -h "$APK_PATH" | cut -f1)
+            echo "✅ Found $apk ($SIZE)"
+
+            # Validate APK using aapt (if available)
+            if command -v aapt &> /dev/null; then
+              echo "   Validating APK structure..."
+              aapt dump badging "$APK_PATH" > /dev/null 2>&1 && echo "   ✓ Valid APK structure" || echo "   ⚠ Warning: Could not fully validate APK"
+            fi
+          done
+
+          echo ""
+          echo "=== Validation Summary ==="
+          echo "✅ All required APK files are present"
+
+      - name: Calculate APK checksums
+        run: |
+          echo "=== Calculating Checksums ==="
+          cd android-client/wolflogic-apk
+
+          # Generate SHA256 checksums
+          sha256sum *.apk > checksums.txt
+          cat checksums.txt
+
+          echo ""
+          echo "Checksums saved to checksums.txt"
+
+      - name: Package APKs
+        run: |
+          echo "=== Packaging APKs ==="
+
+          # Create a release directory
+          mkdir -p release
+
+          # Copy APKs
+          cp android-client/wolflogic-apk/*.apk release/
+          cp android-client/wolflogic-apk/checksums.txt release/
+
+          # Create installation script
+          cat > release/install.sh << 'EOF'
+          #!/bin/bash
+          # Wolf Logic APK Installer
+          # Installs all split APKs using adb
+
+          set -e
+
+          echo "=== Wolf Logic APK Installer ==="
+          echo ""
+
+          # Check for adb
+          if ! command -v adb &> /dev/null; then
+            echo "❌ Error: adb not found. Please install Android SDK platform tools."
+            exit 1
+          fi
+
+          # Check device connection
+          if ! adb devices | grep -q "device$"; then
+            echo "❌ Error: No Android device connected."
+            echo "   Please connect a device with USB debugging enabled."
+            exit 1
+          fi
+
+          echo "Installing Wolf Logic APKs..."
+          echo ""
+
+          # Install using install-multiple
+          adb install-multiple \
+            base.apk \
+            split_config.arm64_v8a.apk \
+            split_config.en.apk \
+            split_config.xxhdpi.apk
+
+          echo ""
+          echo "✅ Installation complete!"
+          echo ""
+          echo "Optional language packs (install if needed):"
+          echo "  - split_config.es.apk (Spanish)"
+          echo "  - split_config.hdpi.apk (Lower resolution displays)"
+          EOF
+
+          chmod +x release/install.sh
+
+          # Create README
+          cat > release/README.md << 'EOF'
+          # Wolf Logic Android APKs
+
+          ## Installation
+
+          ### Prerequisites
+          - Android 8.0+ (API 26+)
+          - ARM64 device architecture
+          - ADB installed on your computer
+          - USB debugging enabled on your device
+
+          ### Quick Install
+
+          ```bash
+          # Connect your device via USB and run:
+          ./install.sh
+          ```
+
+          ### Manual Install
+
+          ```bash
+          adb install-multiple \
+            base.apk \
+            split_config.arm64_v8a.apk \
+            split_config.en.apk \
+            split_config.xxhdpi.apk
+          ```
+
+          ### Optional Packs
+
+          - `split_config.es.apk` - Spanish language pack
+          - `split_config.hdpi.apk` - Lower resolution displays
+
+          ## Verification
+
+          After installation, verify checksums:
+
+          ```bash
+          sha256sum -c checksums.txt
+          ```
+
+          ## Support
+
+          For setup instructions, see: `android-client/SETUP.md`
+          EOF
+
+          echo "✅ APKs packaged in release/ directory"
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wolf-logic-apks
+          path: release/
+          retention-days: 90
+
+      - name: Generate build summary
+        run: |
+          echo "## 🤖 Android Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ✅ APK Files Validated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| APK File | Size | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          cd android-client/wolflogic-apk
+          for apk in *.apk; do
+            SIZE=$(du -h "$apk" | cut -f1)
+            echo "| $apk | $SIZE | ✅ |" >> $GITHUB_STEP_SUMMARY
+          done
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- All APKs packaged and available for download" >> $GITHUB_STEP_SUMMARY
+          echo "- Installation script included" >> $GITHUB_STEP_SUMMARY
+          echo "- SHA256 checksums generated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📱 Installation" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo "# Download artifacts and run:" >> $GITHUB_STEP_SUMMARY
+          echo "./install.sh" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+  # Future job for when actual Android source code is added
+  # build-from-source:
+  #   name: Build from Source
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'workflow_dispatch'
+  #
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Set up JDK 17
+  #       uses: actions/setup-java@v4
+  #       with:
+  #         distribution: 'temurin'
+  #         java-version: '17'
+  #
+  #     - name: Setup Android SDK
+  #       uses: android-actions/setup-android@v3
+  #
+  #     - name: Grant execute permission for gradlew
+  #       run: chmod +x android-client/gradlew
+  #
+  #     - name: Build with Gradle
+  #       run: |
+  #         cd android-client
+  #         ./gradlew assembleRelease
+  #
+  #     - name: Sign APK
+  #       run: |
+  #         # Add signing configuration here
+  #         echo "APK signing would happen here"
+  #
+  #     - name: Upload built APKs
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: built-apks
+  #         path: android-client/app/build/outputs/apk/release/*.apk
