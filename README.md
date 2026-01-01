@@ -132,6 +132,42 @@ curl -X GET "https://api.complexsimplicityai.com/rpc/semantic_search" \
 
 ---
 
+## OAuth & MCP Setup
+
+### Prerequisites
+1. Copy `.env.example` to `.env` and configure your credentials
+2. Authentik OAuth provider running (see `authentik/docker-compose.yml`)
+3. Node.js for npx-based MCP servers
+
+### Claude Code MCP Configuration
+The `.mcp.json` file in this repo configures Claude Code with:
+- **postgres-librarian**: Direct access to memories database
+- **filesystem**: Local file access
+- **memory**: Knowledge graph persistence
+- **fetch**: Web content retrieval
+- **sequential-thinking**: Problem-solving chains
+
+### Authentik OAuth Setup
+1. Access Authentik Admin: `https://auth.complexsimplicityai.com`
+2. Create OAuth Provider for MCP Gateway:
+   - Client ID: `mcp-gateway`
+   - Scopes: `openid profile email`
+   - Redirect URIs: See `security/authentik_sso_credentials.txt`
+3. Update `.env` with your client secrets
+
+### Docker MCP (20 servers available)
+```bash
+# List available servers
+docker mcp list
+
+# Connect Claude to a server
+docker mcp client connect claude-code
+```
+
+Available servers: postgres, filesystem, memory, fetch, grafana, prometheus, neo4j, slack, and more.
+
+---
+
 ## Infrastructure
 
 ### Production Stack
