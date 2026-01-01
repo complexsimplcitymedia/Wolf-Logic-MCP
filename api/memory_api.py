@@ -214,19 +214,31 @@ async def health_check():
 
     def check_process(name):
         try:
-            result = subprocess.run(['pgrep', '-f', name], capture_output=True)
+            result = subprocess.run(['pgrep', '-f', name], capture_output=True, timeout=5)
             return result.returncode == 0
-        except:
+        except subprocess.TimeoutExpired:
+            print(f"[Health] Timeout checking process: {name}")
+            return False
+        except subprocess.SubprocessError as e:
+            print(f"[Health] Error checking process {name}: {e}")
+            return False
+        except OSError as e:
+            print(f"[Health] OS error checking process {name}: {e}")
             return False
 
     # Test database connection
     db_healthy = False
+    db_error = None
     try:
         conn = get_db_connection()
         conn.close()
         db_healthy = True
-    except:
-        pass
+    except psycopg2.OperationalError as e:
+        db_error = f"Connection failed: {str(e)[:100]}"
+        print(f"[Health] Database operational error: {e}")
+    except psycopg2.Error as e:
+        db_error = f"Database error: {type(e).__name__}"
+        print(f"[Health] Database error: {e}")
 
     return HealthResponse(
         status="healthy" if db_healthy else "degraded",
@@ -263,9 +275,16 @@ async def get_pipeline_status():
 
     def check_process(name):
         try:
-            result = subprocess.run(['pgrep', '-f', name], capture_output=True)
+            result = subprocess.run(['pgrep', '-f', name], capture_output=True, timeout=5)
             return result.returncode == 0
-        except:
+        except subprocess.TimeoutExpired:
+            print(f"[Pipeline] Timeout checking process: {name}")
+            return False
+        except subprocess.SubprocessError as e:
+            print(f"[Pipeline] Error checking process {name}: {e}")
+            return False
+        except OSError as e:
+            print(f"[Pipeline] OS error checking process {name}: {e}")
             return False
 
     # Get memory count

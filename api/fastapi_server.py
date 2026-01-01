@@ -47,11 +47,19 @@ class ConnectionManager:
         self.active_connections.remove(websocket)
 
     async def broadcast(self, message: str):
+        disconnected = []
         for connection in self.active_connections:
             try:
                 await connection.send_text(message)
-            except:
-                pass
+            except WebSocketDisconnect:
+                disconnected.append(connection)
+            except Exception as e:
+                print(f"[WebSocket] Broadcast error to client: {type(e).__name__}")
+                disconnected.append(connection)
+        # Clean up disconnected clients
+        for conn in disconnected:
+            if conn in self.active_connections:
+                self.active_connections.remove(conn)
 
 manager = ConnectionManager()
 
@@ -72,8 +80,12 @@ async def log_streamer():
                 await manager.broadcast(line.strip())
             else:
                 await asyncio.sleep(0.1)
-    except Exception:
-        pass
+    except FileNotFoundError:
+        print("[LogStreamer] Log files not found, waiting for creation...")
+    except PermissionError as e:
+        print(f"[LogStreamer] Permission denied reading log files: {e}")
+    except Exception as e:
+        print(f"[LogStreamer] Unexpected error in log streamer: {type(e).__name__}: {e}")
 
 @app.on_event("startup")
 async def startup_event():
@@ -321,7 +333,11 @@ async def health_check():
         conn = get_db_connection()
         conn.close()
         db_status = "healthy"
-    except:
+    except psycopg2.OperationalError as e:
+        print(f"[Health] Database connection failed: {e}")
+        db_status = "unhealthy"
+    except psycopg2.Error as e:
+        print(f"[Health] Database error: {type(e).__name__}: {e}")
         db_status = "unhealthy"
 
     return {
@@ -561,7 +577,15 @@ async def get_system_status():
                 count=len(pids),
                 pids=pids
             ))
-        except:
+        except subprocess.TimeoutExpired:
+            print(f"[SystemStatus] Timeout checking process: {name}")
+            status_list.append(ProcessStatusResponse(
+                process_name=name,
+                running=False,
+                count=0
+            ))
+        except subprocess.SubprocessError as e:
+            print(f"[SystemStatus] Error checking process {name}: {e}")
             status_list.append(ProcessStatusResponse(
                 process_name=name,
                 running=False,
@@ -629,12 +653,29 @@ async def neo4j_health():
                 "status": "healthy" if response.status_code == 200 else "unhealthy",
                 "reachable": True
             })
-        except:
+        except requests.exceptions.Timeout:
+            health_status.append({
+                "server": server["name"],
+                "host": server["host"],
+                "status": "timeout",
+                "reachable": False,
+                "error": "Connection timed out"
+            })
+        except requests.exceptions.ConnectionError as e:
             health_status.append({
                 "server": server["name"],
                 "host": server["host"],
                 "status": "unreachable",
-                "reachable": False
+                "reachable": False,
+                "error": f"Connection refused: {str(e)[:50]}"
+            })
+        except requests.exceptions.RequestException as e:
+            health_status.append({
+                "server": server["name"],
+                "host": server["host"],
+                "status": "error",
+                "reachable": False,
+                "error": f"{type(e).__name__}: {str(e)[:50]}"
             })
 
     return {
