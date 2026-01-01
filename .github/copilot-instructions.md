@@ -32,13 +32,15 @@ Purpose: give AI coding agents exactly the local knowledge needed to be producti
   - Database: `wolf_logic`
   - Setup scripts: `scripts/setup_local_postgres.sql`
 - **Ollama** - Local LLM and embedding service
-  - Required models: `qwen3-embedding:4b`, `bge-large:latest`, `mxbai-embed-large:latest`
+  - Core embedding models: `qwen3-embedding:4b` (librarian), `bge-large:latest`, `mxbai-embed-large:latest`
+  - Additional models used by agents: `snowflake-arctic-embed:137m`, `jina/jina-embeddings-v2-base-en:latest`
   - Sync models: `scripts/sync_ollama_models.sh`
 - **FFmpeg** - Required for video/audio processing agents
 - **Tailscale** - For production mesh networking (optional for local dev)
 
 ### Configuration Files
 - Database credentials hardcoded in agents (see `PG_CONFIG` in `writers/ingest/ingest_agent.py`)
+  - ⚠️ **For local development only** - use environment variables or secrets management for production
 - API endpoints: `api.complexsimplicityai.com` (production), `localhost` for local dev
 - MCP server: `mcp-gateway/` directory
 
@@ -112,6 +114,7 @@ writers/
 - Agents insert to DB, workers embed asynchronously
 - Connection details in `PG_CONFIG` dictionaries within agent files
 - Default port: `5433` (non-standard to avoid conflicts)
+- ⚠️ **Security Note**: Database credentials are currently hardcoded in agent files for local development. Do NOT commit production credentials to version control.
 
 ### Ollama & LLM Endpoints
 - Local Ollama instance required for embeddings
