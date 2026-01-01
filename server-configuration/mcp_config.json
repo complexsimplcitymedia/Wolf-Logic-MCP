@@ -4,13 +4,56 @@
     "model": "messiah_awakening:latest",
     "base_url": "http://localhost:11434"
   },
+  "oauth": {
+    "provider": "authentik",
+    "issuer_url": "https://auth.complexsimplicityai.com",
+    "authorization_endpoint": "http://100.110.82.181:9080/application/o/authorize/",
+    "token_endpoint": "http://100.110.82.181:9080/application/o/token/",
+    "userinfo_endpoint": "http://100.110.82.181:9080/application/o/userinfo/",
+    "client_id": "mcp-gateway",
+    "scopes": ["openid", "profile", "email"]
+  },
   "mcp_servers": {
     "librarian": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://wolf:wolflogic2024@100.110.82.181:5433/wolf_logic"],
+      "description": "PostgreSQL memories database (The Keeper)"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/home/user/Wolf-Logic-MCP", "/mnt"],
+      "description": "Local filesystem access"
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "description": "Knowledge graph persistent memory"
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"],
+      "description": "Web content fetching"
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "description": "Dynamic problem-solving"
+    },
+    "duckduckgo": {
       "command": "python",
-      "args": ["-m", "mcp_server_postgres"],
-      "env": {
-        "DATABASE_URL": "postgresql://wolf:wolflogic2024@127.0.0.1:5433/wolf_logic"
-      }
+      "args": ["/home/user/Wolf-Logic-MCP/mcp_servers/duckduckgo_mcp.py"],
+      "description": "Web search via DuckDuckGo"
+    },
+    "wolf-gateway": {
+      "type": "http",
+      "url": "http://100.110.82.181:8001",
+      "description": "Wolf MCP Gateway REST API",
+      "oauth_required": true
     }
+  },
+  "gateway": {
+    "host": "100.110.82.181",
+    "port": 8001,
+    "swagger_url": "http://100.110.82.181:8001/docs"
   }
 }
