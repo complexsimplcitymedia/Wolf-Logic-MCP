@@ -56,13 +56,13 @@ python writers/ingest/ingest_agent.py /path/to/file.pdf
 python writers/retrieval/librarian.py "search query"
 
 # Start MCP gateway
-cd mcp-gateway && python server.py
+cd mcp-gateway && python fastapi_server.py
 ```
 
 ### Common Commands
 - **No automated build** - Python scripts run directly
 - **No automated tests** - Manual validation of agent outputs
-- **Logs and outputs**: `output/logs/` and `output/reports/`
+- **Outputs**: Check `output/` directory for generated files
 - **Start full stack**: `scripts/start_wolf_stack.sh`
 
 ### Database Operations
@@ -136,7 +136,7 @@ writers/
 ### Error Handling
 - Agents should fail gracefully and log errors
 - Use thread-safe printing for concurrent operations (see `safe_print()` in `writers/ingest/ingest_agent.py`)
-- Log outputs to `output/logs/`
+- Output files and error messages go to `output/` directory or stdout
 
 ### Database Operations
 - Use connection pooling for concurrent operations
@@ -150,12 +150,12 @@ writers/
 - Test files exist but are not part of CI/CD: `test_websocket.py`, `voice/test_client.py`
 - Validation is primarily done by:
   1. Running agent with sample input
-  2. Checking output logs in `output/logs/`
+  2. Checking output files in `output/` directory
   3. Verifying database inserts via psql or DB client
 
 ### How to Validate Changes
 1. Run the modified agent with test data
-2. Check logs in `output/logs/` for errors or warnings
+2. Check output files in `output/` directory for results
 3. Query database to verify correct data insertion
 4. Test integration with dependent agents/services
 
@@ -163,7 +163,7 @@ writers/
 
 ### Quick Navigation Map
 - **`writers/`** - Primary agent scripts and example usage
-- **`output/logs/`** and **`output/reports/`** - Runtime evidence for debugging
+- **`output/`** - Runtime output files for debugging
 - **`lib/`** - Utility scripts and helper shells (e.g., `protect_claude.sh`)
 - **`scripts/`** - Setup and operational scripts
 - **`mcp-gateway/`** - MCP server implementation
