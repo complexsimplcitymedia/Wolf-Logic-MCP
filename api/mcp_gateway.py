@@ -903,6 +903,243 @@ async def conversation_stats():
         raise HTTPException(status_code=500, detail=str(e))
 
 # ============================================================================
+# API KEY MANAGEMENT (Onboarding Integration)
+# ============================================================================
+
+class GenerateAPIKeyRequest(BaseModel):
+    user_id: str = Field(..., description="User UUID from onboarding")
+    name: str = Field("Default API Key", description="Key name")
+    scopes: List[str] = Field(["read"], description="Allowed scopes: read, write, admin")
+    rate_limit: int = Field(60, description="Requests per minute")
+    expires_in_days: Optional[int] = Field(None, description="Days until expiration (null = never)")
+
+class ValidateAPIKeyRequest(BaseModel):
+    api_key: str = Field(..., description="API key to validate")
+
+@app.post("/mcp/apikeys/generate",
+          response_model=StandardResponse,
+          summary="Generate API Key",
+          description="Generate a new API key for a verified user (requires OAuth)")
+async def generate_api_key(
+    request: GenerateAPIKeyRequest,
+    user_info: dict = Depends(verify_oauth_token)
+):
+    """
+    Generate API key for onboarded user.
+    - Requires Authentik OAuth token
+    - User must have verified email
+    - Returns plaintext key ONCE (save it!)
+    """
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Verify user exists and email is verified
+        cursor.execute("""
+            SELECT id, username, email, email_verified
+            FROM users WHERE id = %s
+        """, (request.user_id,))
+
+        user = cursor.fetchone()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        if not user['email_verified']:
+            raise HTTPException(status_code=403, detail="Email not verified")
+
+        # Generate the API key using PostgreSQL function
+        cursor.execute("""
+            SELECT * FROM generate_api_key(%s, %s, %s, %s, %s)
+        """, (
+            request.user_id,
+            request.name,
+            request.scopes,
+            request.rate_limit,
+            request.expires_in_days
+        ))
+
+        result = cursor.fetchone()
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        logger.info(f"[API_KEY] Generated key {result['key_prefix']}... for user {user['username']}")
+
+        return StandardResponse(
+            success=True,
+            message="API key generated successfully. Save this key - it won't be shown again!",
+            data={
+                "api_key": result['api_key'],
+                "key_id": str(result['key_id']),
+                "key_prefix": result['key_prefix'],
+                "username": user['username'],
+                "email": user['email'],
+                "scopes": request.scopes,
+                "rate_limit": request.rate_limit
+            }
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Generate API key error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/mcp/apikeys/validate",
+          response_model=StandardResponse,
+          summary="Validate API Key",
+          description="Validate an API key and return user info")
+async def validate_api_key(request: ValidateAPIKeyRequest):
+    """
+    Validate API key - no OAuth required (key IS the auth).
+    Returns user info and scopes if valid.
+    """
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM validate_api_key(%s)", (request.api_key,))
+        result = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        if not result['is_valid']:
+            raise HTTPException(
+                status_code=401,
+                detail=result['error_message'] or "Invalid API key"
+            )
+
+        return StandardResponse(
+            success=True,
+            message="API key is valid",
+            data={
+                "user_id": str(result['user_id']),
+                "username": result['username'],
+                "email": result['email'],
+                "scopes": result['scopes'],
+                "rate_limit": result['rate_limit']
+            }
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Validate API key error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/mcp/apikeys/list",
+         response_model=StandardResponse,
+         summary="List User API Keys",
+         description="List all API keys for authenticated user")
+async def list_api_keys(user_info: dict = Depends(verify_oauth_token)):
+    """List API keys for the authenticated user (keys are masked)"""
+    try:
+        username = user_info.get("preferred_username", user_info.get("sub", "unknown"))
+        email = user_info.get("email")
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Get user by email from OAuth
+        cursor.execute("SELECT id FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Get all keys for user
+        cursor.execute("""
+            SELECT id, key_prefix, name, scopes, rate_limit,
+                   expires_at, last_used_at, revoked_at, created_at
+            FROM api_keys
+            WHERE user_id = %s
+            ORDER BY created_at DESC
+        """, (user['id'],))
+
+        keys = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        return StandardResponse(
+            success=True,
+            message=f"Found {len(keys)} API keys",
+            data={
+                "username": username,
+                "keys": [
+                    {
+                        "id": str(k['id']),
+                        "prefix": k['key_prefix'],
+                        "name": k['name'],
+                        "scopes": k['scopes'],
+                        "rate_limit": k['rate_limit'],
+                        "expires_at": k['expires_at'].isoformat() if k['expires_at'] else None,
+                        "last_used_at": k['last_used_at'].isoformat() if k['last_used_at'] else None,
+                        "is_active": k['revoked_at'] is None,
+                        "created_at": k['created_at'].isoformat()
+                    }
+                    for k in keys
+                ]
+            }
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"List API keys error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/mcp/apikeys/{key_id}",
+            response_model=StandardResponse,
+            summary="Revoke API Key",
+            description="Revoke an API key")
+async def revoke_api_key(
+    key_id: str,
+    user_info: dict = Depends(verify_oauth_token)
+):
+    """Revoke an API key (soft delete)"""
+    try:
+        email = user_info.get("email")
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Verify ownership
+        cursor.execute("""
+            SELECT ak.id, ak.key_prefix
+            FROM api_keys ak
+            JOIN users u ON ak.user_id = u.id
+            WHERE ak.id = %s AND u.email = %s AND ak.revoked_at IS NULL
+        """, (key_id, email))
+
+        key = cursor.fetchone()
+        if not key:
+            raise HTTPException(status_code=404, detail="API key not found or already revoked")
+
+        # Revoke
+        cursor.execute("""
+            UPDATE api_keys SET revoked_at = NOW() WHERE id = %s
+        """, (key_id,))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        logger.info(f"[API_KEY] Revoked key {key['key_prefix']}...")
+
+        return StandardResponse(
+            success=True,
+            message=f"API key {key['key_prefix']}... has been revoked",
+            data={"key_id": key_id, "prefix": key['key_prefix']}
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Revoke API key error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================================================
 # RUN SERVER
 # ============================================================================
 
@@ -910,7 +1147,7 @@ if __name__ == "__main__":
     import uvicorn
 
     # Get port from environment or use default
-    port = int(os.getenv("GATEWAY_PORT", "8001"))
+    port = int(os.getenv("GATEWAY_PORT", "8002"))
 
     logger.info(f"Starting Wolf MCP Gateway on port {port}")
     logger.info(f"Swagger UI: http://localhost:{port}/docs")
