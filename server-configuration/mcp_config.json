@@ -46,14 +46,15 @@
     },
     "wolf-gateway": {
       "type": "http",
-      "url": "http://100.110.82.181:8002",
+      "url": "https://wolf-logic-mcp.complexsimplicityai.com",
       "description": "Wolf MCP Gateway REST API",
       "oauth_required": true
     }
   },
   "gateway": {
+    "url": "https://wolf-logic-mcp.complexsimplicityai.com",
     "host": "100.110.82.181",
     "port": 8002,
-    "swagger_url": "http://100.110.82.181:8002/docs"
+    "swagger_url": "https://wolf-logic-mcp.complexsimplicityai.com/docs"
   }
 }
