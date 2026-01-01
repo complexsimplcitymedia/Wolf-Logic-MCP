@@ -32,8 +32,8 @@ Purpose: give AI coding agents exactly the local knowledge needed to be producti
   - Database: `wolf_logic`
   - Setup scripts: `scripts/setup_local_postgres.sql`
 - **Ollama** - Local LLM and embedding service
-  - Core embedding models: `qwen3-embedding:4b` (librarian), `bge-large:latest`, `mxbai-embed-large:latest`
-  - Additional models used by agents: `snowflake-arctic-embed:137m`, `jina/jina-embeddings-v2-base-en:latest`
+  - Core embedding models: `nomic-embed-text:v1.5` (librarian), `bge-large:latest`, `mxbai-embed-large:latest`
+  - Additional models used by agents: `snowflake-arctic-embed:137m`, `jina/jina-embeddings-v2-base-en:latest`, `qwen3-embedding:4b`
   - Sync models: `scripts/sync_ollama_models.sh`
 - **FFmpeg** - Required for video/audio processing agents
 - **Tailscale** - For production mesh networking (optional for local dev)
@@ -196,7 +196,7 @@ Follow this sequence:
 
 **"Model not found" from Ollama**
 - List available models: `ollama list`
-- Pull required model: `ollama pull qwen3-embedding:4b`
+- Pull required model: `ollama pull nomic-embed-text:v1.5` (or other required models)
 - Run sync script: `scripts/sync_ollama_models.sh`
 
 **Agent crashes with import errors**
