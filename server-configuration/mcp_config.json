@@ -46,14 +46,14 @@
     },
     "wolf-gateway": {
       "type": "http",
-      "url": "http://100.110.82.181:8001",
+      "url": "http://100.110.82.181:8002",
       "description": "Wolf MCP Gateway REST API",
       "oauth_required": true
     }
   },
   "gateway": {
     "host": "100.110.82.181",
-    "port": 8001,
-    "swagger_url": "http://100.110.82.181:8001/docs"
+    "port": 8002,
+    "swagger_url": "http://100.110.82.181:8002/docs"
   }
 }
