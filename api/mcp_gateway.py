@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field
 from typing import Optional, Any, Dict, List
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 import logging
 import psycopg2
@@ -900,6 +900,394 @@ async def conversation_stats():
         
     except Exception as e:
         logger.error(f"Conversation stats error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================================================
+# ONBOARDING ENDPOINTS (No OAuth - Public Registration)
+# ============================================================================
+
+class RegisterUserRequest(BaseModel):
+    username: str = Field(..., min_length=3, max_length=30)
+    email: str = Field(..., description="User email address")
+    phone_number: str = Field(..., description="Phone number for RCS")
+    referral_code: Optional[str] = Field(None, description="Optional referral code")
+    device_type: Optional[str] = None
+    device_os: Optional[str] = None
+    device_cpu_cores: Optional[int] = None
+    device_ram_gb: Optional[float] = None
+    device_gpu_available: Optional[bool] = None
+    device_storage_gb: Optional[float] = None
+
+class VerifyEmailRequest(BaseModel):
+    user_id: str = Field(..., description="User UUID")
+    pin: str = Field(..., min_length=8, max_length=8, description="8-digit PIN")
+
+class VerifyRCSRequest(BaseModel):
+    user_id: str = Field(..., description="User UUID")
+
+class SelectPlanRequest(BaseModel):
+    user_id: str = Field(..., description="User UUID")
+    plan_id: str = Field(..., description="Subscription plan UUID")
+
+@app.post("/onboarding/register",
+          response_model=StandardResponse,
+          summary="Register New User",
+          description="Create new user account and send verification email")
+async def onboarding_register(request: RegisterUserRequest):
+    """Register a new user - sends 8-digit PIN to email"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Check if username or email exists
+        cursor.execute(
+            "SELECT id FROM users WHERE username = %s OR email = %s",
+            (request.username, request.email)
+        )
+        if cursor.fetchone():
+            raise HTTPException(status_code=409, detail="Username or email already exists")
+
+        # Get user count for beta/early adopter status
+        cursor.execute("SELECT COUNT(*) as count FROM users")
+        user_count = cursor.fetchone()['count']
+        is_beta = user_count < 100
+        is_early_adopter = user_count < 1000
+
+        # Check referral code
+        referrer_id = None
+        if request.referral_code:
+            cursor.execute("SELECT id FROM users WHERE referral_code = %s", (request.referral_code,))
+            referrer = cursor.fetchone()
+            if referrer:
+                referrer_id = referrer['id']
+
+        # Generate referral code for new user
+        import secrets
+        referral_code = secrets.token_hex(4).upper()
+
+        # Insert user
+        cursor.execute("""
+            INSERT INTO users (
+                username, email, phone_number, beta_user, early_adopter,
+                referred_by, referral_code, device_type, device_os,
+                device_cpu_cores, device_ram_gb, device_gpu_available,
+                device_storage_gb, device_checked_at
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+            RETURNING id, username, email, referral_code, beta_user, early_adopter
+        """, (
+            request.username, request.email, request.phone_number,
+            is_beta, is_early_adopter, referrer_id, referral_code,
+            request.device_type, request.device_os, request.device_cpu_cores,
+            request.device_ram_gb, request.device_gpu_available, request.device_storage_gb
+        ))
+        new_user = cursor.fetchone()
+
+        # Generate 8-digit PIN
+        import random
+        pin = str(random.randint(10000000, 99999999))
+        expires_at = datetime.now() + timedelta(minutes=15)
+
+        # Store verification code
+        cursor.execute("""
+            INSERT INTO verification_codes (user_id, code_type, code, expires_at)
+            VALUES (%s, 'email', %s, %s)
+        """, (new_user['id'], pin, expires_at))
+
+        conn.commit()
+
+        # Send verification email (fire and forget)
+        try:
+            if EMAIL_CONFIG['smtp_user']:
+                msg = MIMEMultipart()
+                msg['From'] = EMAIL_CONFIG['from_email']
+                msg['To'] = request.email
+                msg['Subject'] = 'TaiScale Mesh Network - Verify Your Email'
+
+                body = f"""
+Welcome to TaiScale Mesh Network!
+
+Your verification PIN is: {pin}
+
+This code expires in 15 minutes.
+
+If you didn't request this, please ignore this email.
+                """
+                msg.attach(MIMEText(body, 'plain'))
+
+                with smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port']) as server:
+                    server.starttls()
+                    server.login(EMAIL_CONFIG['smtp_user'], EMAIL_CONFIG['smtp_password'])
+                    server.send_message(msg)
+
+                logger.info(f"[ONBOARDING] Verification email sent to {request.email}")
+        except Exception as e:
+            logger.warning(f"[ONBOARDING] Email send failed: {e}")
+
+        cursor.close()
+        conn.close()
+
+        logger.info(f"[ONBOARDING] User registered: {request.username} ({request.email})")
+
+        return StandardResponse(
+            success=True,
+            message="Registration successful. Check your email for the verification PIN.",
+            data={
+                "user_id": str(new_user['id']),
+                "username": new_user['username'],
+                "email": new_user['email'],
+                "referral_code": new_user['referral_code'],
+                "is_beta": new_user['beta_user'],
+                "is_early_adopter": new_user['early_adopter'],
+                "pin_expires_in_minutes": 15
+            }
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Registration error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/onboarding/verify-email",
+          response_model=StandardResponse,
+          summary="Verify Email",
+          description="Verify email with 8-digit PIN")
+async def onboarding_verify_email(request: VerifyEmailRequest):
+    """Verify email address with PIN"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Find valid verification code
+        cursor.execute("""
+            SELECT id, expires_at FROM verification_codes
+            WHERE user_id = %s AND code_type = 'email' AND code = %s AND verified_at IS NULL
+        """, (request.user_id, request.pin))
+
+        code = cursor.fetchone()
+        if not code:
+            raise HTTPException(status_code=400, detail="Invalid or expired verification code")
+
+        if code['expires_at'] < datetime.now():
+            raise HTTPException(status_code=400, detail="Verification code has expired")
+
+        # Mark code as verified
+        cursor.execute("UPDATE verification_codes SET verified_at = NOW() WHERE id = %s", (code['id'],))
+
+        # Update user
+        cursor.execute("UPDATE users SET email_verified = true WHERE id = %s RETURNING username, email", (request.user_id,))
+        user = cursor.fetchone()
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        logger.info(f"[ONBOARDING] Email verified: {user['email']}")
+
+        return StandardResponse(
+            success=True,
+            message="Email verified successfully",
+            data={"user_id": request.user_id, "email_verified": True}
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Email verification error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/onboarding/verify-rcs",
+          response_model=StandardResponse,
+          summary="RCS Verification",
+          description="Mark RCS as verified (placeholder)")
+async def onboarding_verify_rcs(request: VerifyRCSRequest):
+    """Mark RCS as verified - currently auto-approves"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            UPDATE users SET rcs_verified = true
+            WHERE id = %s RETURNING username, phone_number
+        """, (request.user_id,))
+
+        user = cursor.fetchone()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        logger.info(f"[ONBOARDING] RCS verified: {user['username']}")
+
+        return StandardResponse(
+            success=True,
+            message="RCS verification complete",
+            data={"user_id": request.user_id, "rcs_verified": True}
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"RCS verification error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/onboarding/plans",
+         response_model=StandardResponse,
+         summary="Get Subscription Plans",
+         description="List available subscription plans")
+async def onboarding_get_plans():
+    """Get available subscription plans"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM subscription_plans WHERE active = true ORDER BY price_monthly")
+        plans = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        return StandardResponse(
+            success=True,
+            message=f"Found {len(plans)} plans",
+            data={"plans": plans}
+        )
+
+    except Exception as e:
+        logger.error(f"Get plans error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/onboarding/select-plan",
+          response_model=StandardResponse,
+          summary="Select Subscription Plan",
+          description="Select a subscription plan and generate API key")
+async def onboarding_select_plan(request: SelectPlanRequest):
+    """Select plan and generate API key upon completion"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Get user
+        cursor.execute("""
+            SELECT id, username, email, email_verified, rcs_verified
+            FROM users WHERE id = %s
+        """, (request.user_id,))
+        user = cursor.fetchone()
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        if not user['email_verified']:
+            raise HTTPException(status_code=403, detail="Email not verified")
+
+        # Get plan
+        cursor.execute("SELECT * FROM subscription_plans WHERE id = %s", (request.plan_id,))
+        plan = cursor.fetchone()
+        if not plan:
+            raise HTTPException(status_code=404, detail="Plan not found")
+
+        # Create subscription
+        cursor.execute("""
+            INSERT INTO user_subscriptions (user_id, plan_id, status, effective_monthly_cost)
+            VALUES (%s, %s, 'active', %s)
+            RETURNING id
+        """, (request.user_id, request.plan_id, plan['price_monthly']))
+        subscription = cursor.fetchone()
+
+        # Generate API key
+        cursor.execute("""
+            SELECT * FROM generate_api_key(%s, %s, %s, %s, %s)
+        """, (request.user_id, 'Default API Key', ['read', 'write'], 60, None))
+        api_key = cursor.fetchone()
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        logger.info(f"[ONBOARDING] Complete: {user['username']} -> {plan['name']} -> API key {api_key['key_prefix']}...")
+
+        return StandardResponse(
+            success=True,
+            message="Onboarding complete! Save your API key - it won't be shown again.",
+            data={
+                "user_id": request.user_id,
+                "username": user['username'],
+                "email": user['email'],
+                "plan": plan['name'],
+                "subscription_id": str(subscription['id']),
+                "api_key": api_key['api_key'],
+                "key_prefix": api_key['key_prefix'],
+                "rate_limit": 60,
+                "scopes": ["read", "write"]
+            }
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Select plan error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/onboarding/resend-pin",
+          response_model=StandardResponse,
+          summary="Resend Verification PIN",
+          description="Resend the email verification PIN")
+async def onboarding_resend_pin(user_id: str = Query(...)):
+    """Resend verification PIN to user's email"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT id, email, email_verified FROM users WHERE id = %s", (user_id,))
+        user = cursor.fetchone()
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        if user['email_verified']:
+            raise HTTPException(status_code=400, detail="Email already verified")
+
+        # Generate new PIN
+        import random
+        pin = str(random.randint(10000000, 99999999))
+        expires_at = datetime.now() + timedelta(minutes=15)
+
+        cursor.execute("""
+            INSERT INTO verification_codes (user_id, code_type, code, expires_at)
+            VALUES (%s, 'email', %s, %s)
+        """, (user_id, pin, expires_at))
+
+        conn.commit()
+
+        # Send email
+        try:
+            if EMAIL_CONFIG['smtp_user']:
+                msg = MIMEMultipart()
+                msg['From'] = EMAIL_CONFIG['from_email']
+                msg['To'] = user['email']
+                msg['Subject'] = 'TaiScale - New Verification PIN'
+                msg.attach(MIMEText(f"Your new PIN is: {pin}\n\nExpires in 15 minutes.", 'plain'))
+
+                with smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port']) as server:
+                    server.starttls()
+                    server.login(EMAIL_CONFIG['smtp_user'], EMAIL_CONFIG['smtp_password'])
+                    server.send_message(msg)
+        except Exception as e:
+            logger.warning(f"Resend email failed: {e}")
+
+        cursor.close()
+        conn.close()
+
+        return StandardResponse(
+            success=True,
+            message="New verification PIN sent",
+            data={"email": user['email'], "expires_in_minutes": 15}
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Resend PIN error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # ============================================================================
